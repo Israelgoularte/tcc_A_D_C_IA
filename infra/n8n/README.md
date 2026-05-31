@@ -2,34 +2,54 @@
 
 Infraestrutura Docker para executar uma instancia do n8n com banco PostgreSQL persistente e roteamento via Traefik.
 
-## Requisitos
+## Requisitos no Ubuntu
 
-- Git
-- Docker
-- Docker Compose
-- Traefik ja configurado na maquina/servidor
+- Ubuntu 22.04 ou superior
+- Git instalado
+- Docker instalado
+- Docker Compose instalado
+- Traefik ja configurado na maquina ou servidor
 - Rede externa do Traefik disponivel
 
 ## Instalacao
 
+Atualize os pacotes e instale o Git, se necessario:
+
+```bash
+sudo apt update
+sudo apt install -y git
+```
+
 Clone o repositorio:
 
-```powershell
+```bash
 git clone https://github.com/Israelgoularte/tcc_A_D_C_IA.git
-cd tcc_A_D_C_IA\infra\n8n
+cd tcc_A_D_C_IA/infra/n8n
 ```
 
 Crie o arquivo de ambiente:
 
-```powershell
-Copy-Item .env.exemple .env
+```bash
+cp .env.exemple .env
+```
+
+Gere automaticamente a chave de criptografia do n8n:
+
+```bash
+chmod +x scripts/generate-encryption-key.sh
+bash scripts/generate-encryption-key.sh
 ```
 
 Edite o arquivo `.env` antes de subir os containers:
 
+```bash
+nano .env
+```
+
+Valores minimos que devem ser ajustados:
+
 ```env
 POSTGRES_PASSWORD=troque_por_uma_senha_forte
-N8N_ENCRYPTION_KEY=troque_por_uma_chave_forte_com_40_ou_mais_caracteres
 N8N_DOMAIN=n8n.seu-dominio.com
 N8N_HOST=n8n.seu-dominio.com
 WEBHOOK_URL=https://n8n.seu-dominio.com/
@@ -37,7 +57,7 @@ WEBHOOK_URL=https://n8n.seu-dominio.com/
 
 Garanta que a rede externa do Traefik exista:
 
-```powershell
+```bash
 docker network create traefik_proxy
 ```
 
@@ -45,13 +65,13 @@ Se a rede ja existir, o Docker retornara erro informando que ela ja existe. Ness
 
 Suba os containers:
 
-```powershell
+```bash
 docker compose up -d
 ```
 
 Verifique o status:
 
-```powershell
+```bash
 docker compose ps
 docker compose logs -f n8n
 ```
@@ -80,15 +100,27 @@ Isso evita atualizacoes automaticas quando os containers forem recriados.
 
 Parar os containers:
 
-```powershell
+```bash
 docker compose down
 ```
 
 Atualizar somente depois de alterar conscientemente a versao em `.env`:
 
-```powershell
+```bash
 docker compose pull
 docker compose up -d
+```
+
+Reiniciar os containers:
+
+```bash
+docker compose restart
+```
+
+Ver logs do PostgreSQL:
+
+```bash
+docker compose logs -f postgres
 ```
 
 Backup simples dos volumes Docker deve ser planejado antes de uso em producao, principalmente para:
