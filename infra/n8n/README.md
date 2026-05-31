@@ -27,6 +27,30 @@ git clone https://github.com/Israelgoularte/tcc_A_D_C_IA.git
 cd tcc_A_D_C_IA/infra/n8n
 ```
 
+### Instalacao guiada
+
+Execute o setup interativo:
+
+```bash
+chmod +x scripts/setup.sh
+bash scripts/setup.sh
+```
+
+O setup:
+
+- mostra as informacoes de autoria e proposito do projeto
+- valida se o sistema e Ubuntu
+- verifica e instala requisitos quando necessario
+- pede confirmacao antes de instalar pacotes ou configurar Docker
+- instala `git`, `curl`, `ca-certificates`, `gnupg`, `openssl`, Docker Engine e Docker Compose plugin
+- solicita os dados necessarios no terminal
+- gera a `N8N_ENCRYPTION_KEY`
+- cria o `.env`
+- verifica a rede do Traefik
+- pergunta se deve subir os containers
+
+### Instalacao manual
+
 Crie o arquivo de ambiente:
 
 ```bash
