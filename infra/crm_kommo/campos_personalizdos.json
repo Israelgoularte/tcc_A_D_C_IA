@@ -1,0 +1,36 @@
+{
+    "campos_personalizados_lead": [
+        {
+            "name": "Serviços",
+            "type": "select",
+            "options": [
+                "Desenvolvimento Web",
+                "Desenvolvimento Mobile",
+                "Desenvolvimento de API",
+                "Desenvolvimento de Integração",
+                "Consultoria em TI",
+                "Suporte Técnico"
+            ]
+        },
+        {
+            "name": "Data do Contrato",
+            "type": "date"
+        }
+    ],
+    "campos_personalizados_contato": [
+        {
+            "name": "Cargo",
+            "type": "text"
+        }
+    ],
+    "campos_personalizados_empresa": [
+        {
+            "name": "LTV (Lifetime Value)",
+            "type": "number"
+        },
+        {
+            "name": "Data do ultimo Contrato",
+            "type": "date"
+        }
+    ]
+}
