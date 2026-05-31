@@ -1,0 +1,448 @@
+{
+  "name": "kommo_criar_estrutura",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -160,
+        16
+      ],
+      "id": "6c1dad9e-0206-464d-90fd-2605451656ef",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d88f2fa5-2240-4bc6-beff-0d677bdb36dc",
+              "name": "Estrutura_de_teste",
+              "value": "{   \"funis\": [     {       \"nome\": \"Funil de Qualificação\",       \"etapas\": [         {           \"nome\": \"Novo Lead\",           \"descricao\": \"Leads que foram recentemente adicionados ao sistema e ainda não passaram por nenhuma qualificação.\"         },         {           \"nome\": \"Contato Inicial\",           \"descricao\": \"Leads que foram contatados pela primeira vez, seja por telefone, e-mail ou outro meio de comunicação.\"         },         {           \"nome\": \"Qualificação em Andamento\",           \"descricao\": \"Leads que estão passando por um processo de qualificação, onde estão sendo avaliados para determinar seu potencial como cliente.\"         },         {           \"nome\": \"Qualificado\",           \"descricao\": \"Leads que foram considerados qualificados e têm potencial para se tornarem clientes.\"         },         {           \"nome\": \"Desqualificado\",           \"descricao\": \"Leads que foram considerados desqualificados e não têm potencial para se tornarem clientes.\"         }       ]     },     {       \"nome\": \"Funil de Vendas\",       \"etapas\": [         {           \"nome\": \"Novo Lead Qualificado\",           \"descricao\": \"Leads que foram qualificados e estão prontos para serem abordados pela equipe de vendas.\"         },         {           \"nome\": \"Contato de Vendas\",           \"descricao\": \"Leads que foram contatados pela equipe de vendas para discutir suas necessidades e apresentar soluções.\"         },         {           \"nome\": \"Proposta Enviada\",           \"descricao\": \"Clientes potenciais que receberam uma proposta de venda, mas ainda não responderam.\"         },         {           \"nome\": \"Negociação\",           \"descricao\": \"Clientes potenciais que estão em processo de negociação, discutindo termos e condições da proposta.\"         }       ]     }   ],   \"campos_personalizados_lead\": [     {       \"name\": \"Serviços\",       \"type\": \"select\",       \"options\": [         \"Desenvolvimento Web\",         \"Desenvolvimento Mobile\",         \"Desenvolvimento de API\",         \"Desenvolvimento de Integração\",         \"Consultoria em TI\",         \"Suporte Técnico\"       ]     },     {       \"name\": \"Data do Contrato\",       \"type\": \"date\"     }   ],   \"campos_personalizados_contato\": [     {       \"name\": \"Cargo\",       \"type\": \"text\"     }   ],   \"campos_personalizados_empresa\": [     {       \"name\": \"LTV (Lifetime Value)\",       \"type\": \"number\"     },     {       \"name\": \"Data do Último Contrato\",       \"type\": \"date\"     }   ],   \"fake_10_usuarios\": [     {       \"email\": \"alice.silva@\",       \"papel\": \"SDR\",       \"nome\": \"Alice Silva\",       \"senha\": \"Teste1@23\"     },     {       \"email\": \"bruno.martins@\",       \"papel\": \"SDR\",       \"nome\": \"Bruno Martins\",       \"senha\": \"Demo456@A\"     },     {       \"email\": \"carla.nogueira@\",       \"papel\": \"SDR\",       \"nome\": \"Carla Nogueira\",       \"senha\": \"Senha78@9B\"     },     {       \"email\": \"diego.almeida@\",       \"papel\": \"SDR\",       \"nome\": \"Diego Almeida\",       \"senha\": \"User321@C\"     },     {       \"email\": \"eduarda.lima@\",       \"papel\": \"Closer\",       \"nome\": \"Eduarda Lima\",       \"senha\": \"Venda654@D\"     },     {       \"email\": \"felipe.rocha@\",       \"papel\": \"Closer\",       \"nome\": \"Felipe Rocha\",       \"senha\": \"Closer98@7E\"     },     {       \"email\": \"gabriela.torres@\",       \"papel\": \"Closer\",       \"nome\": \"Gabriela Torres\",       \"senha\": \"Kommo24@6F\"     },     {       \"email\": \"henrique.costa@\",       \"papel\": \"Closer\",       \"nome\": \"Henrique Costa\",       \"senha\": \"Teste13@5G\"     },     {       \"email\": \"isabela.freitas@\",       \"papel\": \"Closer\",       \"nome\": \"Isabela Freitas\",       \"senha\": \"Funil8@64H\"     },     {       \"email\": \"joao.pereira@\",       \"papel\": \"Closer\",       \"nome\": \"João Pereira\",       \"senha\": \"Lead5@79I\"     }   ] }",
+              "type": "object"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        832,
+        0
+      ],
+      "id": "8e5b8a50-d7e6-4082-a161-5fc18664bfd6",
+      "name": "json_de_estrutura_inicial"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "655df6d3-1ed1-4973-bfd8-43afa6c48a09",
+              "name": "email_domain",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        352,
+        16
+      ],
+      "id": "01ec31a0-22f6-4979-85d6-fa9f0629cbd9",
+      "name": "preencha o dominio do email a ser usado."
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "U2zPJpKifuM8xMJS",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/U2zPJpKifuM8xMJS",
+          "cachedResultName": "kommo_credenciais"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        48,
+        16
+      ],
+      "id": "6b708f17-b496-4d7b-8c39-e6016358d98f",
+      "name": "Call 'kommo_credenciais'"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "Estrutura_de_teste.funis",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        1104,
+        -272
+      ],
+      "id": "4d33a47d-b718-442e-8bc5-62f0e7e49247",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://{{ $('Call \\'kommo_credenciais\\'').item.json.kommo_subdomain }}.kommo.com/api/v4/leads/pipelines",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "accept",
+              "value": "application/json"
+            },
+            {
+              "name": "authorization",
+              "value": "=Bearer {{ $('Call \\'kommo_credenciais\\'').item.json.token }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "=[{{ $json.toJsonString() }}]",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        1600,
+        -272
+      ],
+      "id": "679ed444-5548-49c0-af80-60a7d2648001",
+      "name": "Cria os funis e etapas"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://{{ $('Call \\'kommo_credenciais\\'').item.json.kommo_subdomain }}.kommo.com/api/v4/{{ $json.entity_type }}/custom_fields",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Accept",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $('Call \\'kommo_credenciais\\'').item.json.token }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.body.toJsonString() }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        1600,
+        0
+      ],
+      "id": "89eb956a-41fa-4cc2-939d-a60f7ce529f3",
+      "name": "cria_campos_personalizados"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://{{ $('Call \\'kommo_credenciais\\'').item.json.kommo_subdomain }}.kommo.com/api/v4/users",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Accept",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $('Call \\'kommo_credenciais\\'').item.json.token }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.body.toJsonString() }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        1600,
+        208
+      ],
+      "id": "030cbb7c-2502-4090-aefa-1961ef8286f8",
+      "name": "cria_usuarios"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\n\n/**\n * IMPORTANTE:\n * Substitua pelo domínio que será usado para criar os usuários.\n *\n * Os e-mails do input estão incompletos:\n * alice.silva@\n *\n * O resultado será:\n * alice.silva@seudominio.com.br\n */\nconst EMAIL_DOMAIN = $('preencha o dominio do email a ser usado.').first().json.email_domain\n\n/**\n * Localiza a estrutura que contém fake_10_usuarios.\n * Funciona com:\n *\n * {\n *   \"Estrutura_de_teste\": {\n *     \"fake_10_usuarios\": [...]\n *   }\n * }\n */\nfunction obterEstrutura(json) {\n  if (!json || typeof json !== 'object' || Array.isArray(json)) {\n    throw new Error('O input recebido não possui um objeto JSON válido.');\n  }\n\n  if (Array.isArray(json.fake_10_usuarios)) {\n    return json;\n  }\n\n  for (const valor of Object.values(json)) {\n    if (\n      valor &&\n      typeof valor === 'object' &&\n      !Array.isArray(valor) &&\n      Array.isArray(valor.fake_10_usuarios)\n    ) {\n      return valor;\n    }\n  }\n\n  throw new Error(\n    'A propriedade \"fake_10_usuarios\" não foi encontrada no input.'\n  );\n}\n\n/**\n * Remove acentos e caracteres que podem gerar erro no nome.\n * Exemplo:\n * João Pereira -> Joao Pereira\n */\nfunction normalizarNome(valor) {\n  return String(valor || '')\n    .trim()\n    .normalize('NFD')\n    .replace(/[\\u0300-\\u036f]/g, '')\n    .replace(/[^a-zA-Z0-9 .@_-]/g, '')\n    .replace(/\\s+/g, ' ')\n    .trim();\n}\n\n/**\n * Completa e valida o e-mail.\n */\nfunction montarEmail(valor, indice) {\n  let email = String(valor || '')\n    .trim()\n    .toLowerCase();\n\n  if (!email) {\n    throw new Error(`O usuário ${indice + 1} não possui e-mail.`);\n  }\n\n  if (email.endsWith('@')) {\n    email += EMAIL_DOMAIN;\n  }\n\n  const emailValido = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/;\n\n  if (!emailValido.test(email)) {\n    throw new Error(\n      `O e-mail \"${email}\" do usuário ${indice + 1} é inválido.`\n    );\n  }\n\n  return email;\n}\n\n/**\n * Valida a senha segundo os requisitos mínimos:\n * - pelo menos 6 caracteres;\n * - ao menos uma letra minúscula;\n * - ao menos uma letra maiúscula;\n * - ao menos um número.\n */\nfunction validarSenha(valor, nome) {\n  const senha = String(valor || '');\n\n  const senhaValida =\n    senha.length >= 6 &&\n    /[a-z]/.test(senha) &&\n    /[A-Z]/.test(senha) &&\n    /\\d/.test(senha);\n\n  if (!senhaValida) {\n    throw new Error(\n      `A senha do usuário \"${nome}\" não atende aos requisitos mínimos.`\n    );\n  }\n\n  return senha;\n}\n\n/**\n * Normaliza o papel somente para criar um identificador interno.\n * O papel não é enviado como função da Kommo.\n */\nfunction normalizarPapel(valor) {\n  return String(valor || 'usuario')\n    .trim()\n    .toLowerCase()\n    .normalize('NFD')\n    .replace(/[\\u0300-\\u036f]/g, '')\n    .replace(/[^a-z0-9_-]/g, '_');\n}\n\n/**\n * Permissões padrão dos usuários.\n *\n * A = acesso permitido para todos os registros.\n *\n * Posteriormente, você pode substituir estas permissões\n * por role_id quando já tiver criado as funções SDR e Closer.\n */\nfunction montarPermissoes() {\n  return {\n    leads: {\n      view: 'A',\n      edit: 'A',\n      add: 'A',\n      delete: 'A',\n      export: 'A'\n    },\n    contacts: {\n      view: 'A',\n      edit: 'A',\n      add: 'A',\n      delete: 'A',\n      export: 'A'\n    },\n    companies: {\n      view: 'A',\n      edit: 'A',\n      add: 'A',\n      delete: 'A',\n      export: 'A'\n    },\n    tasks: {\n      edit: 'A',\n      delete: 'A'\n    },\n    mail_access: false,\n    catalog_access: false,\n    status_rights: null,\n    is_admin: false,\n    is_free: false,\n    group_id: null\n  };\n}\n\nconst usuarios = [];\n\nfor (const item of items) {\n  const estrutura = obterEstrutura(item.json);\n  const usuariosRecebidos = estrutura.fake_10_usuarios;\n\n  for (const [indice, usuario] of usuariosRecebidos.entries()) {\n    const name = normalizarNome(usuario.nome);\n\n    if (!name) {\n      throw new Error(`O usuário ${indice + 1} não possui nome válido.`);\n    }\n\n    const papel = normalizarPapel(usuario.papel);\n\n    usuarios.push({\n      name,\n      email: montarEmail(usuario.email, indice),\n      password: validarSenha(usuario.senha, name),\n      lang: 'en',\n      rights: montarPermissoes(),\n      request_id: `${papel}_${indice + 1}`\n    });\n  }\n}\n\nif (usuarios.length === 0) {\n  throw new Error('Nenhum usuário foi encontrado para criação.');\n}\n\n/**\n * A API aceita no máximo 10 usuários por requisição.\n * O código cria um item para cada lote.\n */\nconst TAMANHO_DO_LOTE = 10;\nconst resultado = [];\n\nfor (let inicio = 0; inicio < usuarios.length; inicio += TAMANHO_DO_LOTE) {\n  const body = usuarios.slice(inicio, inicio + TAMANHO_DO_LOTE);\n\n  resultado.push({\n    json: {\n      lote: Math.floor(inicio / TAMANHO_DO_LOTE) + 1,\n      quantidade_usuarios: body.length,\n      body\n    }\n  });\n}\n\nreturn resultado;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1312,
+        208
+      ],
+      "id": "97c1ff22-23cb-4ecc-a8a9-92dfa51f6ba7",
+      "name": "gera_body_users"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\n\n/**\n * Converte os nomes utilizados na estrutura de entrada\n * para os tipos aceitos pela API da Kommo.\n */\nfunction normalizarTipo(tipo) {\n  const mapaTipos = {\n    text: 'text',\n    textarea: 'textarea',\n    number: 'numeric',\n    numeric: 'numeric',\n    checkbox: 'checkbox',\n    select: 'select',\n    multiselect: 'multiselect',\n    radio: 'radiobutton',\n    radiobutton: 'radiobutton',\n    date: 'date',\n    datetime: 'date_time',\n    date_time: 'date_time',\n    url: 'url',\n    birthday: 'birthday',\n    price: 'price'\n  };\n\n  const tipoNormalizado = String(tipo || '')\n    .trim()\n    .toLowerCase();\n\n  const tipoKommo = mapaTipos[tipoNormalizado];\n\n  if (!tipoKommo) {\n    throw new Error(`Tipo de campo não suportado: \"${tipo}\".`);\n  }\n\n  return tipoKommo;\n}\n\n/**\n * Converte cada campo personalizado para o formato esperado pela Kommo.\n */\nfunction montarCampo(campo, indice, entidade) {\n  const name = String(campo?.name || '').trim();\n\n  if (!name) {\n    throw new Error(\n      `O campo ${indice + 1} da entidade \"${entidade}\" não possui name.`\n    );\n  }\n\n  const type = normalizarTipo(campo?.type);\n\n  const campoFormatado = {\n    name,\n    type,\n    sort: indice + 1\n  };\n\n  /**\n   * Campos de seleção precisam possuir enums.\n   * O código aceita options ou enums na entrada.\n   */\n  if (['select', 'multiselect', 'radiobutton'].includes(type)) {\n    const opcoes = campo.options || campo.enums || [];\n\n    if (!Array.isArray(opcoes) || opcoes.length === 0) {\n      throw new Error(\n        `O campo \"${name}\" da entidade \"${entidade}\" precisa possuir opções.`\n      );\n    }\n\n    campoFormatado.enums = opcoes.map((opcao, opcaoIndex) => {\n      /**\n       * Aceita tanto:\n       * \"Desenvolvimento Web\"\n       *\n       * quanto:\n       * { \"value\": \"Desenvolvimento Web\" }\n       */\n      const value =\n        typeof opcao === 'object'\n          ? String(opcao.value || '').trim()\n          : String(opcao || '').trim();\n\n      if (!value) {\n        throw new Error(\n          `A opção ${opcaoIndex + 1} do campo \"${name}\" está vazia.`\n        );\n      }\n\n      return {\n        value,\n        sort: opcaoIndex + 1\n      };\n    });\n  }\n\n  return campoFormatado;\n}\n\n/**\n * Localiza a estrutura principal independentemente\n * do nome utilizado na primeira propriedade.\n *\n * Exemplo recebido:\n * {\n *   \"Estrutura_de_teste\": {\n *      ...\n *   }\n * }\n */\nfunction obterEstrutura(json) {\n  if (!json || typeof json !== 'object') {\n    throw new Error('O item recebido não possui um JSON válido.');\n  }\n\n  const chaves = Object.keys(json);\n\n  if (chaves.length === 1) {\n    const possivelEstrutura = json[chaves[0]];\n\n    if (\n      possivelEstrutura &&\n      typeof possivelEstrutura === 'object' &&\n      !Array.isArray(possivelEstrutura)\n    ) {\n      return possivelEstrutura;\n    }\n  }\n\n  return json;\n}\n\n/**\n * Relação entre as propriedades da entrada\n * e as entidades aceitas pela API da Kommo.\n */\nconst configuracoes = [\n  {\n    propriedade: 'campos_personalizados_lead',\n    entity_type: 'leads'\n  },\n  {\n    propriedade: 'campos_personalizados_contato',\n    entity_type: 'contacts'\n  },\n  {\n    propriedade: 'campos_personalizados_empresa',\n    entity_type: 'companies'\n  }\n];\n\nconst resultado = [];\n\nfor (const item of items) {\n  const estrutura = obterEstrutura(item.json);\n\n  for (const config of configuracoes) {\n    const campos = estrutura[config.propriedade];\n\n    /**\n     * Ignora entidades que não possuam campos personalizados.\n     */\n    if (!Array.isArray(campos) || campos.length === 0) {\n      continue;\n    }\n\n    const body = campos.map((campo, indice) =>\n      montarCampo(campo, indice, config.entity_type)\n    );\n\n    resultado.push({\n      json: {\n        entity_type: config.entity_type,\n        body\n      }\n    });\n  }\n}\n\nif (resultado.length === 0) {\n  throw new Error('Nenhum campo personalizado foi encontrado na entrada.');\n}\n\nreturn resultado;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1312,
+        0
+      ],
+      "id": "2ff3f586-132a-4181-9797-f3bcfecb0375",
+      "name": "gera_body_fields"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\n\nreturn items.map((item, funilIndex) => {\n  const funil = item.json;\n\n  const nomeFunil = String(funil.nome || '').trim();\n  const etapas = Array.isArray(funil.etapas) ? funil.etapas : [];\n\n  if (!nomeFunil) {\n    throw new Error(`O funil do item ${funilIndex + 1} não possui nome.`);\n  }\n\n  if (etapas.length === 0) {\n    throw new Error(`O funil \"${nomeFunil}\" não possui etapas.`);\n  }\n\n  const statuses = etapas.map((etapa, etapaIndex) => {\n    const nomeEtapa = String(etapa.nome || '').trim();\n    const descricaoEtapa = String(etapa.descricao || '').trim();\n\n    if (!nomeEtapa) {\n      throw new Error(\n        `A etapa ${etapaIndex + 1} do funil \"${nomeFunil}\" não possui nome.`\n      );\n    }\n\n    return {\n      name: nomeEtapa,\n      sort: etapaIndex + 1,\n      descriptions: {\n        level: \"newbie\",\n        description: descricaoEtapa\n      }\n    };\n  });\n\n  return {\n    json: {\n      name: nomeFunil,\n      sort: funilIndex + 1,\n\n      // Apenas o primeiro funil será definido como principal.\n      // Caso nenhum deva ser principal, altere para false.\n      is_main: funilIndex === 0,\n\n      is_unsorted_on: false,\n      _embedded: {\n        statuses\n      }\n    }\n  };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1312,
+        -272
+      ],
+      "id": "df9d3dae-4f7c-4443-95b5-d8147396f451",
+      "name": "gera_body_pipeline"
+    },
+    {
+      "parameters": {
+        "content": "## Defina o dominio do email dos usuarios.\n# Obrigatorio",
+        "height": 400
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        288,
+        -208
+      ],
+      "typeVersion": 1,
+      "id": "e2fc3ded-acfd-4d01-a8b1-c151f769a0de",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## Estrutura inicial de teste, ou adicione sua propria estrutura em formato de objeto json",
+        "height": 400,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        752,
+        -224
+      ],
+      "typeVersion": 1,
+      "id": "6c79c58f-1ff3-48d1-a004-98929cb5de23",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "0f50337f-7b87-4368-9ede-3a0d88e415fc",
+              "leftValue": "={{ $json.email_domain }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        560,
+        16
+      ],
+      "id": "0fbf3297-829d-4016-90dc-f5e8ce00a9ea",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "errorMessage": "Defina o dominio a ser usado nos emails dos usuarios"
+      },
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        576,
+        256
+      ],
+      "id": "92dc95f5-92bc-494d-a329-bc8540e5f709",
+      "name": "Stop and Error"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Call 'kommo_credenciais'",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "preencha o dominio do email a ser usado.": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call 'kommo_credenciais'": {
+      "main": [
+        [
+          {
+            "node": "preencha o dominio do email a ser usado.",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "json_de_estrutura_inicial": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "gera_body_fields",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "gera_body_users",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "gera_body_pipeline",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "cria_campos_personalizados": {
+      "main": [
+        []
+      ]
+    },
+    "gera_body_users": {
+      "main": [
+        [
+          {
+            "node": "cria_usuarios",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "gera_body_fields": {
+      "main": [
+        [
+          {
+            "node": "cria_campos_personalizados",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "gera_body_pipeline": {
+      "main": [
+        [
+          {
+            "node": "Cria os funis e etapas",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "json_de_estrutura_inicial",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Stop and Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "03394e87-dd73-429b-8e3e-c9ca84a4488b",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "8fb7f33e3d6fc86f0ee8d1fa5fcd9b446aecff8feb445d2ad470d015adeac75a"
+  },
+  "id": "LWzWZc7ipJRzLHiu",
+  "tags": []
+}

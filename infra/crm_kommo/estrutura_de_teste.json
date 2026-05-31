@@ -1,4 +1,4 @@
-{
+﻿{
   "funis": [
     {
       "nome": "Funil de Qualificação",
@@ -43,14 +43,6 @@
         {
           "nome": "Negociação",
           "descricao": "Clientes potenciais que estão em processo de negociação, discutindo termos e condições da proposta."
-        },
-        {
-          "nome": "Fechado - Ganhou",
-          "descricao": "Clientes potenciais que aceitaram a proposta e se tornaram clientes efetivos."
-        },
-        {
-          "nome": "Fechado - Perdido",
-          "descricao": "Clientes potenciais que rejeitaram a proposta ou decidiram não seguir adiante com a compra."
         }
       ]
     }
@@ -94,61 +86,61 @@
       "email": "alice.silva@",
       "papel": "SDR",
       "nome": "Alice Silva",
-      "senha": "Teste123"
+      "senha": "Teste1@23"
     },
     {
       "email": "bruno.martins@",
       "papel": "SDR",
       "nome": "Bruno Martins",
-      "senha": "Demo456A"
+      "senha": "Demo456@A"
     },
     {
       "email": "carla.nogueira@",
       "papel": "SDR",
       "nome": "Carla Nogueira",
-      "senha": "Senha789B"
+      "senha": "Senha78@9B"
     },
     {
       "email": "diego.almeida@",
       "papel": "SDR",
       "nome": "Diego Almeida",
-      "senha": "User321C"
+      "senha": "User321@C"
     },
     {
       "email": "eduarda.lima@",
       "papel": "Closer",
       "nome": "Eduarda Lima",
-      "senha": "Venda654D"
+      "senha": "Venda654@D"
     },
     {
       "email": "felipe.rocha@",
       "papel": "Closer",
       "nome": "Felipe Rocha",
-      "senha": "Closer987E"
+      "senha": "Closer98@7E"
     },
     {
       "email": "gabriela.torres@",
       "papel": "Closer",
       "nome": "Gabriela Torres",
-      "senha": "Kommo246F"
+      "senha": "Kommo24@6F"
     },
     {
       "email": "henrique.costa@",
       "papel": "Closer",
       "nome": "Henrique Costa",
-      "senha": "Teste135G"
+      "senha": "Teste13@5G"
     },
     {
       "email": "isabela.freitas@",
       "papel": "Closer",
       "nome": "Isabela Freitas",
-      "senha": "Funil864H"
+      "senha": "Funil8@64H"
     },
     {
       "email": "joao.pereira@",
       "papel": "Closer",
       "nome": "João Pereira",
-      "senha": "Lead579I"
+      "senha": "Lead5@79I"
     }
   ]
 }

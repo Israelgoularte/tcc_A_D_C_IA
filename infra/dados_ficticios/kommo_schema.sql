@@ -114,7 +114,7 @@ CREATE TABLE insights (
 
 CREATE UNIQUE INDEX ux_usuarios_id_externo_not_null ON usuarios(id_externo) WHERE id_externo IS NOT NULL;
 CREATE UNIQUE INDEX ux_funis_id_externo_not_null ON funis(id_externo) WHERE id_externo IS NOT NULL;
-CREATE UNIQUE INDEX ux_etapas_id_externo_not_null ON etapas(id_externo) WHERE id_externo IS NOT NULL;
+CREATE INDEX idx_etapas_id_externo ON etapas(id_externo);
 CREATE UNIQUE INDEX ux_empresas_id_externo_not_null ON empresas(id_externo) WHERE id_externo IS NOT NULL;
 CREATE UNIQUE INDEX ux_contatos_id_externo_not_null ON contatos(id_externo) WHERE id_externo IS NOT NULL;
 CREATE UNIQUE INDEX ux_leads_id_externo_not_null ON leads(id_externo) WHERE id_externo IS NOT NULL;
