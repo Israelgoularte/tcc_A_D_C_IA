@@ -1,0 +1,77 @@
+{
+  "name": "kommo_credenciais",
+  "nodes": [
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "10069053-ca38-4b9b-b1b5-c63e6953bc1d",
+              "name": "kommo_subdomain",
+              "value": "raelflow2",
+              "type": "string"
+            },
+            {
+              "id": "359e5f03-26ec-4f3f-9298-1f33b5ce8933",
+              "name": "token",
+              "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6ImVjNzVmOGJlZDllZTA3YmZmNmNkOGY0NjA0MDViNjU3NmY4MzYzMDUxNjNmMjlmMzVmOWQ5NmE0ZmZhMzVmMmY2OGNmYzM5MWMzMTA1N2I2In0.eyJhdWQiOiI2ZTdmNmFjYy1iMTM4LTRhN2QtYjhiZS0xMzM2ODIxYmNkYjgiLCJqdGkiOiJlYzc1ZjhiZWQ5ZWUwN2JmZjZjZDhmNDYwNDA1YjY1NzZmODM2MzA1MTYzZjI5ZjM1ZjlkOTZhNGZmYTM1ZjJmNjhjZmMzOTFjMzEwNTdiNiIsImlhdCI6MTc4MDI2MjI3NywibmJmIjoxNzgwMjYyMjc3LCJleHAiOjE3OTM0MDQ4MDAsInN1YiI6IjEwNTA2OTAzIiwiZ3JhbnRfdHlwZSI6IiIsImFjY291bnRfaWQiOjM2NTU4OTA3LCJiYXNlX2RvbWFpbiI6ImtvbW1vLmNvbSIsInZlcnNpb24iOjIsInNjb3BlcyI6WyJwdXNoX25vdGlmaWNhdGlvbnMiLCJmaWxlcyIsImNybSIsImZpbGVzX2RlbGV0ZSIsIm5vdGlmaWNhdGlvbnMiXSwiaGFzaF91dWlkIjoiODlmMjc0NDYtOWNkYS00NGYxLWFiOTYtNWFhNDcxYjgzYWQzIiwiYXBpX2RvbWFpbiI6ImFwaS1jLmtvbW1vLmNvbSJ9.oGjbJHT76wI0urI8BejhhsNMoz-IjJaE5ZUKYgd-RtIESZTMdlZ6NQx70N5MRtAK7BVhw2h_wbJyOPlqgKtrdvc-ErKXdJ5-uyW__rhk0KzmZKis_KIi-yJref4998yVOKmmLhIfR1zjz9xNL0V4D8H-A3xYF4QCWeB7dacTcBKokNje7znZ92jXHTO_bnZYNDwzFpyqCcdaZzoq4UcmHUQcX0uQoHh96KE9W8pQDsNvgAA2l0bk3VMyeh-TSq5ZuKhwP1O9hoPTk2Vn_AUjTC_RBOFDzE64BrloM4965tRGPzFprw1hmbTeXGQK3q_4xDGEcPIQ12fLww8Ocj63kg",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        80,
+        0
+      ],
+      "id": "92868b35-885c-42b7-b439-0ff33a2677f0",
+      "name": "acesso_kommo"
+    },
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -128,
+        0
+      ],
+      "id": "f55ba875-247b-4d78-8091-12c6a3b57b4d",
+      "name": "When Executed by Another Workflow"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "acesso_kommo": {
+      "main": [
+        []
+      ]
+    },
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "acesso_kommo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "0469ce19-af00-43a7-ae6b-e69172af920e",
+  "meta": {
+    "instanceId": "8fb7f33e3d6fc86f0ee8d1fa5fcd9b446aecff8feb445d2ad470d015adeac75a"
+  },
+  "id": "U2zPJpKifuM8xMJS",
+  "tags": []
+}
