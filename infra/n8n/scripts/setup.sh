@@ -64,6 +64,10 @@ prompt_secret_or_generate() {
   fi
 }
 
+json_escape() {
+  printf '%s' "$1" | sed -e 's/\\/\\\\/g' -e 's/"/\\"/g'
+}
+
 confirm() {
   local label="$1"
   local default_value="${2:-n}"
@@ -204,6 +208,7 @@ POSTGRES_IMAGE_TAG=${POSTGRES_IMAGE_TAG}
 POSTGRES_DB=${POSTGRES_DB}
 POSTGRES_USER=${POSTGRES_USER}
 POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+POSTGRES_CREDENTIAL_NAME=${POSTGRES_CREDENTIAL_NAME}
 
 N8N_IMAGE_TAG=${N8N_IMAGE_TAG}
 N8N_DOMAIN=${N8N_DOMAIN}
@@ -223,6 +228,64 @@ N8N_ENCRYPTION_KEY=${N8N_ENCRYPTION_KEY}
 EOF
 
   chmod 600 "${env_file}"
+}
+
+wait_for_n8n() {
+  echo "Aguardando o n8n ficar disponivel para importar credenciais..."
+
+  for _ in $(seq 1 30); do
+    if "${DOCKER_CMD[@]}" compose exec -T n8n node -e "fetch('http://127.0.0.1:5678/healthz').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))" >/dev/null 2>&1; then
+      return
+    fi
+
+    sleep 5
+  done
+
+  fail "n8n nao ficou disponivel a tempo. Verifique os logs com: ${DOCKER_CMD[*]} compose logs -f n8n"
+}
+
+import_postgres_credential() {
+  local container_id
+  local tmp_file
+  local container_file="/tmp/n8n-postgres-credential.json"
+
+  if ! confirm "Deseja cadastrar automaticamente a credencial PostgreSQL dentro do n8n?" "s"; then
+    echo "Credencial PostgreSQL nao importada. Sera necessario cadastrar manualmente no n8n."
+    return
+  fi
+
+  wait_for_n8n
+
+  container_id="$("${DOCKER_CMD[@]}" compose ps -q n8n)"
+  [[ -n "${container_id}" ]] || fail "container do n8n nao encontrado."
+
+  tmp_file="$(mktemp)"
+  chmod 600 "${tmp_file}"
+
+  cat > "${tmp_file}" <<EOF
+[
+  {
+    "name": "$(json_escape "${POSTGRES_CREDENTIAL_NAME}")",
+    "type": "postgres",
+    "data": {
+      "host": "postgres",
+      "port": 5432,
+      "database": "$(json_escape "${POSTGRES_DB}")",
+      "user": "$(json_escape "${POSTGRES_USER}")",
+      "password": "$(json_escape "${POSTGRES_PASSWORD}")",
+      "ssl": "disable"
+    }
+  }
+]
+EOF
+
+  "${DOCKER_CMD[@]}" cp "${tmp_file}" "${container_id}:${container_file}" >/dev/null
+  rm -f "${tmp_file}"
+
+  "${DOCKER_CMD[@]}" compose exec -T n8n n8n import:credentials --input="${container_file}"
+  "${DOCKER_CMD[@]}" compose exec -T n8n rm -f "${container_file}" >/dev/null 2>&1 || true
+
+  echo "Credencial PostgreSQL importada no n8n com o nome: ${POSTGRES_CREDENTIAL_NAME}"
 }
 
 print_intro
@@ -252,6 +315,7 @@ POSTGRES_IMAGE_TAG="$(prompt_default "Tag da imagem PostgreSQL" "16-alpine")"
 POSTGRES_DB="$(prompt_default "Nome do banco PostgreSQL" "n8n")"
 POSTGRES_USER="$(prompt_default "Usuario PostgreSQL" "n8n")"
 POSTGRES_PASSWORD="$(prompt_secret_or_generate "Senha PostgreSQL")"
+POSTGRES_CREDENTIAL_NAME="$(prompt_default "Nome da credencial PostgreSQL no n8n" "Postgres n8n")"
 
 N8N_IMAGE_TAG="$(prompt_default "Versao fixa do n8n" "2.22.5")"
 N8N_DOMAIN="$(prompt_required "Dominio do n8n, exemplo n8n.seu-dominio.com")"
@@ -273,6 +337,7 @@ echo "- Dominio n8n: ${N8N_PROTOCOL}://${N8N_DOMAIN}"
 echo "- Versao n8n: ${N8N_IMAGE_TAG}"
 echo "- Banco PostgreSQL: ${POSTGRES_DB}"
 echo "- Usuario PostgreSQL: ${POSTGRES_USER}"
+echo "- Credencial PostgreSQL no n8n: ${POSTGRES_CREDENTIAL_NAME}"
 echo "- Rede Traefik: ${TRAEFIK_NETWORK}"
 echo
 
@@ -300,10 +365,13 @@ if confirm "Deseja subir n8n e PostgreSQL agora?" "s"; then
   echo
   "${DOCKER_CMD[@]}" compose ps
   echo
+  import_postgres_credential
+  echo
   echo "Instalacao concluida. Acesse: ${N8N_PROTOCOL}://${N8N_DOMAIN}"
 else
   echo "Setup concluido. Para subir depois, execute:"
   echo "${DOCKER_CMD[*]} compose up -d"
+  echo "Depois de subir os containers, cadastre a credencial PostgreSQL no n8n manualmente ou rode o setup novamente."
 fi
 
 echo

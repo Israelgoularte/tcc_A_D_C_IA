@@ -48,6 +48,72 @@ O setup:
 - cria o `.env`
 - verifica a rede do Traefik
 - pergunta se deve subir os containers
+- importa automaticamente uma credencial PostgreSQL no n8n para os workflows acessarem o banco
+
+### Como responder as perguntas do setup
+
+Quando aparecer uma pergunta com valor entre colchetes, esse e o valor padrao. Para aceitar o padrao, pressione `Enter`.
+
+Exemplo:
+
+```text
+Tag da imagem PostgreSQL [16-alpine]:
+```
+
+Nesse caso, pressione `Enter` para usar `16-alpine`.
+
+| Pergunta | O que informar | Recomendado |
+| --- | --- | --- |
+| `Tag da imagem PostgreSQL [16-alpine]` | Versao da imagem Docker do PostgreSQL. | Pressione `Enter`. |
+| `Nome do banco PostgreSQL [n8n]` | Nome do banco usado pelo n8n. | Pressione `Enter`. |
+| `Usuario PostgreSQL [n8n]` | Usuario do banco PostgreSQL. | Pressione `Enter`. |
+| `Senha PostgreSQL` | Senha do banco. Se pressionar `Enter`, o setup gera uma senha automaticamente. | Pressione `Enter` ou informe uma senha forte. |
+| `Nome da credencial PostgreSQL no n8n [Postgres n8n]` | Nome da credencial criada dentro do n8n para uso nos workflows. | Pressione `Enter`. |
+| `Versao fixa do n8n [2.22.5]` | Versao da imagem Docker do n8n. | Pressione `Enter`. |
+| `Dominio do n8n` | Dominio publico que apontara para o n8n. | Exemplo: `n8n.seu-dominio.com`. |
+| `Protocolo publico [https]` | Protocolo usado no acesso externo. | Pressione `Enter` se usar Traefik com HTTPS. |
+| `Timezone [America/Sao_Paulo]` | Fuso horario da instancia. | Pressione `Enter`. |
+| `Usar cookie seguro no n8n [true]` | Mantem cookies seguros para HTTPS. | Pressione `Enter`. |
+| `Habilitar metricas do n8n [true]` | Habilita endpoint de metricas. | Pressione `Enter`. |
+| `Habilitar diagnosticos do n8n [false]` | Envio de diagnosticos/telemetria. | Pressione `Enter`. |
+| `Habilitar personalizacao do n8n [false]` | Personalizacao/telemetria de experiencia. | Pressione `Enter`. |
+| `Rede externa do Traefik [traefik_proxy]` | Nome da rede Docker usada pelo Traefik. | Pressione `Enter`, salvo se seu Traefik usa outro nome. |
+| `Cert resolver do Traefik [mytlschallenge]` | Nome do resolver TLS configurado no Traefik. | Use o nome configurado no seu Traefik. |
+
+Exemplo de preenchimento comum:
+
+```text
+Tag da imagem PostgreSQL [16-alpine]: Enter
+Nome do banco PostgreSQL [n8n]: Enter
+Usuario PostgreSQL [n8n]: Enter
+Senha PostgreSQL: Enter
+Nome da credencial PostgreSQL no n8n [Postgres n8n]: Enter
+Versao fixa do n8n [2.22.5]: Enter
+Dominio do n8n, exemplo n8n.seu-dominio.com: n8n.meudominio.com
+Protocolo publico [https]: Enter
+Timezone [America/Sao_Paulo]: Enter
+Usar cookie seguro no n8n [true]: Enter
+Habilitar metricas do n8n [true]: Enter
+Habilitar diagnosticos do n8n [false]: Enter
+Habilitar personalizacao do n8n [false]: Enter
+Rede externa do Traefik [traefik_proxy]: Enter
+Cert resolver do Traefik [mytlschallenge]: Enter
+```
+
+Ao final, o setup mostra um resumo e pergunta se pode criar o `.env`. Depois pergunta se deve criar a rede do Traefik, quando ela nao existir, e se deve subir os containers.
+
+Quando os containers sobem pelo setup, ele tambem pergunta se deve cadastrar automaticamente a credencial PostgreSQL dentro do n8n. Aceite essa etapa para evitar o cadastro manual da conexao nos workflows.
+
+### Limpeza para recomecar do zero
+
+Execute o script de limpeza:
+
+```bash
+chmod +x scripts/cleanup.sh
+bash scripts/cleanup.sh
+```
+
+Esse script remove containers, rede interna e volumes da stack, incluindo os dados do PostgreSQL e do n8n. Ele pede confirmacao digitando `LIMPAR` antes da remocao e tambem pergunta separadamente se deve remover `.env`, rede externa do Traefik e imagens Docker nao utilizadas.
 
 ### Instalacao manual
 
