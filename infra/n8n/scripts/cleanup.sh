@@ -56,7 +56,6 @@ Serao removidos:
 
 Opcionalmente, tambem pode remover:
 - arquivo .env
-- rede externa do Traefik
 - imagens Docker nao utilizadas
 
 Atencao: os dados removidos dos volumes nao serao recuperados.
@@ -65,12 +64,6 @@ EOF
 
 cd "${N8N_DIR}"
 resolve_docker_cmd
-
-TRAEFIK_NETWORK="traefik_proxy"
-if [[ -f "${ENV_FILE}" ]]; then
-  TRAEFIK_NETWORK="$(grep -E '^TRAEFIK_NETWORK=' "${ENV_FILE}" | tail -n 1 | cut -d '=' -f 2- || true)"
-  TRAEFIK_NETWORK="${TRAEFIK_NETWORK:-traefik_proxy}"
-fi
 
 echo
 echo "Diretorio da stack: ${N8N_DIR}"
@@ -88,11 +81,6 @@ echo "Containers, rede interna e volumes da stack foram removidos."
 if [[ -f "${ENV_FILE}" ]] && confirm "Deseja remover o arquivo .env?" "n"; then
   rm -f "${ENV_FILE}"
   echo ".env removido."
-fi
-
-if confirm "Deseja remover a rede externa do Traefik (${TRAEFIK_NETWORK})? Use apenas se ela nao for compartilhada com outros servicos." "n"; then
-  "${DOCKER_CMD[@]}" network rm "${TRAEFIK_NETWORK}" >/dev/null 2>&1 || true
-  echo "Rede ${TRAEFIK_NETWORK} removida quando existente."
 fi
 
 if confirm "Deseja remover imagens Docker nao utilizadas com docker image prune -a?" "n"; then

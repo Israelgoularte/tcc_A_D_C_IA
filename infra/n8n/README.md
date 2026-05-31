@@ -1,6 +1,6 @@
 # n8n com PostgreSQL
 
-Infraestrutura Docker para executar uma instancia do n8n com banco PostgreSQL persistente e roteamento via Traefik.
+Infraestrutura Docker para executar uma instancia do n8n com banco PostgreSQL persistente e Traefik para HTTPS.
 
 ## Requisitos no Ubuntu
 
@@ -8,8 +8,8 @@ Infraestrutura Docker para executar uma instancia do n8n com banco PostgreSQL pe
 - Git instalado
 - Docker instalado
 - Docker Compose instalado
-- Traefik ja configurado na maquina ou servidor
-- Rede externa do Traefik disponivel
+- DNS do dominio apontando para o IP publico do servidor
+- Portas `80` e `443` liberadas no firewall da VPS
 
 ## Instalacao
 
@@ -46,7 +46,7 @@ O setup:
 - solicita os dados necessarios no terminal
 - gera a `N8N_ENCRYPTION_KEY`
 - cria o `.env`
-- verifica a rede do Traefik
+- cria e sobe o Traefik junto com n8n e PostgreSQL
 - pergunta se deve subir os containers
 - importa automaticamente uma credencial PostgreSQL no n8n para os workflows acessarem o banco
 
@@ -68,17 +68,21 @@ Nesse caso, pressione `Enter` para usar `16-alpine`.
 | `Nome do banco PostgreSQL [n8n]` | Nome do banco usado pelo n8n. | Pressione `Enter`. |
 | `Usuario PostgreSQL [n8n]` | Usuario do banco PostgreSQL. | Pressione `Enter`. |
 | `Senha PostgreSQL` | Senha do banco. Se pressionar `Enter`, o setup gera uma senha automaticamente. | Pressione `Enter` ou informe uma senha forte. |
+| `ID da credencial PostgreSQL no n8n [75T88sJeS9BfaHBO]` | ID estavel usado pelos workflows para referenciar a credencial. | Pressione `Enter`. |
 | `Nome da credencial PostgreSQL no n8n [Postgres n8n]` | Nome da credencial criada dentro do n8n para uso nos workflows. | Pressione `Enter`. |
+| `Tag da imagem Traefik [latest]` | Versao da imagem Docker do Traefik. | Pressione `Enter`. |
+| `E-mail para emissao do certificado SSL pelo Traefik` | E-mail usado pelo Let's Encrypt. | Informe um e-mail valido. |
+| `Cert resolver do Traefik [mytlschallenge]` | Nome interno do resolver TLS usado no Traefik. | Pressione `Enter`. |
 | `Versao fixa do n8n [2.22.5]` | Versao da imagem Docker do n8n. | Pressione `Enter`. |
+| `Porta publica direta do n8n para diagnostico [5678]` | Porta direta `http://IP:5678`, util para diagnostico. | Pressione `Enter`. |
 | `Dominio do n8n` | Dominio publico que apontara para o n8n. | Exemplo: `n8n.seu-dominio.com`. |
 | `Protocolo publico [https]` | Protocolo usado no acesso externo. | Pressione `Enter` se usar Traefik com HTTPS. |
 | `Timezone [America/Sao_Paulo]` | Fuso horario da instancia. | Pressione `Enter`. |
+| `Quantidade de proxies reversos antes do n8n [1]` | Necessario para o n8n reconhecer corretamente o proxy Traefik. | Pressione `Enter`. |
 | `Usar cookie seguro no n8n [true]` | Mantem cookies seguros para HTTPS. | Pressione `Enter`. |
 | `Habilitar metricas do n8n [true]` | Habilita endpoint de metricas. | Pressione `Enter`. |
 | `Habilitar diagnosticos do n8n [false]` | Envio de diagnosticos/telemetria. | Pressione `Enter`. |
 | `Habilitar personalizacao do n8n [false]` | Personalizacao/telemetria de experiencia. | Pressione `Enter`. |
-| `Rede externa do Traefik [traefik_proxy]` | Nome da rede Docker usada pelo Traefik. | Pressione `Enter`, salvo se seu Traefik usa outro nome. |
-| `Cert resolver do Traefik [mytlschallenge]` | Nome do resolver TLS configurado no Traefik. | Use o nome configurado no seu Traefik. |
 
 Exemplo de preenchimento comum:
 
@@ -87,22 +91,33 @@ Tag da imagem PostgreSQL [16-alpine]: Enter
 Nome do banco PostgreSQL [n8n]: Enter
 Usuario PostgreSQL [n8n]: Enter
 Senha PostgreSQL: Enter
+ID da credencial PostgreSQL no n8n [75T88sJeS9BfaHBO]: Enter
 Nome da credencial PostgreSQL no n8n [Postgres n8n]: Enter
+Tag da imagem Traefik [latest]: Enter
+E-mail para emissao do certificado SSL pelo Traefik: seu-email@dominio.com
+Cert resolver do Traefik [mytlschallenge]: Enter
 Versao fixa do n8n [2.22.5]: Enter
+Porta publica direta do n8n para diagnostico [5678]: Enter
 Dominio do n8n, exemplo n8n.seu-dominio.com: n8n.meudominio.com
 Protocolo publico [https]: Enter
 Timezone [America/Sao_Paulo]: Enter
+Quantidade de proxies reversos antes do n8n [1]: Enter
 Usar cookie seguro no n8n [true]: Enter
 Habilitar metricas do n8n [true]: Enter
 Habilitar diagnosticos do n8n [false]: Enter
 Habilitar personalizacao do n8n [false]: Enter
-Rede externa do Traefik [traefik_proxy]: Enter
-Cert resolver do Traefik [mytlschallenge]: Enter
 ```
 
-Ao final, o setup mostra um resumo e pergunta se pode criar o `.env`. Depois pergunta se deve criar a rede do Traefik, quando ela nao existir, e se deve subir os containers.
+Ao final, o setup mostra um resumo e pergunta se pode criar o `.env`. Depois pergunta se deve subir os containers.
 
 Quando os containers sobem pelo setup, ele tambem pergunta se deve cadastrar automaticamente a credencial PostgreSQL dentro do n8n. Aceite essa etapa para evitar o cadastro manual da conexao nos workflows.
+
+Se a importacao da credencial falhar ou se os containers ja estiverem rodando, rode:
+
+```bash
+chmod +x scripts/import-postgres-credential.sh
+bash scripts/import-postgres-credential.sh
+```
 
 ### Limpeza para recomecar do zero
 
@@ -113,7 +128,7 @@ chmod +x scripts/cleanup.sh
 bash scripts/cleanup.sh
 ```
 
-Esse script remove containers, rede interna e volumes da stack, incluindo os dados do PostgreSQL e do n8n. Ele pede confirmacao digitando `LIMPAR` antes da remocao e tambem pergunta separadamente se deve remover `.env`, rede externa do Traefik e imagens Docker nao utilizadas.
+Esse script remove containers, redes internas e volumes da stack, incluindo os dados do PostgreSQL, n8n e Traefik. Ele pede confirmacao digitando `LIMPAR` antes da remocao e tambem pergunta separadamente se deve remover `.env` e imagens Docker nao utilizadas.
 
 ### Instalacao manual
 
@@ -140,18 +155,11 @@ Valores minimos que devem ser ajustados:
 
 ```env
 POSTGRES_PASSWORD=troque_por_uma_senha_forte
+SSL_EMAIL=admin@seudominio.com
 N8N_DOMAIN=n8n.seu-dominio.com
 N8N_HOST=n8n.seu-dominio.com
 WEBHOOK_URL=https://n8n.seu-dominio.com/
 ```
-
-Garanta que a rede externa do Traefik exista:
-
-```bash
-docker network create traefik_proxy
-```
-
-Se a rede ja existir, o Docker retornara erro informando que ela ja existe. Nesse caso, pode seguir normalmente.
 
 Suba os containers:
 
@@ -175,6 +183,24 @@ Exemplo:
 ```text
 https://n8n.seu-dominio.com
 ```
+
+Esta stack cria um container Traefik junto com o n8n e publica as portas `80` e `443`. Ela tambem publica a porta `5678` diretamente para diagnostico.
+
+Se o navegador mostrar timeout, valide no servidor:
+
+```bash
+docker ps
+sudo ss -tulpn | grep -E ':80|:443'
+curl -I http://127.0.0.1:5678
+```
+
+Pontos que precisam estar corretos:
+
+- o DNS do dominio deve apontar para o IP publico do servidor
+- as portas `80` e `443` devem estar liberadas no firewall da VPS
+- o Traefik deve estar escutando nas portas `80` e `443`
+- nenhum outro servico pode estar usando as portas `80` e `443`
+- o e-mail `SSL_EMAIL` precisa ser valido para emissao do certificado Let's Encrypt
 
 ## Versoes fixadas
 

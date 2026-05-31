@@ -208,21 +208,26 @@ POSTGRES_IMAGE_TAG=${POSTGRES_IMAGE_TAG}
 POSTGRES_DB=${POSTGRES_DB}
 POSTGRES_USER=${POSTGRES_USER}
 POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+POSTGRES_CREDENTIAL_ID=${POSTGRES_CREDENTIAL_ID}
 POSTGRES_CREDENTIAL_NAME=${POSTGRES_CREDENTIAL_NAME}
 
+TRAEFIK_IMAGE_TAG=${TRAEFIK_IMAGE_TAG}
+TRAEFIK_NETWORK=traefik_proxy
+SSL_EMAIL=${SSL_EMAIL}
+TRAEFIK_CERT_RESOLVER=${TRAEFIK_CERT_RESOLVER}
+
 N8N_IMAGE_TAG=${N8N_IMAGE_TAG}
+N8N_PUBLIC_PORT=${N8N_PUBLIC_PORT}
 N8N_DOMAIN=${N8N_DOMAIN}
 N8N_HOST=${N8N_DOMAIN}
 N8N_PROTOCOL=${N8N_PROTOCOL}
 WEBHOOK_URL=${N8N_PROTOCOL}://${N8N_DOMAIN}/
 GENERIC_TIMEZONE=${GENERIC_TIMEZONE}
+N8N_PROXY_HOPS=${N8N_PROXY_HOPS}
 N8N_SECURE_COOKIE=${N8N_SECURE_COOKIE}
 N8N_METRICS=${N8N_METRICS}
 N8N_DIAGNOSTICS_ENABLED=${N8N_DIAGNOSTICS_ENABLED}
 N8N_PERSONALIZATION_ENABLED=${N8N_PERSONALIZATION_ENABLED}
-
-TRAEFIK_NETWORK=${TRAEFIK_NETWORK}
-TRAEFIK_CERT_RESOLVER=${TRAEFIK_CERT_RESOLVER}
 
 N8N_ENCRYPTION_KEY=${N8N_ENCRYPTION_KEY}
 EOF
@@ -245,7 +250,6 @@ wait_for_n8n() {
 }
 
 import_postgres_credential() {
-  local container_id
   local tmp_file
   local container_file="/tmp/n8n-postgres-credential.json"
 
@@ -256,9 +260,6 @@ import_postgres_credential() {
 
   wait_for_n8n
 
-  container_id="$("${DOCKER_CMD[@]}" compose ps -q n8n)"
-  [[ -n "${container_id}" ]] || fail "container do n8n nao encontrado."
-
   tmp_file="$(mktemp)"
   chmod 600 "${tmp_file}"
 
@@ -266,6 +267,7 @@ import_postgres_credential() {
 [
   {
     "name": "$(json_escape "${POSTGRES_CREDENTIAL_NAME}")",
+    "id": "$(json_escape "${POSTGRES_CREDENTIAL_ID}")",
     "type": "postgres",
     "data": {
       "host": "postgres",
@@ -273,17 +275,15 @@ import_postgres_credential() {
       "database": "$(json_escape "${POSTGRES_DB}")",
       "user": "$(json_escape "${POSTGRES_USER}")",
       "password": "$(json_escape "${POSTGRES_PASSWORD}")",
-      "ssl": "disable"
+      "ssl": "disable",
+      "schema": "public"
     }
   }
 ]
 EOF
 
-  "${DOCKER_CMD[@]}" cp "${tmp_file}" "${container_id}:${container_file}" >/dev/null
+  "${DOCKER_CMD[@]}" compose exec -T n8n sh -lc "cat > '${container_file}' && n8n import:credentials --input='${container_file}' && rm -f '${container_file}'" < "${tmp_file}"
   rm -f "${tmp_file}"
-
-  "${DOCKER_CMD[@]}" compose exec -T n8n n8n import:credentials --input="${container_file}"
-  "${DOCKER_CMD[@]}" compose exec -T n8n rm -f "${container_file}" >/dev/null 2>&1 || true
 
   echo "Credencial PostgreSQL importada no n8n com o nome: ${POSTGRES_CREDENTIAL_NAME}"
 }
@@ -315,20 +315,24 @@ POSTGRES_IMAGE_TAG="$(prompt_default "Tag da imagem PostgreSQL" "16-alpine")"
 POSTGRES_DB="$(prompt_default "Nome do banco PostgreSQL" "n8n")"
 POSTGRES_USER="$(prompt_default "Usuario PostgreSQL" "n8n")"
 POSTGRES_PASSWORD="$(prompt_secret_or_generate "Senha PostgreSQL")"
+POSTGRES_CREDENTIAL_ID="$(prompt_default "ID da credencial PostgreSQL no n8n" "75T88sJeS9BfaHBO")"
 POSTGRES_CREDENTIAL_NAME="$(prompt_default "Nome da credencial PostgreSQL no n8n" "Postgres n8n")"
 
+TRAEFIK_IMAGE_TAG="$(prompt_default "Tag da imagem Traefik" "latest")"
+SSL_EMAIL="$(prompt_required "E-mail para emissao do certificado SSL pelo Traefik")"
+TRAEFIK_CERT_RESOLVER="$(prompt_default "Cert resolver do Traefik" "mytlschallenge")"
+
 N8N_IMAGE_TAG="$(prompt_default "Versao fixa do n8n" "2.22.5")"
+N8N_PUBLIC_PORT="$(prompt_default "Porta publica direta do n8n para diagnostico" "5678")"
 N8N_DOMAIN="$(prompt_required "Dominio do n8n, exemplo n8n.seu-dominio.com")"
 N8N_PROTOCOL="$(prompt_default "Protocolo publico" "https")"
 GENERIC_TIMEZONE="$(prompt_default "Timezone" "America/Sao_Paulo")"
+N8N_PROXY_HOPS="$(prompt_default "Quantidade de proxies reversos antes do n8n" "1")"
 N8N_SECURE_COOKIE="$(prompt_default "Usar cookie seguro no n8n" "true")"
 N8N_METRICS="$(prompt_default "Habilitar metricas do n8n" "true")"
 N8N_DIAGNOSTICS_ENABLED="$(prompt_default "Habilitar diagnosticos do n8n" "false")"
 N8N_PERSONALIZATION_ENABLED="$(prompt_default "Habilitar personalizacao do n8n" "false")"
 N8N_ENCRYPTION_KEY="$(openssl rand -hex 32)"
-
-TRAEFIK_NETWORK="$(prompt_default "Rede externa do Traefik" "traefik_proxy")"
-TRAEFIK_CERT_RESOLVER="$(prompt_default "Cert resolver do Traefik" "mytlschallenge")"
 
 echo
 echo "Resumo:"
@@ -337,8 +341,11 @@ echo "- Dominio n8n: ${N8N_PROTOCOL}://${N8N_DOMAIN}"
 echo "- Versao n8n: ${N8N_IMAGE_TAG}"
 echo "- Banco PostgreSQL: ${POSTGRES_DB}"
 echo "- Usuario PostgreSQL: ${POSTGRES_USER}"
+echo "- ID da credencial PostgreSQL no n8n: ${POSTGRES_CREDENTIAL_ID}"
 echo "- Credencial PostgreSQL no n8n: ${POSTGRES_CREDENTIAL_NAME}"
-echo "- Rede Traefik: ${TRAEFIK_NETWORK}"
+echo "- Traefik: sera criado nesta stack"
+echo "- E-mail SSL: ${SSL_EMAIL}"
+echo "- Porta direta para diagnostico: ${N8N_PUBLIC_PORT}"
 echo
 
 if ! confirm "Confirmar criacao do .env com esses dados?" "s"; then
@@ -348,17 +355,6 @@ fi
 
 write_env_file "${ENV_FILE}"
 echo ".env criado com permissao 600."
-
-if "${DOCKER_CMD[@]}" network inspect "${TRAEFIK_NETWORK}" >/dev/null 2>&1; then
-  echo "Rede ${TRAEFIK_NETWORK} ja existe."
-else
-  if confirm "Rede ${TRAEFIK_NETWORK} nao existe. Deseja cria-la agora?" "s"; then
-    "${DOCKER_CMD[@]}" network create "${TRAEFIK_NETWORK}" >/dev/null
-    echo "Rede ${TRAEFIK_NETWORK} criada."
-  else
-    echo "Rede nao criada. O docker compose falhara se o Traefik nao tiver essa rede."
-  fi
-fi
 
 if confirm "Deseja subir n8n e PostgreSQL agora?" "s"; then
   "${DOCKER_CMD[@]}" compose up -d
