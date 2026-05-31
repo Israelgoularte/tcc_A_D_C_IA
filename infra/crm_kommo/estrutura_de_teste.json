@@ -1,154 +1,154 @@
-﻿{
-    "funis": [
+{
+  "funis": [
+    {
+      "nome": "Funil de Qualificação",
+      "etapas": [
         {
-            "nome": "Funil de QualificaÃ§Ã£o",
-            "etapas": [
-                {
-                    "nome": "Novo Lead",
-                    "descricao": "Leads que foram recentemente adicionados ao sistema e ainda nÃ£o passaram por nenhuma qualificaÃ§Ã£o."
-                },
-                {
-                    "nome": "Contato Inicial",
-                    "descricao": "Leads que foram contatados pela primeira vez, seja por telefone, email ou outro meio de comunicaÃ§Ã£o."
-                },
-                {
-                    "nome": "QualificaÃ§Ã£o em Andamento",
-                    "descricao": "Leads que estÃ£o passando por um processo de qualificaÃ§Ã£o, onde estÃ£o sendo avaliados para determinar seu potencial como cliente."
-                },
-                {
-                    "nome": "Qualificado",
-                    "descricao": "Leads que foram considerados qualificados e tÃªm potencial para se tornarem clientes."
-                },
-                {
-                    "nome": "Desqualificado",
-                    "descricao": "Leads que foram considerados desqualificados e nÃ£o tÃªm potencial para se tornarem clientes."
-                }
-            ]
+          "nome": "Novo Lead",
+          "descricao": "Leads que foram recentemente adicionados ao sistema e ainda não passaram por nenhuma qualificação."
         },
         {
-            "nome": "Funil de Vendas",
-            "etapas": [
-                {
-                    "nome": "Novo Lead Qualificado",
-                    "descricao": "Leads que foram qualificados e estÃ£o prontos para serem abordados pela equipe de vendas."
-                },
-                {
-                    "nome": "Contato de Vendas",
-                    "descricao": "Leads que foram contatados pela equipe de vendas para discutir suas necessidades e apresentar soluÃ§Ãµes."
-                },
-                {
-                    "nome": "Proposta Enviada",
-                    "descricao": "Clientes potenciais que receberam uma proposta de venda, mas ainda nÃ£o responderam."
-                },
-                {
-                    "nome": "NegociaÃ§Ã£o",
-                    "descricao": "Clientes potenciais que estÃ£o em processo de negociaÃ§Ã£o, discutindo termos e condiÃ§Ãµes da proposta."
-                },
-                {
-                    "nome": "Fechado - Ganhou",
-                    "descricao": "Clientes potenciais que aceitaram a proposta e se tornaram clientes efetivos."
-                },
-                {
-                    "nome": "Fechado - Perdido",
-                    "descricao": "Clientes potenciais que rejeitaram a proposta ou decidiram nÃ£o seguir adiante com a compra."
-                }
-            ]
+          "nome": "Contato Inicial",
+          "descricao": "Leads que foram contatados pela primeira vez, seja por telefone, e-mail ou outro meio de comunicação."
+        },
+        {
+          "nome": "Qualificação em Andamento",
+          "descricao": "Leads que estão passando por um processo de qualificação, onde estão sendo avaliados para determinar seu potencial como cliente."
+        },
+        {
+          "nome": "Qualificado",
+          "descricao": "Leads que foram considerados qualificados e têm potencial para se tornarem clientes."
+        },
+        {
+          "nome": "Desqualificado",
+          "descricao": "Leads que foram considerados desqualificados e não têm potencial para se tornarem clientes."
         }
-    ],
-    "campos_personalizados_lead": [
+      ]
+    },
+    {
+      "nome": "Funil de Vendas",
+      "etapas": [
         {
-            "name": "ServiÃ§os",
-            "type": "select",
-            "options": [
-                "Desenvolvimento Web",
-                "Desenvolvimento Mobile",
-                "Desenvolvimento de API",
-                "Desenvolvimento de IntegraÃ§Ã£o",
-                "Consultoria em TI",
-                "Suporte TÃ©cnico"
-            ]
+          "nome": "Novo Lead Qualificado",
+          "descricao": "Leads que foram qualificados e estão prontos para serem abordados pela equipe de vendas."
         },
         {
-            "name": "Data do Contrato",
-            "type": "date"
+          "nome": "Contato de Vendas",
+          "descricao": "Leads que foram contatados pela equipe de vendas para discutir suas necessidades e apresentar soluções."
+        },
+        {
+          "nome": "Proposta Enviada",
+          "descricao": "Clientes potenciais que receberam uma proposta de venda, mas ainda não responderam."
+        },
+        {
+          "nome": "Negociação",
+          "descricao": "Clientes potenciais que estão em processo de negociação, discutindo termos e condições da proposta."
+        },
+        {
+          "nome": "Fechado - Ganhou",
+          "descricao": "Clientes potenciais que aceitaram a proposta e se tornaram clientes efetivos."
+        },
+        {
+          "nome": "Fechado - Perdido",
+          "descricao": "Clientes potenciais que rejeitaram a proposta ou decidiram não seguir adiante com a compra."
         }
-    ],
-    "campos_personalizados_contato": [
-        {
-            "name": "Cargo",
-            "type": "text"
-        }
-    ],
-    "campos_personalizados_empresa": [
-        {
-            "name": "LTV (Lifetime Value)",
-            "type": "number"
-        },
-        {
-            "name": "Data do ultimo Contrato",
-            "type": "date"
-        }
-    ],
-    "fake_10_usuarios": [
-        {
-            "email": "alice.silva@",
-            "papel": "SDR",
-            "nome": "Alice Silva",
-            "senha": "Teste123"
-        },
-        {
-            "email": "bruno.martins@",
-            "papel": "SDR",
-            "nome": "Bruno Martins",
-            "senha": "Demo456A"
-        },
-        {
-            "email": "carla.nogueira@",
-            "papel": "SDR",
-            "nome": "Carla Nogueira",
-            "senha": "Senha789B"
-        },
-        {
-            "email": "diego.almeida@",
-            "papel": "SDR",
-            "nome": "Diego Almeida",
-            "senha": "User321C"
-        },
-        {
-            "email": "eduarda.lima@",
-            "papel": "Closer",
-            "nome": "Eduarda Lima",
-            "senha": "Venda654D"
-        },
-        {
-            "email": "felipe.rocha@",
-            "papel": "Closer",
-            "nome": "Felipe Rocha",
-            "senha": "Closer987E"
-        },
-        {
-            "email": "gabriela.torres@",
-            "papel": "Closer",
-            "nome": "Gabriela Torres",
-            "senha": "Kommo246F"
-        },
-        {
-            "email": "henrique.costa@",
-            "papel": "Closer",
-            "nome": "Henrique Costa",
-            "senha": "Teste135G"
-        },
-        {
-            "email": "isabela.freitas@",
-            "papel": "Closer",
-            "nome": "Isabela Freitas",
-            "senha": "Funil864H"
-        },
-        {
-            "email": "joao.pereira@",
-            "papel": "Closer",
-            "nome": "JoÃ£o Pereira",
-            "senha": "Lead579I"
-        }
-    ]
+      ]
+    }
+  ],
+  "campos_personalizados_lead": [
+    {
+      "name": "Serviços",
+      "type": "select",
+      "options": [
+        "Desenvolvimento Web",
+        "Desenvolvimento Mobile",
+        "Desenvolvimento de API",
+        "Desenvolvimento de Integração",
+        "Consultoria em TI",
+        "Suporte Técnico"
+      ]
+    },
+    {
+      "name": "Data do Contrato",
+      "type": "date"
+    }
+  ],
+  "campos_personalizados_contato": [
+    {
+      "name": "Cargo",
+      "type": "text"
+    }
+  ],
+  "campos_personalizados_empresa": [
+    {
+      "name": "LTV (Lifetime Value)",
+      "type": "number"
+    },
+    {
+      "name": "Data do Último Contrato",
+      "type": "date"
+    }
+  ],
+  "fake_10_usuarios": [
+    {
+      "email": "alice.silva@",
+      "papel": "SDR",
+      "nome": "Alice Silva",
+      "senha": "Teste123"
+    },
+    {
+      "email": "bruno.martins@",
+      "papel": "SDR",
+      "nome": "Bruno Martins",
+      "senha": "Demo456A"
+    },
+    {
+      "email": "carla.nogueira@",
+      "papel": "SDR",
+      "nome": "Carla Nogueira",
+      "senha": "Senha789B"
+    },
+    {
+      "email": "diego.almeida@",
+      "papel": "SDR",
+      "nome": "Diego Almeida",
+      "senha": "User321C"
+    },
+    {
+      "email": "eduarda.lima@",
+      "papel": "Closer",
+      "nome": "Eduarda Lima",
+      "senha": "Venda654D"
+    },
+    {
+      "email": "felipe.rocha@",
+      "papel": "Closer",
+      "nome": "Felipe Rocha",
+      "senha": "Closer987E"
+    },
+    {
+      "email": "gabriela.torres@",
+      "papel": "Closer",
+      "nome": "Gabriela Torres",
+      "senha": "Kommo246F"
+    },
+    {
+      "email": "henrique.costa@",
+      "papel": "Closer",
+      "nome": "Henrique Costa",
+      "senha": "Teste135G"
+    },
+    {
+      "email": "isabela.freitas@",
+      "papel": "Closer",
+      "nome": "Isabela Freitas",
+      "senha": "Funil864H"
+    },
+    {
+      "email": "joao.pereira@",
+      "papel": "Closer",
+      "nome": "João Pereira",
+      "senha": "Lead579I"
+    }
+  ]
 }
