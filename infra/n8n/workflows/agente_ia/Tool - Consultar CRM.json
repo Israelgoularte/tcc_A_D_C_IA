@@ -1,0 +1,143 @@
+{
+  "name": "Tool - Consultar CRM",
+  "nodes": [
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "operacao"
+            },
+            {
+              "name": "entidade"
+            },
+            {
+              "name": "campos"
+            },
+            {
+              "name": "filtros"
+            },
+            {
+              "name": "agrupar_por"
+            },
+            {
+              "name": "metricas"
+            },
+            {
+              "name": "ordenacao"
+            },
+            {
+              "name": "limite",
+              "type": "number"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        80,
+        -32
+      ],
+      "id": "d09245f5-eb9f-4872-9b42-ea6de07db941",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "jsCode": "const entrada = $input.first().json ?? {};\n\nconst entidades = {\n  leads_unificados: {\n    tabela: 'analise_dados.vw_leads_com_dados_unificados',\n    campos: [\n      'id', 'id_externo', 'nome', 'venda', 'contato_id_externo',\n      'contato_nome', 'contato_telefone', 'contato_email', 'contato_cargo',\n      'empresa_id_externo', 'empresa_nome', 'empresa_telefone',\n      'empresa_email', 'empresa_ltv', 'funil_id_externo', 'funil_nome',\n      'etapa_id_externo', 'etapa_nome', 'etapa_ordem',\n      'usuario_responsavel_id_externo', 'usuario_responsavel_nome',\n      'usuario_responsavel_papel', 'utm_source', 'utm_campaing',\n      'utm_medium', 'utm_content', 'servicos', 'data_contrato',\n      'criado_em', 'atualizado_em'\n    ],\n    padrao: [\n      'id_externo', 'nome', 'venda', 'contato_nome', 'empresa_nome',\n      'funil_nome', 'etapa_nome', 'usuario_responsavel_nome',\n      'servicos', 'data_contrato', 'criado_em'\n    ],\n    numericos: ['id', 'venda', 'empresa_ltv', 'etapa_ordem']\n  },\n  leads: {\n    tabela: 'analise_dados.leads',\n    campos: [\n      'id', 'id_externo', 'contato_id_externo', 'empresa_id_externo',\n      'etapa_id_externo', 'funil_id_externo',\n      'usuario_responsavel_id_externo', 'nome', 'venda', 'utm_source',\n      'utm_campaing', 'utm_medium', 'utm_content', 'servicos',\n      'data_contrato', 'criado_em', 'atualizado_em'\n    ],\n    padrao: [\n      'id_externo', 'nome', 'venda', 'etapa_id_externo',\n      'funil_id_externo', 'usuario_responsavel_id_externo',\n      'servicos', 'data_contrato', 'criado_em'\n    ],\n    numericos: ['id', 'venda']\n  },\n  contatos: {\n    tabela: 'analise_dados.contatos',\n    campos: [\n      'id', 'id_externo', 'empresa_id', 'empresa_id_externo', 'nome',\n      'telefone', 'email', 'cargo', 'criado_em', 'atualizado_em'\n    ],\n    padrao: [\n      'id_externo', 'empresa_id_externo', 'nome', 'telefone', 'email',\n      'cargo', 'criado_em'\n    ],\n    numericos: ['id', 'empresa_id']\n  },\n  empresas: {\n    tabela: 'analise_dados.empresas',\n    campos: [\n      'id', 'id_externo', 'nome', 'telefone', 'email', 'ltv',\n      'data_ultimo_contrato', 'criado_em', 'atualizado_em'\n    ],\n    padrao: [\n      'id_externo', 'nome', 'telefone', 'email', 'ltv',\n      'data_ultimo_contrato', 'criado_em'\n    ],\n    numericos: ['id', 'ltv']\n  },\n  usuarios: {\n    tabela: 'analise_dados.usuarios',\n    campos: [\n      'id', 'id_externo', 'nome', 'papel', 'criado_em', 'atualizado_em'\n    ],\n    padrao: ['id_externo', 'nome', 'papel', 'criado_em'],\n    numericos: ['id']\n  },\n  funis: {\n    tabela: 'analise_dados.funis',\n    campos: ['id', 'id_externo', 'nome', 'criado_em', 'atualizado_em'],\n    padrao: ['id_externo', 'nome', 'criado_em'],\n    numericos: ['id']\n  },\n  etapas: {\n    tabela: 'analise_dados.etapas',\n    campos: [\n      'id', 'id_externo', 'funil_id', 'funil_id_externo', 'nome',\n      'descricao', 'ordem', 'criado_em', 'atualizado_em'\n    ],\n    padrao: [\n      'id_externo', 'funil_id_externo', 'nome', 'descricao', 'ordem'\n    ],\n    numericos: ['id', 'funil_id', 'ordem']\n  },\n  insights: {\n    tabela: 'analise_dados.insights',\n    campos: [\n      'id', 'titulo_da_analise', 'oque_foi_analisado', 'resultado',\n      'recomendado', 'criado_em', 'atualizado_em'\n    ],\n    padrao: [\n      'id', 'titulo_da_analise', 'resultado', 'recomendado', 'criado_em'\n    ],\n    numericos: ['id']\n  }\n};\n\nconst parseJsonRecursivo = (valor, nome, profundidade = 0) => {\n  if (profundidade > 3 || typeof valor !== 'string') return valor;\n\n  const texto = valor.trim();\n  if (!texto) return texto;\n\n  try {\n    return parseJsonRecursivo(JSON.parse(texto), nome, profundidade + 1);\n  } catch {\n    if (profundidade === 0) {\n      throw new Error(`${nome} deve conter JSON valido.`);\n    }\n    return valor;\n  }\n};\n\nconst parseArray = (valor, nome) => {\n  if (valor === undefined || valor === null || valor === '') return [];\n\n  const parsed = parseJsonRecursivo(valor, nome);\n  if (!Array.isArray(parsed)) {\n    throw new Error(`${nome} deve ser um array JSON.`);\n  }\n\n  return parsed.map((item, indice) => {\n    if (typeof item !== 'string') return item;\n\n    try {\n      return parseJsonRecursivo(item, `${nome}[${indice}]`);\n    } catch {\n      return item;\n    }\n  });\n};\n\nconst literalSql = (valor) => {\n  if (valor === null || valor === undefined) return 'NULL';\n  if (typeof valor === 'boolean') return valor ? 'TRUE' : 'FALSE';\n\n  if (typeof valor === 'number') {\n    if (!Number.isFinite(valor)) throw new Error('Valor numerico invalido.');\n    return String(valor);\n  }\n\n  if (typeof valor !== 'string') {\n    throw new Error('Filtros aceitam somente texto, numero, booleano ou null.');\n  }\n\n  return `'${valor.replace(/'/g, \"''\")}'`;\n};\n\nconst validarValorFiltro = (valor) => {\n  const valores = Array.isArray(valor) ? valor : [valor];\n  for (const item of valores) {\n    if (typeof item === 'string' && item.length > 500) {\n      throw new Error('Valor de filtro excede 500 caracteres.');\n    }\n  }\n};\n\nconst validarCampo = (config, campo) => {\n  if (typeof campo !== 'string' || !config.campos.includes(campo)) {\n    throw new Error(`Campo nao permitido: ${String(campo)}.`);\n  }\n  return campo;\n};\n\nconst catalogo = Object.fromEntries(\n  Object.entries(entidades).map(([nome, config]) => [nome, {\n    campos: config.campos,\n    campos_numericos: config.numericos\n  }])\n);\n\nconst operacao = String(entrada.operacao || 'listar').trim().toLowerCase();\n\nif (operacao === 'catalogo') {\n  return [{\n    json: {\n      query: `SELECT ${literalSql(JSON.stringify(catalogo))}::jsonb AS catalogo`,\n      contexto: { operacao: 'catalogo', entidade: null, limite: 1 }\n    }\n  }];\n}\n\nif (!['listar', 'agregar'].includes(operacao)) {\n  throw new Error('operacao deve ser catalogo, listar ou agregar.');\n}\n\nconst entidade = String(entrada.entidade || '').trim().toLowerCase();\nconst config = entidades[entidade];\n\nif (!config) {\n  throw new Error(`Entidade nao permitida: ${entidade || '(vazia)'}. Use a operacao catalogo.`);\n}\n\nconst filtros = parseArray(entrada.filtros, 'filtros');\nif (filtros.length > 12) throw new Error('No maximo 12 filtros sao permitidos.');\n\nconst aliasesOperadores = {\n  '=': 'igual',\n  '==': 'igual',\n  'eq': 'igual',\n  '!=': 'diferente',\n  '<>': 'diferente',\n  'ne': 'diferente',\n  '>': 'maior',\n  'gt': 'maior',\n  '>=': 'maior_ou_igual',\n  'gte': 'maior_ou_igual',\n  '<': 'menor',\n  'lt': 'menor',\n  '<=': 'menor_ou_igual',\n  'lte': 'menor_ou_igual',\n  'contains': 'contem',\n  'in': 'em',\n  'between': 'entre',\n  'is_null': 'nulo',\n  'not_null': 'nao_nulo'\n};\n\nconst operadores = {\n  igual: '=',\n  diferente: '<>',\n  maior: '>',\n  maior_ou_igual: '>=',\n  menor: '<',\n  menor_ou_igual: '<='\n};\n\nconst where = filtros.map((filtro) => {\n  if (!filtro || typeof filtro !== 'object' || Array.isArray(filtro)) {\n    throw new Error('Cada filtro deve ser um objeto JSON.');\n  }\n\n  const campo = validarCampo(config, filtro.campo);\n  const operadorRecebido = String(filtro.operador || 'igual').trim().toLowerCase();\n  const operador = aliasesOperadores[operadorRecebido] || operadorRecebido;\n  validarValorFiltro(filtro.valor);\n\n  if (operadores[operador]) {\n    if (filtro.valor === null || filtro.valor === undefined) {\n      return `${campo} IS ${operador === 'diferente' ? 'NOT ' : ''}NULL`;\n    }\n    return `${campo} ${operadores[operador]} ${literalSql(filtro.valor)}`;\n  }\n\n  if (operador === 'contem') {\n    if (typeof filtro.valor !== 'string') {\n      throw new Error(`O operador contem exige texto no campo ${campo}.`);\n    }\n    return `${campo}::text ILIKE ${literalSql(`%${filtro.valor}%`)}`;\n  }\n\n  if (operador === 'em') {\n    if (!Array.isArray(filtro.valor) || filtro.valor.length === 0) {\n      throw new Error(`O operador em exige uma lista nao vazia no campo ${campo}.`);\n    }\n    if (filtro.valor.length > 100) {\n      throw new Error(`O filtro em aceita no maximo 100 valores no campo ${campo}.`);\n    }\n    return `${campo} IN (${filtro.valor.map(literalSql).join(', ')})`;\n  }\n\n  if (operador === 'entre') {\n    if (!Array.isArray(filtro.valor) || filtro.valor.length !== 2) {\n      throw new Error(`O operador entre exige exatamente dois valores no campo ${campo}.`);\n    }\n    return `${campo} BETWEEN ${literalSql(filtro.valor[0])} AND ${literalSql(filtro.valor[1])}`;\n  }\n\n  if (operador === 'nulo') return `${campo} IS NULL`;\n  if (operador === 'nao_nulo') return `${campo} IS NOT NULL`;\n\n  throw new Error(`Operador nao permitido: ${operador}.`);\n});\n\nconst limiteSolicitado = Number(entrada.limite || 50);\nconst limite = Number.isInteger(limiteSolicitado)\n  ? Math.min(Math.max(limiteSolicitado, 1), 200)\n  : 50;\n\nconst agruparPor = parseArray(entrada.agrupar_por, 'agrupar_por')\n  .map((campo) => validarCampo(config, campo));\n\nlet camposSelecionados;\nlet aliasesMetricas = [];\n\nif (operacao === 'listar') {\n  const solicitados = parseArray(entrada.campos, 'campos');\n  camposSelecionados = (solicitados.length ? solicitados : config.padrao)\n    .map((campo) => validarCampo(config, campo));\n\n  if (camposSelecionados.length > 30) {\n    throw new Error('No maximo 30 campos podem ser retornados.');\n  }\n} else {\n  const metricasRecebidas = parseArray(entrada.metricas, 'metricas');\n  const metricas = metricasRecebidas.length\n    ? metricasRecebidas\n    : [{ funcao: 'contar', campo: '*', alias: 'total' }];\n\n  if (metricas.length > 10) throw new Error('No maximo 10 metricas sao permitidas.');\n\n  const expressoes = metricas.map((metrica, indice) => {\n    if (!metrica || typeof metrica !== 'object' || Array.isArray(metrica)) {\n      throw new Error('Cada metrica deve ser um objeto JSON.');\n    }\n\n    const aliasesFuncoes = {\n      count: 'contar',\n      sum: 'somar',\n      avg: 'media',\n      average: 'media',\n      min: 'minimo',\n      max: 'maximo'\n    };\n    let funcaoRecebida = String(\n      metrica.funcao || metrica.operacao || ''\n    ).trim().toLowerCase();\n    let campoRecebido = metrica.campo;\n\n    if (metrica.expressao !== undefined && metrica.expressao !== null) {\n      const expressao = String(metrica.expressao).trim().toLowerCase();\n      const correspondencia = expressao.match(\n        /^(count|sum|avg|average|min|max)\\(([a-z_][a-z0-9_]*|\\*)\\)$/\n      );\n\n      if (!correspondencia) {\n        throw new Error(\n          `Expressao de metrica nao permitida: ${expressao}. Use o formato count(campo), sum(campo), avg(campo), min(campo) ou max(campo).`\n        );\n      }\n\n      [, funcaoRecebida, campoRecebido] = correspondencia;\n    }\n\n    const funcao = aliasesFuncoes[funcaoRecebida] || funcaoRecebida;\n    const funcoes = {\n      contar: 'COUNT',\n      somar: 'SUM',\n      media: 'AVG',\n      minimo: 'MIN',\n      maximo: 'MAX'\n    };\n\n    if (!funcoes[funcao]) throw new Error(`Funcao de metrica nao permitida: ${funcao}.`);\n\n    const campo = campoRecebido === '*' ? '*' : validarCampo(config, campoRecebido);\n    if (funcao !== 'contar' && !config.numericos.includes(campo)) {\n      throw new Error(`A metrica ${funcao} exige campo numerico: ${campo}.`);\n    }\n\n    const aliasPadrao = `${funcao}_${campo === '*' ? 'registros' : campo}`;\n    const alias = String(metrica.alias || aliasPadrao);\n    if (!/^[a-z][a-z0-9_]{0,39}$/i.test(alias)) {\n      throw new Error(`Alias de metrica invalido: ${alias}.`);\n    }\n\n    aliasesMetricas.push(alias);\n    const argumento = campo === '*' ? '*' : campo;\n    return `${funcoes[funcao]}(${argumento}) AS ${alias}`;\n  });\n\n  camposSelecionados = [...agruparPor, ...expressoes];\n}\n\nconst ordenacao = parseArray(entrada.ordenacao, 'ordenacao');\nif (ordenacao.length > 5) throw new Error('No maximo 5 ordenacoes sao permitidas.');\n\nconst camposOrdenaveis = operacao === 'listar'\n  ? new Set(camposSelecionados)\n  : new Set([...agruparPor, ...aliasesMetricas]);\n\nconst orderBy = ordenacao.map((item) => {\n  if (!item || typeof item !== 'object' || Array.isArray(item)) {\n    throw new Error('Cada ordenacao deve ser um objeto JSON.');\n  }\n\n  const campo = String(item.campo || '');\n  if (!camposOrdenaveis.has(campo)) {\n    throw new Error(`Campo nao disponivel para ordenacao: ${campo}.`);\n  }\n\n  const direcao = String(item.direcao || 'asc').toLowerCase();\n  if (!['asc', 'desc'].includes(direcao)) {\n    throw new Error(`Direcao de ordenacao invalida: ${direcao}.`);\n  }\n\n  return `${campo} ${direcao.toUpperCase()}`;\n});\n\nlet query = `SELECT ${camposSelecionados.join(', ')} FROM ${config.tabela}`;\nif (where.length) query += ` WHERE ${where.join(' AND ')}`;\nif (operacao === 'agregar' && agruparPor.length) {\n  query += ` GROUP BY ${agruparPor.join(', ')}`;\n}\nif (orderBy.length) query += ` ORDER BY ${orderBy.join(', ')}`;\nquery += ` LIMIT ${limite}`;\n\nreturn [{\n  json: {\n    query,\n    contexto: {\n      operacao,\n      entidade,\n      limite,\n      filtros_aplicados: filtros.length\n    }\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        320,
+        -32
+      ],
+      "id": "165eea93-9920-4d2b-8b60-8edabd2e75e9",
+      "name": "Construir consulta segura"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "{{ $json.query }}",
+        "options": {
+          "queryBatching": "single"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        560,
+        -32
+      ],
+      "id": "623d48f6-f90c-4aeb-a2ad-7ef44e63a5dc",
+      "name": "Executar consulta somente leitura",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "75T88sJeS9BfaHBO",
+          "name": "Postgres n8n"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const contexto = $('Construir consulta segura').first().json.contexto;\nconst linhas = $input.all()\n  .map((item) => item.json)\n  .filter((linha) => Object.keys(linha).length > 0);\n\nreturn [{\n  json: {\n    sucesso: true,\n    contexto,\n    total_retornado: linhas.length,\n    dados: linhas\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        800,
+        -32
+      ],
+      "id": "7dad6e45-8f3c-4eb3-8fdd-313620e03e2e",
+      "name": "Formatar resposta"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Construir consulta segura",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Construir consulta segura": {
+      "main": [
+        [
+          {
+            "node": "Executar consulta somente leitura",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Executar consulta somente leitura": {
+      "main": [
+        [
+          {
+            "node": "Formatar resposta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "65a1c469-9118-43bd-b564-25a9e9fc84bd",
+  "meta": {
+    "instanceId": "8fb7f33e3d6fc86f0ee8d1fa5fcd9b446aecff8feb445d2ad470d015adeac75a"
+  },
+  "id": "umcrdOc77XyOE3TR",
+  "tags": []
+}

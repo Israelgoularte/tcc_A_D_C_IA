@@ -1,0 +1,722 @@
+{
+  "name": "Kommo - Evento Contato",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "7132e1e9-5653-4a03-97fd-edd636b21d02",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -512,
+        -112
+      ],
+      "id": "eee5f675-24fe-4cbb-a2e8-8eec094178e0",
+      "name": "Webhook",
+      "webhookId": "7132e1e9-5653-4a03-97fd-edd636b21d02"
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "value": "analise_dados",
+          "mode": "list",
+          "cachedResultName": "analise_dados"
+        },
+        "table": {
+          "__rl": true,
+          "value": "contatos",
+          "mode": "list",
+          "cachedResultName": "contatos"
+        },
+        "limit": 1,
+        "where": {
+          "values": [
+            {
+              "column": "id_externo",
+              "value": "={{ $json.id.toString() }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        192,
+        -112
+      ],
+      "id": "0c876200-1fe5-4e96-8f3c-48d8e2f7fcdd",
+      "name": "Select rows from a table",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "75T88sJeS9BfaHBO",
+          "name": "Postgres n8n"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        304,
+        80
+      ],
+      "id": "9357079e-e9de-43d4-8fb0-056fbf1f3e16",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "jsCode": "const body = $('obder_dados_atuais_contato').first().json ?? {};\nconst bd = $input.first().json ?? {};\n\nif (body.id === undefined || body.id === null || body.id === '') {\n  throw new Error('O ID do contato não foi informado.');\n}\n\nconst customFields = Array.isArray(body.custom_fields_values)\n  ? body.custom_fields_values\n  : [];\n\nconst normalizar = (valor) => {\n  if (valor === undefined || valor === null || valor === '') {\n    return null;\n  }\n\n  return valor;\n};\n\nconst paraString = (valor) => {\n  const normalizado = normalizar(valor);\n  return normalizado === null ? null : String(normalizado);\n};\n\nconst getCustomField = (...identificadores) => {\n  const normalizarIdentificador = (valor) =>\n    String(valor ?? '').trim().toLowerCase();\n\n  const procurados = identificadores.map(normalizarIdentificador);\n\n  const campo = customFields.find((item) =>\n    [\n      item.field_id,\n      item.field_name,\n      item.field_code,\n    ].some((valor) =>\n      procurados.includes(normalizarIdentificador(valor))\n    )\n  );\n\n  if (!campo || !Array.isArray(campo.values)) {\n    return null;\n  }\n\n  const primeiroValorValido = campo.values\n    .map((item) => normalizar(item?.value))\n    .find((valor) => valor !== null);\n\n  return primeiroValorValido ?? null;\n};\n\nconst timestampParaISO = (valor) => {\n  const normalizado = normalizar(valor);\n\n  if (normalizado === null) {\n    return null;\n  }\n\n  const timestamp = Number(normalizado);\n\n  if (!Number.isFinite(timestamp)) {\n    throw new Error(`Timestamp inválido: ${valor}`);\n  }\n\n  const data = new Date(timestamp * 1000);\n\n  if (Number.isNaN(data.getTime())) {\n    throw new Error(`Data inválida: ${valor}`);\n  }\n\n  return data.toISOString();\n};\n\nconst empresa = body._embedded?.companies?.[0];\n\nconst contato_atualizado = {\n  // Preserva campos internos não fornecidos pela Kommo,\n  // como \"id\" e \"empresa_id\".\n  ...bd,\n\n  id_externo: paraString(body.id),\n  empresa_id_externo: paraString(empresa?.id),\n\n  nome: normalizar(body.name),\n\n  telefone: paraString(\n    getCustomField('PHONE', 'Phone', 'Telefone', 143732)\n  ),\n\n  email: paraString(\n    getCustomField('EMAIL', 'Email', 'E-mail')\n  ),\n\n  cargo: paraString(\n    getCustomField('POSITION', 'Position', 'Cargo')\n  ),\n\n  criado_em: timestampParaISO(body.created_at),\n  atualizado_em: timestampParaISO(body.updated_at),\n};\n\nreturn contato_atualizado;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        528,
+        -112
+      ],
+      "id": "99d8179c-1a7c-461e-a14e-5c28d01033bf",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "9eaf6608-2599-4dfc-a9d8-afb67eacc894",
+              "leftValue": "={{ $json.deletado }}",
+              "rightValue": false,
+              "operator": {
+                "type": "boolean",
+                "operation": "false",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        736,
+        -112
+      ],
+      "id": "e379dcb6-ac88-44e6-8ad1-b95c948fa2d8",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "schema": {
+          "__rl": true,
+          "value": "analise_dados",
+          "mode": "list",
+          "cachedResultName": "analise_dados"
+        },
+        "table": {
+          "__rl": true,
+          "value": "contatos",
+          "mode": "list",
+          "cachedResultName": "contatos"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id_externo": "={{ $json.id_externo }}",
+            "empresa_id_externo": "={{ $json.empresa_id_externo }}",
+            "nome": "={{ $json.nome }}",
+            "telefone": "={{ $json.telefone }}",
+            "email": "={{ $json.email }}",
+            "cargo": "={{ $json.cargo }}",
+            "criado_em": "={{ $json.criado_em }}",
+            "atualizado_em": "={{ $json.atualizado_em }}"
+          },
+          "matchingColumns": [
+            "id_externo"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "id_externo",
+              "displayName": "id_externo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "empresa_id",
+              "displayName": "empresa_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": false,
+              "removed": true
+            },
+            {
+              "id": "empresa_id_externo",
+              "displayName": "empresa_id_externo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "nome",
+              "displayName": "nome",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "telefone",
+              "displayName": "telefone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "cargo",
+              "displayName": "cargo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "criado_em",
+              "displayName": "criado_em",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "atualizado_em",
+              "displayName": "atualizado_em",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        960,
+        -208
+      ],
+      "id": "a375ae0b-3dfa-4f7e-8460-76f5421b5269",
+      "name": "Insert or update rows in a table",
+      "credentials": {
+        "postgres": {
+          "id": "75T88sJeS9BfaHBO",
+          "name": "Postgres n8n"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "deleteTable",
+        "schema": {
+          "__rl": true,
+          "value": "analise_dados",
+          "mode": "list",
+          "cachedResultName": "analise_dados"
+        },
+        "table": {
+          "__rl": true,
+          "value": "contatos",
+          "mode": "list",
+          "cachedResultName": "contatos"
+        },
+        "deleteCommand": "delete",
+        "where": {
+          "values": [
+            {
+              "column": "id",
+              "value": "={{ $json.lead.id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        960,
+        -16
+      ],
+      "id": "417a2964-22a5-4d69-a722-4954b3a1e16b",
+      "name": "Delete table or rows",
+      "credentials": {
+        "postgres": {
+          "id": "75T88sJeS9BfaHBO",
+          "name": "Postgres n8n"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "U2zPJpKifuM8xMJS",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/U2zPJpKifuM8xMJS",
+          "cachedResultName": "01_kommo_credenciais"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        -256,
+        -112
+      ],
+      "id": "16498c07-e885-404f-b11b-70e0308840ec",
+      "name": "Call '01_kommo_credenciais'"
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "schema": {
+          "__rl": true,
+          "value": "analise_dados",
+          "mode": "list",
+          "cachedResultName": "analise_dados"
+        },
+        "table": {
+          "__rl": true,
+          "value": "leads",
+          "mode": "list",
+          "cachedResultName": "leads"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $json.id }}",
+            "venda": "={{ $json.venda }}",
+            "id_externo": "={{ $json.id_externo }}",
+            "contato_id_externo": "={{ $json.contato_id_externo }}",
+            "empresa_id_externo": "={{ $json.empresa_id_externo }}",
+            "etapa_id_externo": "={{ $json.etapa_id_externo }}",
+            "funil_id_externo": "={{ $json.funil_id_externo }}",
+            "usuario_responsavel_id_externo": "={{ $json.usuario_responsavel_id_externo }}",
+            "nome": "={{ $json.nome }}",
+            "utm_source": "={{ $json.utm_source }}",
+            "utm_campaing": "={{ $json.utm_campaing }}",
+            "utm_medium": "={{ $json.utm_medium }}",
+            "utm_content": "={{ $json.utm_content }}",
+            "servicos": "={{ $json.servicos }}",
+            "data_contrato": "={{ $json.data_contrato }}",
+            "criado_em": "={{ $json.criado_em }}",
+            "atualizado_em": "={{ $json.atualizado_em }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "id_externo",
+              "displayName": "id_externo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "contato_id_externo",
+              "displayName": "contato_id_externo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "empresa_id_externo",
+              "displayName": "empresa_id_externo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "etapa_id_externo",
+              "displayName": "etapa_id_externo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "funil_id_externo",
+              "displayName": "funil_id_externo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "usuario_responsavel_id_externo",
+              "displayName": "usuario_responsavel_id_externo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "nome",
+              "displayName": "nome",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "venda",
+              "displayName": "venda",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "utm_source",
+              "displayName": "utm_source",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "utm_campaing",
+              "displayName": "utm_campaing",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "utm_medium",
+              "displayName": "utm_medium",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "utm_content",
+              "displayName": "utm_content",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "servicos",
+              "displayName": "servicos",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "data_contrato",
+              "displayName": "data_contrato",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "criado_em",
+              "displayName": "criado_em",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "atualizado_em",
+              "displayName": "atualizado_em",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        752,
+        -272
+      ],
+      "id": "45defa33-5a59-4be1-ac28-bed9baac57b4",
+      "name": "Insert or update rows in a table1",
+      "credentials": {
+        "postgres": {
+          "id": "75T88sJeS9BfaHBO",
+          "name": "Postgres n8n"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "=https://{{ $json.kommo_subdomain }}.kommo.com/api/v4/contacts/{{ $('Webhook').item.json.body[\"contacts[update][0][id]\"] || $('Webhook').item.json.body[\"contacts[delete][0][id]\"] || $('Webhook').item.json.body[\"contacts[add][0][id]\"] || $('Webhook').item.json.body[\"contacts[status][0][id]\"]}}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "authorization",
+              "value": "=Bearer {{ $json.token }}"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -48,
+        -112
+      ],
+      "id": "19d07cdd-c5f3-41a3-bc21-854909097dfa",
+      "name": "obder_dados_atuais_contato"
+    }
+  ],
+  "pinData": {
+    "Webhook": [
+      {
+        "json": {
+          "headers": {
+            "host": "work.raelflow.com",
+            "user-agent": "amoCRM-Webhooks/3.0",
+            "content-length": "1263",
+            "accept-encoding": "gzip",
+            "content-type": "application/x-www-form-urlencoded",
+            "x-amocrm-requestid": "2d2ab068-e16a-479c-8ecc-c3eb964c77fe",
+            "x-forwarded-for": "142.0.207.172",
+            "x-forwarded-host": "work.raelflow.com",
+            "x-forwarded-port": "443",
+            "x-forwarded-proto": "https",
+            "x-forwarded-server": "e4262c059b6a",
+            "x-real-ip": "142.0.207.172"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "account[subdomain]": "tcc2",
+            "account[id]": "36644739",
+            "account[_links][self]": "https://tcc2.amocrm.com",
+            "contacts[update][0][id]": "1217100",
+            "contacts[update][0][name]": "teste",
+            "contacts[update][0][responsible_user_id]": "10506903",
+            "contacts[update][0][group_id]": "0",
+            "contacts[update][0][date_create]": "1782002764",
+            "contacts[update][0][last_modified]": "1782002780",
+            "contacts[update][0][created_user_id]": "10506903",
+            "contacts[update][0][modified_user_id]": "10506903",
+            "contacts[update][0][linked_company_id]": "0",
+            "contacts[update][0][account_id]": "36644739",
+            "contacts[update][0][custom_fields][0][id]": "143732",
+            "contacts[update][0][custom_fields][0][name]": "Telefone",
+            "contacts[update][0][custom_fields][0][values][0][value]": "34999999999",
+            "contacts[update][0][custom_fields][0][values][0][enum]": "104936",
+            "contacts[update][0][custom_fields][0][code]": "PHONE",
+            "contacts[update][0][old_responsible_user_id]": "10506903",
+            "contacts[update][0][created_at]": "1782002764",
+            "contacts[update][0][updated_at]": "1782002780",
+            "contacts[update][0][type]": "contact"
+          },
+          "webhookUrl": "https://work.raelflow.com/webhook/7132e1e9-5653-4a03-97fd-edd636b21d02",
+          "executionMode": "production"
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Call '01_kommo_credenciais'",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Select rows from a table": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Insert or update rows in a table",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Delete table or rows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call '01_kommo_credenciais'": {
+      "main": [
+        [
+          {
+            "node": "obder_dados_atuais_contato",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "obder_dados_atuais_contato": {
+      "main": [
+        [
+          {
+            "node": "Select rows from a table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "af4bc874-130b-42da-8fc6-a24ab784efa6",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "8fb7f33e3d6fc86f0ee8d1fa5fcd9b446aecff8feb445d2ad470d015adeac75a"
+  },
+  "id": "IreZ3KWlFcpcL3pA",
+  "tags": []
+}

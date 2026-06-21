@@ -1,0 +1,63 @@
+{
+  "name": "Reset",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "4b2269f4-50e0-49df-bddf-a3a6f8bda3c8",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "drop schema analise_dados CASCADE;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        176,
+        0
+      ],
+      "id": "94132087-fb3d-40ae-878b-6a6e18eb27db",
+      "name": "Execute a SQL query",
+      "credentials": {
+        "postgres": {
+          "id": "75T88sJeS9BfaHBO",
+          "name": "Postgres n8n"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Execute a SQL query",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "b3bfbd63-96d7-4322-afb8-c3b50f1bf638",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "8fb7f33e3d6fc86f0ee8d1fa5fcd9b446aecff8feb445d2ad470d015adeac75a"
+  },
+  "id": "vVuoxhY70BTwKATm",
+  "tags": []
+}

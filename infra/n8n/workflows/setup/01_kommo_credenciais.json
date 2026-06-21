@@ -1,5 +1,5 @@
 {
-  "name": "kommo_credenciais",
+  "name": "01_kommo_credenciais",
   "nodes": [
     {
       "parameters": {
@@ -8,7 +8,7 @@
             {
               "id": "10069053-ca38-4b9b-b1b5-c63e6953bc1d",
               "name": "kommo_subdomain",
-              "value": "raelflow2",
+              "value": "tccrael",
               "type": "string"
             },
             {
@@ -68,7 +68,7 @@
     "executionOrder": "v1",
     "binaryMode": "separate"
   },
-  "versionId": "0469ce19-af00-43a7-ae6b-e69172af920e",
+  "versionId": "b70a073e-f167-4c4e-aaee-c42dde5340c7",
   "meta": {
     "instanceId": "8fb7f33e3d6fc86f0ee8d1fa5fcd9b446aecff8feb445d2ad470d015adeac75a"
   },

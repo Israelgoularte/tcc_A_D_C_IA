@@ -1,0 +1,63 @@
+{
+  "name": "ajuste_bd",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "28a3c267-c443-42a1-b264-6447925004c2",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "ALTER TABLE analise_dados.usuarios\nDROP CONSTRAINT usuarios_papel_check;\n\nALTER TABLE analise_dados.usuarios\nDROP CONSTRAINT usuarios_id_externo_unique;\n\nALTER TABLE analise_dados.usuarios\nADD CONSTRAINT usuarios_id_externo_unique UNIQUE (id_externo);\n\nALTER TABLE analise_dados.usuarios\nADD CONSTRAINT usuarios_papel_check\nCHECK (\n  lower(papel) IN ('sdr', 'closer')\n);\n\n\nBEGIN;\n\nDROP INDEX IF EXISTS analise_dados.ux_usuarios_id_externo_not_null;\nDROP INDEX IF EXISTS analise_dados.ux_empresas_id_externo_not_null;\nDROP INDEX IF EXISTS analise_dados.ux_contatos_id_externo_not_null;\nDROP INDEX IF EXISTS analise_dados.ux_leads_id_externo_not_null;\n\nCREATE UNIQUE INDEX IF NOT EXISTS ux_usuarios_id_externo \nON analise_dados.usuarios(id_externo);\n\nCREATE UNIQUE INDEX IF NOT EXISTS ux_empresas_id_externo \nON analise_dados.empresas(id_externo);\n\nCREATE UNIQUE INDEX IF NOT EXISTS ux_contatos_id_externo \nON analise_dados.contatos(id_externo);\n\nCREATE UNIQUE INDEX IF NOT EXISTS ux_leads_id_externo \nON analise_dados.leads(id_externo);\n\nCOMMIT;\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        160,
+        0
+      ],
+      "id": "7cc11d87-9840-4e3e-928f-cff1f32a3033",
+      "name": "Execute a SQL query",
+      "credentials": {
+        "postgres": {
+          "id": "75T88sJeS9BfaHBO",
+          "name": "Postgres n8n"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Execute a SQL query",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "482cb2b3-1f32-479f-900d-435b48fdff12",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "8fb7f33e3d6fc86f0ee8d1fa5fcd9b446aecff8feb445d2ad470d015adeac75a"
+  },
+  "id": "aOyIbhINLLz2hyO8",
+  "tags": []
+}

@@ -1,0 +1,154 @@
+{
+  "name": "API - Sections Dash",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "dashboard/sections",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -720,
+        80
+      ],
+      "id": "2857da93-adb9-4dee-a9d3-448f1b37626d",
+      "name": "POST dashboard sections",
+      "webhookId": "dashboard-sections-api-v1"
+    },
+    {
+      "parameters": {
+        "jsCode": "const secoes = $input.all()\n  .map((item) => item.json)\n  .filter((item) => item && Object.keys(item).length > 0)\n  .sort((a, b) => Number(a.id) - Number(b.id));\n\nreturn [{\n  json: {\n    sucesso: true,\n    total: secoes.length,\n    secoes\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        240,
+        0
+      ],
+      "id": "c0fa9b3f-1bfd-4947-9164-baf7cd824846",
+      "name": "Formatar sections"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}",
+        "options": {
+          "responseCode": 200,
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Cache-Control",
+                "value": "no-store"
+              },
+              {
+                "name": "Content-Type",
+                "value": "application/json; charset=utf-8"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        480,
+        0
+      ],
+      "id": "30643060-0107-4ab0-ba0f-087bd0cfb2c5",
+      "name": "Responder sections"
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "value": "analise_dados",
+          "mode": "list",
+          "cachedResultName": "analise_dados"
+        },
+        "table": {
+          "__rl": true,
+          "value": "dashboard_html",
+          "mode": "list",
+          "cachedResultName": "dashboard_html"
+        },
+        "returnAll": false,
+        "options": {
+          "outputColumns": [
+            "id",
+            "nome",
+            "descricao",
+            "conteudo"
+          ]
+        },
+        "limit": 200
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -32,
+        0
+      ],
+      "id": "9f1fb94a-3f1e-4ae5-9ad2-2766c5e51f44",
+      "name": "Select rows from a table",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "75T88sJeS9BfaHBO",
+          "name": "Postgres n8n"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "POST dashboard sections": {
+      "main": [
+        [
+          {
+            "node": "Select rows from a table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Select rows from a table": {
+      "main": [
+        [
+          {
+            "node": "Formatar sections",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Formatar sections": {
+      "main": [
+        [
+          {
+            "node": "Responder sections",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "fe3a5596-4414-4b72-8714-479f03995eaa",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "8fb7f33e3d6fc86f0ee8d1fa5fcd9b446aecff8feb445d2ad470d015adeac75a"
+  },
+  "id": "Gl9KczFaR7eUtn2T",
+  "tags": []
+}

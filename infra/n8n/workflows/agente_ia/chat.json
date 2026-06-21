@@ -1,0 +1,577 @@
+{
+  "name": "chat",
+  "nodes": [
+    {
+      "parameters": {
+        "public": true,
+        "initialMessages": "Nenhuma das informações são reais.",
+        "options": {
+          "inputPlaceholder": "...",
+          "subtitle": "Simulação",
+          "title": "Analise de dados com IA",
+          "customCss": ":root {\n  /* Paleta */\n  --chat--color--primary: #00a884;\n  --chat--color--primary-shade-50: #008f72;\n  --chat--color--primary--shade-100: #00745e;\n  --chat--color--secondary: #25d366;\n  --chat--color-secondary-shade-50: #1fba59;\n  --chat--color-white: #ffffff;\n  --chat--color-light: #efeae2;\n  --chat--color-light-shade-50: #d9d5ce;\n  --chat--color-light-shade-100: #c7c2ba;\n  --chat--color-medium: #8696a0;\n  --chat--color-dark: #111b21;\n  --chat--color-disabled: #c7c2ba;\n  --chat--color-typing: #667781;\n\n  /* Estrutura */\n  --chat--spacing: 1rem;\n  --chat--border-radius: 8px;\n  --chat--transition-duration: 0.2s;\n  --chat--font-family: Inter, ui-sans-serif, system-ui, -apple-system,\n    BlinkMacSystemFont, \"Segoe UI\", sans-serif;\n\n  /* Janela */\n  --chat--window--width: 420px;\n  --chat--window--height: min(680px, calc(100vh - 2rem));\n  --chat--window--bottom: 1rem;\n  --chat--window--right: 1rem;\n  --chat--window--z-index: 9999;\n  --chat--window--border: 1px solid #d7dfe3;\n  --chat--window--border-radius: 12px;\n  --chat--window--margin-bottom: 1rem;\n\n  /* Cabecalho */\n  --chat--header-height: auto;\n  --chat--header--padding: 1rem 1.15rem 1rem 4.25rem;\n  --chat--header--background: #008069;\n  --chat--header--color: #ffffff;\n  --chat--header--border-top: none;\n  --chat--header--border-bottom: 1px solid #087866;\n  --chat--header--border-left: none;\n  --chat--header--border-right: none;\n  --chat--heading--font-size: 1.15rem;\n  --chat--subtitle--font-size: 0.85rem;\n  --chat--subtitle--line-height: 1.45;\n\n  /* Mensagens */\n  --chat--message--font-size: 0.95rem;\n  --chat--message--padding: 0.75rem 0.9rem;\n  --chat--message--border-radius: 8px;\n  --chat--message-line-height: 1.55;\n  --chat--message--margin-bottom: 0.75rem;\n  --chat--message--bot--background: #ffffff;\n  --chat--message--bot--color: #111b21;\n  --chat--message--bot--border: 1px solid rgba(17, 27, 33, 0.04);\n  --chat--message--user--background: #d9fdd3;\n  --chat--message--user--color: #111b21;\n  --chat--message--user--border: 1px solid rgba(17, 27, 33, 0.04);\n  --chat--message--pre--background: #f0f2f5;\n  --chat--messages-list--padding: 1.15rem;\n\n  /* Botao flutuante */\n  --chat--toggle--size: 58px;\n  --chat--toggle--width: var(--chat--toggle--size);\n  --chat--toggle--height: var(--chat--toggle--size);\n  --chat--toggle--border-radius: 50%;\n  --chat--toggle--background: #25d366;\n  --chat--toggle--hover--background: #1fba59;\n  --chat--toggle--active--background: #169c49;\n  --chat--toggle--color: #ffffff;\n\n  /* Campo de mensagem */\n  --chat--textarea--height: 56px;\n  --chat--textarea--max-height: 160px;\n  --chat--input--font-size: 0.95rem;\n  --chat--input--border: 1px solid transparent;\n  --chat--input--border-radius: 24px;\n  --chat--input--padding: 0.8rem 0.9rem;\n  --chat--input--background: #ffffff;\n  --chat--input--text-color: #111b21;\n  --chat--input--line-height: 1.45;\n  --chat--input--placeholder--font-size: 0.9rem;\n  --chat--input--border-active: 1px solid transparent;\n  --chat--input--left--panel--width: 2.5rem;\n\n  /* Botoes */\n  --chat--button--padding: 0.65rem 1rem;\n  --chat--button--border-radius: 6px;\n  --chat--button--font-size: 0.9rem;\n  --chat--button--line-height: 1.2;\n  --chat--button--color--primary: #ffffff;\n  --chat--button--background--primary: #00a884;\n  --chat--button--border--primary: 1px solid #00a884;\n  --chat--button--color--primary--hover: #ffffff;\n  --chat--button--background--primary--hover: #008f72;\n  --chat--button--border--primary--hover: 1px solid #008f72;\n  --chat--button--color--primary--disabled: #64748b;\n  --chat--button--background--primary--disabled: #e2e8f0;\n  --chat--button--border--primary--disabled: 1px solid #e2e8f0;\n  --chat--button--color--secondary: #334155;\n  --chat--button--background--secondary: #ffffff;\n  --chat--button--border--secondary: 1px solid #cbd5e1;\n  --chat--button--color--secondary--hover: #0f172a;\n  --chat--button--background--secondary--hover: #f1f5f9;\n  --chat--button--border--secondary--hover: 1px solid #94a3b8;\n  --chat--button--color--secondary--disabled: #94a3b8;\n  --chat--button--background--secondary--disabled: #f8fafc;\n  --chat--button--border--secondary--disabled: 1px solid #e2e8f0;\n  --chat--close--button--color-hover: #bfdbfe;\n\n  /* Envio e anexo */\n  --chat--input--send--button--background: transparent;\n  --chat--input--send--button--color: #00a884;\n  --chat--input--send--button--background-hover: #e7f8f3;\n  --chat--input--send--button--color-hover: #008069;\n  --chat--input--file--button--background: transparent;\n  --chat--input--file--button--color: #64748b;\n  --chat--input--file--button--background-hover: #f1f5f9;\n  --chat--input--file--button--color-hover: #008069;\n  --chat--files-spacing: 0.35rem;\n\n  /* Corpo e rodape */\n  --chat--body--background: #efeae2;\n  --chat--footer--background: #f0f2f5;\n  --chat--footer--color: #667781;\n}\n\n/* Janela principal */\n.chat-window {\n  overflow: hidden;\n  box-shadow:\n    0 24px 64px rgba(17, 27, 33, 0.22),\n    0 6px 18px rgba(17, 27, 33, 0.12);\n  animation: chat-window-in 0.35s cubic-bezier(0.22, 1, 0.36, 1);\n}\n\n/* Cabecalho */\n.chat-header {\n  position: relative;\n}\n\n.chat-header::before {\n  position: absolute;\n  top: 50%;\n  left: 1rem;\n  width: 42px;\n  height: 42px;\n  content: \"\";\n  background: #d9fdd3;\n  border: 2px solid rgba(255, 255, 255, 0.72);\n  border-radius: 50%;\n  box-shadow: 0 2px 8px rgba(17, 27, 33, 0.2);\n  transform: translateY(-50%);\n}\n\n.chat-header::after {\n  position: absolute;\n  top: calc(50% + 10px);\n  left: 2.9rem;\n  width: 10px;\n  height: 10px;\n  content: \"\";\n  background: #25d366;\n  border: 2px solid #008069;\n  border-radius: 50%;\n}\n\n.chat-heading {\n  margin: 0;\n  font-weight: 700;\n  letter-spacing: 0;\n}\n\n.chat-header p {\n  margin: 0.3rem 0 0;\n  color: #d9fdd3;\n}\n\n/* Area de conversa */\n.chat-messages-list {\n  position: relative;\n  scrollbar-color: rgba(134, 150, 160, 0.55) transparent;\n  scrollbar-width: thin;\n  background-color: #efeae2;\n  background-image:\n    radial-gradient(circle at 20px 20px, rgba(17, 27, 33, 0.035) 1.5px, transparent 1.6px),\n    radial-gradient(circle at 45px 45px, rgba(0, 128, 105, 0.035) 1.5px, transparent 1.6px);\n  background-size: 64px 64px;\n}\n\n.chat-message {\n  position: relative;\n  max-width: 82%;\n  overflow-wrap: anywhere;\n  box-shadow: 0 1px 2px rgba(17, 27, 33, 0.12);\n  animation: chat-message-in 0.28s cubic-bezier(0.22, 1, 0.36, 1) both;\n}\n\n.chat-message-from-user {\n  margin-left: auto;\n  border-top-right-radius: 2px;\n  transform-origin: right bottom;\n}\n\n.chat-message-from-bot {\n  margin-right: auto;\n  border-top-left-radius: 2px;\n  transform-origin: left bottom;\n}\n\n.chat-message-from-user::after,\n.chat-message-from-bot::before {\n  position: absolute;\n  top: -1px;\n  width: 0;\n  height: 0;\n  content: \"\";\n  border-style: solid;\n}\n\n.chat-message-from-user::after {\n  right: -8px;\n  border-width: 0 0 10px 10px;\n  border-color: transparent transparent transparent #d9fdd3;\n}\n\n.chat-message-from-bot::before {\n  left: -8px;\n  border-width: 0 10px 10px 0;\n  border-color: transparent #ffffff transparent transparent;\n}\n\n.chat-message p {\n  margin: 0 0 0.55rem;\n}\n\n.chat-message p:last-child {\n  margin-bottom: 0;\n}\n\n.chat-message a {\n  color: inherit;\n  font-weight: 600;\n  text-decoration: underline;\n  text-underline-offset: 2px;\n}\n\n.chat-message pre,\n.chat-message code {\n  font-family: \"Cascadia Code\", \"SFMono-Regular\", Consolas, monospace;\n}\n\n.chat-message pre {\n  max-width: 100%;\n  padding: 0.75rem;\n  overflow-x: auto;\n  border: 1px solid #e2e8f0;\n  border-radius: 6px;\n}\n\n/* Entrada de texto */\n.chat-input {\n  gap: 0.5rem;\n  padding: 0.85rem;\n  background: #f0f2f5;\n  border-top: 1px solid #e1e6e8;\n}\n\n.chat-input textarea {\n  resize: none;\n  transition:\n    border-color var(--chat--transition-duration),\n    box-shadow var(--chat--transition-duration);\n}\n\n.chat-input textarea:focus {\n  outline: none;\n  box-shadow: 0 0 0 3px rgba(0, 168, 132, 0.14);\n}\n\n.chat-input textarea::placeholder {\n  color: #94a3b8;\n}\n\n.chat-input button {\n  transition:\n    color var(--chat--transition-duration),\n    background-color var(--chat--transition-duration),\n    transform var(--chat--transition-duration);\n}\n\n.chat-input button:active {\n  transform: scale(0.94);\n}\n\n.chat-input-send-button {\n  border-radius: 50%;\n}\n\n.chat-input-send-button:hover {\n  transform: rotate(-8deg) scale(1.08);\n}\n\n/* Botao que abre o chat */\n.chat-window-toggle {\n  border: 1px solid rgba(255, 255, 255, 0.22);\n  box-shadow:\n    0 12px 28px rgba(37, 211, 102, 0.34),\n    0 4px 10px rgba(17, 27, 33, 0.18);\n  transition:\n    background-color var(--chat--transition-duration),\n    box-shadow var(--chat--transition-duration),\n    transform var(--chat--transition-duration);\n  animation: chat-toggle-pulse 2.8s ease-in-out infinite;\n}\n\n.chat-window-toggle:hover {\n  box-shadow:\n    0 16px 34px rgba(37, 211, 102, 0.42),\n    0 5px 12px rgba(17, 27, 33, 0.18);\n  transform: translateY(-3px) scale(1.04);\n}\n\n.chat-window-toggle:active {\n  transform: translateY(0) scale(0.97);\n}\n\n/* Acessibilidade */\n.chat-window button:focus-visible,\n.chat-window a:focus-visible,\n.chat-window textarea:focus-visible,\n.chat-window-toggle:focus-visible {\n  outline: 3px solid rgba(0, 168, 132, 0.35);\n  outline-offset: 2px;\n}\n\n@keyframes chat-window-in {\n  from {\n    opacity: 0;\n    transform: translateY(18px) scale(0.96);\n  }\n\n  to {\n    opacity: 1;\n    transform: translateY(0) scale(1);\n  }\n}\n\n@keyframes chat-message-in {\n  from {\n    opacity: 0;\n    transform: translateY(8px) scale(0.97);\n  }\n\n  to {\n    opacity: 1;\n    transform: translateY(0) scale(1);\n  }\n}\n\n@keyframes chat-toggle-pulse {\n  0%,\n  100% {\n    box-shadow:\n      0 12px 28px rgba(37, 211, 102, 0.3),\n      0 0 0 0 rgba(37, 211, 102, 0.22);\n  }\n\n  50% {\n    box-shadow:\n      0 14px 32px rgba(37, 211, 102, 0.38),\n      0 0 0 10px rgba(37, 211, 102, 0);\n  }\n}\n\n/* Celulares */\n@media (max-width: 520px) {\n  :root {\n    --chat--window--width: calc(100vw - 1rem);\n    --chat--window--height: calc(100dvh - 1rem);\n    --chat--window--right: 0.5rem;\n    --chat--window--bottom: 0.5rem;\n    --chat--window--border-radius: 8px;\n    --chat--messages-list--padding: 0.85rem;\n    --chat--header--padding: 1rem;\n  }\n\n  .chat-message {\n    max-width: 88%;\n  }\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .chat-window *,\n  .chat-window-toggle {\n    scroll-behavior: auto !important;\n    transition-duration: 0.01ms !important;\n  }\n}\n\n/* Modo pagina inteira do n8n Chat */\n.chat-layout {\n  min-height: 100dvh;\n  background: #efeae2;\n}\n\n.chat-layout .chat-header {\n  min-height: 92px;\n  padding: 1rem clamp(1rem, 4vw, 3rem) 1rem 5rem;\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  box-sizing: border-box;\n  box-shadow: 0 2px 10px rgba(17, 27, 33, 0.16);\n  z-index: 2;\n}\n\n.chat-layout .chat-header::before {\n  left: clamp(1rem, 2.25vw, 2rem);\n  width: 44px;\n  height: 44px;\n}\n\n.chat-layout .chat-header::after {\n  top: calc(50% + 11px);\n  left: calc(clamp(1rem, 2.25vw, 2rem) + 33px);\n}\n\n.chat-layout .chat-heading {\n  font-size: 1.2rem;\n  line-height: 1.25;\n}\n\n.chat-layout .chat-header p {\n  margin-top: 0.2rem;\n  font-size: 0.78rem;\n  line-height: 1.3;\n}\n\n.chat-layout .chat-body {\n  min-height: 0;\n  background:\n    linear-gradient(rgba(239, 234, 226, 0.88), rgba(239, 234, 226, 0.88)),\n    radial-gradient(circle at 24px 24px, rgba(17, 27, 33, 0.065) 1.2px, transparent 1.3px);\n  background-size: auto, 56px 56px;\n}\n\n.chat-layout .chat-messages-list {\n  width: 100%;\n  padding: 1.5rem max(1rem, calc((100% - 1120px) / 2));\n  box-sizing: border-box;\n  background: transparent;\n}\n\n.chat-layout .chat-message {\n  width: fit-content;\n  max-width: min(78%, 820px);\n  margin-bottom: 0.65rem;\n  padding: 0.7rem 0.85rem;\n  border: 0;\n  font-size: 0.95rem;\n  line-height: 1.5;\n}\n\n.chat-layout .chat-message-from-bot {\n  margin-right: auto;\n}\n\n.chat-layout .chat-message-from-user {\n  margin-left: auto;\n}\n\n.chat-layout .chat-message ul,\n.chat-layout .chat-message ol {\n  margin: 0.6rem 0 0.2rem;\n  padding-left: 1.25rem;\n}\n\n.chat-layout .chat-message li {\n  margin: 0.18rem 0;\n}\n\n.chat-layout .chat-message h1,\n.chat-layout .chat-message h2,\n.chat-layout .chat-message h3,\n.chat-layout .chat-message h4 {\n  margin: 0 0 0.55rem;\n  font-size: 1rem;\n  line-height: 1.35;\n}\n\n.chat-layout .chat-message pre {\n  margin: 0.65rem 0 0;\n  background: #f6f7f8;\n  border-color: #dde3e6;\n}\n\n/* Estado de digitacao compacto */\n.chat-layout .chat-message-typing {\n  width: 64px;\n  min-height: 36px;\n  padding: 0.65rem 0.8rem;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  gap: 5px;\n}\n\n.chat-layout .chat-message-typing span {\n  width: 7px;\n  height: 7px;\n  border-radius: 50%;\n  background: #667781;\n  animation: chat-typing-dot 1.2s ease-in-out infinite;\n}\n\n.chat-layout .chat-message-typing span:nth-child(2) {\n  animation-delay: 0.15s;\n}\n\n.chat-layout .chat-message-typing span:nth-child(3) {\n  animation-delay: 0.3s;\n}\n\n/* Composer */\n.chat-layout .chat-input {\n  width: 100%;\n  min-height: 72px;\n  padding: 0.65rem max(1rem, calc((100% - 1120px) / 2));\n  display: flex;\n  align-items: center;\n  box-sizing: border-box;\n  background: #f0f2f5;\n  border-top: 1px solid #d8dfe3;\n  box-shadow: 0 -3px 14px rgba(17, 27, 33, 0.06);\n}\n\n.chat-layout .chat-inputs {\n  width: 100%;\n  min-width: 0;\n  min-height: 48px;\n  display: flex;\n  align-items: center;\n  gap: 0.5rem;\n}\n\n.chat-layout .chat-input textarea {\n  min-height: 48px;\n  max-height: 128px;\n  padding: 0.78rem 1rem;\n  box-sizing: border-box;\n  border: 1px solid #ffffff;\n  border-radius: 24px;\n  box-shadow: 0 1px 2px rgba(17, 27, 33, 0.08);\n}\n\n.chat-layout .chat-input textarea:focus {\n  border-color: #b8e4da;\n  box-shadow:\n    0 0 0 3px rgba(0, 168, 132, 0.12),\n    0 1px 2px rgba(17, 27, 33, 0.08);\n}\n\n.chat-layout .chat-input-send-button {\n  width: 44px;\n  min-width: 44px;\n  height: 44px;\n  padding: 0;\n  display: grid;\n  place-items: center;\n  color: #ffffff;\n  background: #00a884;\n  border: 0;\n  border-radius: 50%;\n  box-shadow: 0 4px 10px rgba(0, 128, 105, 0.22);\n}\n\n.chat-layout .chat-input-send-button:hover {\n  color: #ffffff;\n  background: #008f72;\n  transform: translateY(-1px);\n}\n\n.chat-layout .chat-input-send-button:disabled {\n  color: #ffffff;\n  background: #aebac1;\n  box-shadow: none;\n  cursor: not-allowed;\n}\n\n@keyframes chat-typing-dot {\n  0%,\n  60%,\n  100% {\n    opacity: 0.45;\n    transform: translateY(0);\n  }\n\n  30% {\n    opacity: 1;\n    transform: translateY(-3px);\n  }\n}\n\n@media (max-width: 720px) {\n  .chat-layout .chat-header {\n    min-height: 76px;\n    padding: 0.75rem 3.5rem 0.75rem 4.25rem;\n  }\n\n  .chat-layout .chat-header::before {\n    left: 0.9rem;\n    width: 38px;\n    height: 38px;\n  }\n\n  .chat-layout .chat-header::after {\n    top: calc(50% + 9px);\n    left: 2.65rem;\n    width: 9px;\n    height: 9px;\n  }\n\n  .chat-layout .chat-heading {\n    font-size: 1rem;\n  }\n\n  .chat-layout .chat-messages-list {\n    padding: 1rem 0.75rem;\n  }\n\n  .chat-layout .chat-message {\n    max-width: 88%;\n    font-size: 0.92rem;\n  }\n\n  .chat-layout .chat-input {\n    min-height: 66px;\n    padding: 0.55rem 0.65rem;\n  }\n\n  .chat-layout .chat-input-send-button {\n    width: 42px;\n    min-width: 42px;\n    height: 42px;\n  }\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .chat-layout .chat-message-typing span {\n    animation: none;\n  }\n}\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        0,
+        0
+      ],
+      "id": "a505270c-f7ea-40b9-ba79-419c774e9744",
+      "name": "When chat message received",
+      "webhookId": "46a87882-79d2-40e2-9292-ce5633af0dba"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "=# Identidade\nVocê é um analista de dados de CRM. Seu papel é responder perguntas sobre os\ndados do CRM com precisão, traduzindo números em informação útil para o negócio.\n\n# Tom e estilo\n- Converse de forma natural e cordial, como um colega analista — não robótico.\n- Seja objetivo e claro: vá direto à resposta, depois o contexto se necessário.\n- Adapte a profundidade à pergunta. Pergunta simples → resposta curta.\n- Destaque o número principal primeiro; detalhes (filtros, período) logo abaixo.\n- Quando útil, ofereça um próximo passo ou insight (\"quer que eu quebre por\n  origem?\"), sem encher de perguntas.\n\n# Ferramentas e fluxo de trabalho\n- Use a tool \"Consultar CRM\" sempre que a resposta depender do banco de dados.\n- Antes da primeira consulta, se tiver qualquer dúvida sobre entidades ou\n  campos disponíveis, use \"catalogo\" para confirmar nomes e tipos.\n- Para análises de leads, prefira a entidade \"leads_unificados\".\n- Use \"listar\" para retornar registros e \"agregar\" para indicadores/totais.\n- Aplique o menor limite suficiente para responder à pergunta.\n- Nunca solicite SQL livre para a tool. Use apenas as operações disponíveis.\n\n# Regras sobre os dados\n- Nunca invente resultados, números ou campos. Se não souber, consulte ou diga\n  que não tem o dado.\n- Use sempre datas no formato ISO 8601 (AAAA-MM-DD).\n- Diferencie claramente \"quantidade de leads\" de \"soma de vendas/valor\" — nunca\n  troque um pelo outro.\n- Não exponha telefone ou e-mail quando a pergunta puder ser respondida sem\n  dados pessoais. Só inclua dados de contato se forem essenciais à resposta.\n- Sempre informe os filtros e o período usados na consulta.\n- Se a tool retornar zero registros, diga que não encontrou dados para os\n  filtros informados — e sugira ajustar período ou critérios.\n\n# Lidando com ambiguidade e erros\n- Se a pergunta for ambígua (período, métrica ou entidade indefinidos), faça\n  UMA suposição razoável, declare-a, e responda. Pergunte só se for impossível\n  prosseguir.\n- Se a consulta falhar ou um campo não existir, explique de forma simples o que\n  houve e o que você tentou — sem jargão técnico desnecessário.\n\n# Formato da resposta\n- Texto corrido e direto para respostas simples.\n- Use tabela quando comparar vários itens ou períodos.\n- Sempre feche deixando claro de onde veio o número (período + filtros).\n\nVocê é um desenvolvedor frontend sênior responsável por criar e manter seções de um dashboard dinâmico.\n\nAs seções são armazenadas no banco de dados. Você deve usar obrigatoriamente as tools disponíveis para consultar e salvar o conteúdo.\n\n## Tools disponíveis\n\n### sections_existentes\n\nLista as seções existentes.\n\nUse antes de criar uma seção para:\n\n- Evitar duplicidade.\n- Verificar nomes e objetivos existentes.\n- Identificar se a solicitação corresponde a uma seção existente.\n- Decidir entre criação e atualização.\n\n### sections_content\n\nRetorna o conteúdo completo de uma seção existente.\n\nUse antes de atualizar para:\n\n- Preservar funcionalidades existentes.\n- Entender o padrão visual e técnico.\n- Fazer alterações pontuais sem remover recursos não relacionados.\n\n### create_section\n\nCria uma nova seção.\n\nUse apenas quando não existir uma seção equivalente.\n\nEnvie:\n\n- Nome claro e descritivo.\n- Descrição objetiva.\n- Conteúdo HTML completo da seção.\n\n### update_section\n\nAtualiza uma seção existente.\n\nUse quando:\n\n- A solicitação for uma alteração de seção existente.\n- Já existir uma seção com o mesmo objetivo.\n- O usuário pedir correção, melhoria ou evolução.\n\n## Fluxo obrigatório\n\n1. Entenda o objetivo solicitado.\n2. Chame `sections_existentes`.\n3. Verifique se já existe uma seção com o mesmo nome ou finalidade.\n4. Se existir:\n   - Chame `sections_content`.\n   - Gere o novo conteúdo preservando o comportamento necessário.\n   - Salve com `update_section`.\n5. Se não existir:\n   - Gere nome, descrição e conteúdo.\n   - Salve com `create_section`.\n6. Confirme o sucesso retornado pela tool.\n7. Responda ao usuário apenas com uma confirmação curta.\n\nNunca responda com o código da seção.\n\n## Formato da seção\n\nO campo `conteudo` deve possuir exatamente um elemento `<section>` raiz:\n\n<section id=\"identificador-unico\">\n  <style>...</style>\n  ...conteúdo...\n  <script>...</script>\n</section>\n\nNão inclua:\n\n- `<!doctype>`\n- `<html>`\n- `<head>`\n- `<body>`\n- Markdown\n- Blocos de código com ```\n\n## API disponível para a seção\n\nO dashboard principal disponibiliza:\n\n- `DashboardAPI.consultar(payload)`\n- `DashboardAPI.formatarMoeda(valor)`\n- `DashboardAPI.formatarNumero(valor)`\n- `DashboardAPI.formatarData(valor)`\n- `DashboardAPI.registrarCleanup(funcao)`\n\nAs seções devem usar `DashboardAPI.consultar()` para buscar dados no endpoint.\n\nExemplo conceitual:\n\nDashboardAPI.consultar({\n  operacao: \"agregar\",\n  entidade: \"leads_unificados\",\n  filtros: [],\n  agrupar_por: [\"etapa_nome\"],\n  metricas: [\n    {\n      expressao: \"count(id)\",\n      alias: \"quantidade\"\n    }\n  ],\n  limite: 20\n});\n\n## Entidades\n\n- `leads_unificados`\n- `leads`\n- `contatos`\n- `empresas`\n- `usuarios`\n- `funis`\n- `etapas`\n\nPara análises comerciais, prefira `leads_unificados`.\n\nCampos principais:\n\n- `id`\n- `id_externo`\n- `nome`\n- `venda`\n- `contato_nome`\n- `empresa_nome`\n- `funil_nome`\n- `etapa_nome`\n- `etapa_ordem`\n- `usuario_responsavel_nome`\n- `usuario_responsavel_papel`\n- `utm_source`\n- `utm_campaing`\n- `utm_medium`\n- `utm_content`\n- `servicos`\n- `data_contrato`\n- `criado_em`\n- `atualizado_em`\n\n## Operações permitidas\n\n- `listar`\n- `agregar`\n\nMétricas:\n\n- `count(campo)`\n- `sum(campo)`\n- `avg(campo)`\n- `min(campo)`\n- `max(campo)`\n\nOperadores:\n\n- `igual`\n- `diferente`\n- `maior`\n- `maior_ou_igual`\n- `menor`\n- `menor_ou_igual`\n- `contem`\n- `em`\n- `entre`\n- `nulo`\n- `nao_nulo`\n\n## Regras técnicas\n\n1. Use exatamente uma `<section>` raiz.\n2. Crie um ID único e descritivo.\n3. Restrinja todo CSS ao ID da seção.\n4. Não altere `html`, `body` ou `:root`.\n5. Use JavaScript puro.\n6. Não use dependências externas.\n7. Não use `localStorage`, cookies ou variáveis globais.\n8. Não solicite nem exponha chaves.\n9. Não use `innerHTML` com dados retornados pela API.\n10. Use `textContent` para dados externos.\n11. Trate erros com `try/catch`.\n12. Implemente estados de carregamento, vazio e erro.\n13. Verifique se a resposta é um array.\n14. Use as funções de formatação de `DashboardAPI`.\n15. Garanta responsividade e acessibilidade.\n16. Respeite `prefers-reduced-motion`.\n17. Use no máximo 200 registros por consulta.\n18. Use `Promise.all` para consultas independentes.\n19. Não invente dados.\n20. Não gere SQL.\n\n## Ciclo de vida\n\nExecute a lógica da seção em uma IIFE assíncrona:\n\n(async () => {\n  try {\n    // Consultar e renderizar\n  } catch (error) {\n    // Apresentar erro\n  }\n})();\n\nSe criar timers ou event listeners globais, use:\n\nDashboardAPI.registrarCleanup(() => {\n  // Remover listeners e timers\n});\n\n## Segurança\n\nNunca:\n\n- Use `eval`, `new Function` ou `document.write`.\n- Execute conteúdo retornado pela API.\n- Carregue scripts externos.\n- Exponha informações pessoais desnecessárias.\n- Remova funcionalidades existentes durante uma atualização sem solicitação.\n- Crie outra seção quando uma equivalente já existir.\n\n## Resposta final para cria??o ou atualiza??o de se??o\n\nAs regras abaixo se aplicam somente quando o pedido atual for criar ou atualizar uma se??o. Para perguntas de an?lise de dados, responda normalmente conforme as regras anal?ticas do in?cio deste prompt.\n\nAp?s a tool confirmar a grava??o, responda somente:\n\nPara cria??o:\n\n?Nova se??o criada: [nome da se??o].?\n\nPara atualiza??o:\n\n?Se??o atualizada: [nome da se??o].?\n\nN?o inclua c?digo, detalhes t?cnicos ou conte?do HTML na resposta."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        208,
+        0
+      ],
+      "id": "f0370158-039a-4f5b-9da0-32ef3b1aed3c",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "contextWindowLength": 50
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
+      "typeVersion": 1.4,
+      "position": [
+        208,
+        208
+      ],
+      "id": "fc4e6bc8-03c1-4f0c-8efd-d958bdda8a73",
+      "name": "Postgres Chat Memory",
+      "credentials": {
+        "postgres": {
+          "id": "75T88sJeS9BfaHBO",
+          "name": "Postgres n8n"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "description": "Consulta dados do CRM Kommo no PostgreSQL. Use para listar registros, filtrar\ndados e calcular contagens, somas, medias, minimos e maximos. Nunca invente\nentidades ou campos. Quando nao conhecer o schema, chame primeiro a operacao\ncatalogo. Os campos campos, filtros, agrupar_por, metricas e ordenacao devem ser\narrays JSON validos em formato de texto.",
+        "workflowId": {
+          "__rl": true,
+          "value": "umcrdOc77XyOE3TR",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/umcrdOc77XyOE3TR",
+          "cachedResultName": "Tool - Consultar CRM"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "limite": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('limite', `Quantidade entre 1 e 200 `, 'number') }}",
+            "operacao": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('operacao', '`catalogo`, `listar` ou `agregar`', 'string') }}",
+            "entidade": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('entidade', `Entidade retornada pelo catalogo`, 'string') }}",
+            "campos": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('campos', `Array JSON com os campos da listagem`, 'string') }}",
+            "filtros": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('filtros', `Array JSON com filtros`, 'string') }}",
+            "agrupar_por": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('agrupar_por', `Array JSON com campos de agrupamento`, 'string') }}",
+            "metricas": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('metricas', `Array JSON com metricas`, 'string') }}",
+            "ordenacao": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('ordenacao', `Array JSON com campos e direcao`, 'string') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "operacao",
+              "displayName": "operacao",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "entidade",
+              "displayName": "entidade",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "campos",
+              "displayName": "campos",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "filtros",
+              "displayName": "filtros",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "agrupar_por",
+              "displayName": "agrupar_por",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "metricas",
+              "displayName": "metricas",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "ordenacao",
+              "displayName": "ordenacao",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "limite",
+              "displayName": "limite",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "number",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        288,
+        256
+      ],
+      "id": "4b8c7a0a-39a5-4afb-9459-3b3eb094f50f",
+      "name": "Call 'Tool - Consultar CRM'"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-5-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        80,
+        208
+      ],
+      "id": "b9f29fe3-c37d-4d88-9ee3-cd61a2769127",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "s3Flm5im15vPaR5S",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Use para buscar as sections existentes no dashboard",
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "value": "analise_dados",
+          "mode": "list",
+          "cachedResultName": "analise_dados"
+        },
+        "table": {
+          "__rl": true,
+          "value": "dashboard_html",
+          "mode": "list",
+          "cachedResultName": "dashboard_html"
+        },
+        "returnAll": false,
+        "options": {
+          "outputColumns": [
+            "id",
+            "nome",
+            "descricao"
+          ]
+        },
+        "limit": 200
+      },
+      "type": "n8n-nodes-base.postgresTool",
+      "typeVersion": 2.6,
+      "position": [
+        432,
+        336
+      ],
+      "id": "40fdc596-058e-4f40-96ba-3cb49564ecde",
+      "name": "sections_existentes",
+      "credentials": {
+        "postgres": {
+          "id": "75T88sJeS9BfaHBO",
+          "name": "Postgres n8n"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Use para buscar o conteudo de uma section do dashboard pelo id.",
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "value": "analise_dados",
+          "mode": "list",
+          "cachedResultName": "analise_dados"
+        },
+        "table": {
+          "__rl": true,
+          "value": "dashboard_html",
+          "mode": "list",
+          "cachedResultName": "dashboard_html"
+        },
+        "returnAll": false,
+        "where": {
+          "values": [
+            {
+              "column": "id",
+              "value": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('section_id', 'ID numerico da section que deseja consultar', 'number') }}"
+            }
+          ]
+        },
+        "options": {
+          "outputColumns": [
+            "id",
+            "nome",
+            "descricao",
+            "conteudo"
+          ]
+        },
+        "limit": 1
+      },
+      "type": "n8n-nodes-base.postgresTool",
+      "typeVersion": 2.6,
+      "position": [
+        528,
+        320
+      ],
+      "id": "26d5a7c3-2988-48a2-8646-55153b357a1b",
+      "name": "sections_content",
+      "credentials": {
+        "postgres": {
+          "id": "75T88sJeS9BfaHBO",
+          "name": "Postgres n8n"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Cria uma nova section no dashboard. Use somente depois de confirmar com sections_existentes que nao existe section equivalente.",
+        "schema": {
+          "__rl": true,
+          "value": "analise_dados",
+          "mode": "list",
+          "cachedResultName": "analise_dados"
+        },
+        "table": {
+          "__rl": true,
+          "value": "dashboard_html",
+          "mode": "list",
+          "cachedResultName": "dashboard_html"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "nome": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('nome', `nome da section`, 'string') }}",
+            "descricao": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('descricao', `descreva a section`, 'string') }}",
+            "conteudo": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('conteudo', `section em html, css e js`, 'string') }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "nome",
+              "displayName": "nome",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "descricao",
+              "displayName": "descricao",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "conteudo",
+              "displayName": "conteudo",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgresTool",
+      "typeVersion": 2.6,
+      "position": [
+        624,
+        304
+      ],
+      "id": "27d01ce4-7159-4c62-9b13-632317c90605",
+      "name": "create_section",
+      "credentials": {
+        "postgres": {
+          "id": "75T88sJeS9BfaHBO",
+          "name": "Postgres n8n"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Atualiza uma section existente pelo ID. Consulte sections_content antes e preserve comportamentos nao relacionados ao pedido.",
+        "operation": "update",
+        "schema": {
+          "__rl": true,
+          "value": "analise_dados",
+          "mode": "list",
+          "cachedResultName": "analise_dados"
+        },
+        "table": {
+          "__rl": true,
+          "value": "dashboard_html",
+          "mode": "list",
+          "cachedResultName": "dashboard_html"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('id__using_to_match_', `id da section que deseja atualizar`, 'number') }}",
+            "nome": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('nome', `nome da section`, 'string') }}",
+            "descricao": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('descricao', `descrição da secton`, 'string') }}",
+            "conteudo": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('conteudo', `conteudo html,css e js para carregar a section`, 'string') }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "nome",
+              "displayName": "nome",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "descricao",
+              "displayName": "descricao",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "conteudo",
+              "displayName": "conteudo",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {
+          "outputColumns": [
+            "id",
+            "nome",
+            "descricao"
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.postgresTool",
+      "typeVersion": 2.6,
+      "position": [
+        752,
+        304
+      ],
+      "id": "7e3ba21e-3bbc-4f8a-9505-ee3decd1b5fc",
+      "name": "update_section",
+      "credentials": {
+        "postgres": {
+          "id": "75T88sJeS9BfaHBO",
+          "name": "Postgres n8n"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres Chat Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call 'Tool - Consultar CRM'": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "sections_existentes": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "sections_content": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "create_section": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "update_section": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "8876fda1-a61f-40c8-ac51-1456628b3c6b",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "8fb7f33e3d6fc86f0ee8d1fa5fcd9b446aecff8feb445d2ad470d015adeac75a"
+  },
+  "id": "NwQRzSl2Q9HOUjUu",
+  "tags": []
+}

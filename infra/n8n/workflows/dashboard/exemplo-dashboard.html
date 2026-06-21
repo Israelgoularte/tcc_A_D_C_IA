@@ -1,0 +1,893 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dashboard dinâmico</title>
+  <style>
+    :root {
+      color-scheme: light;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system,
+        BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --background: #f3f6f5;
+      --surface: #ffffff;
+      --surface-muted: #eaf0ee;
+      --text: #14201d;
+      --muted: #63716d;
+      --border: #d9e3df;
+      --primary: #087f68;
+      --primary-hover: #066a57;
+      --accent: #ec8b2c;
+      --danger: #b42318;
+      --success: #067647;
+      --shadow: 0 8px 24px rgba(20, 32, 29, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      min-width: 320px;
+      min-height: 100vh;
+      margin: 0;
+      color: var(--text);
+      background: var(--background);
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .app-header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      color: #ffffff;
+      background: #103f37;
+      border-bottom: 4px solid var(--accent);
+      box-shadow: 0 4px 14px rgba(20, 32, 29, 0.18);
+    }
+
+    .header-inner,
+    .shell {
+      width: min(1280px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    .header-inner {
+      min-height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: 1.18rem;
+      letter-spacing: 0;
+    }
+
+    .brand p {
+      margin: 4px 0 0;
+      color: #cfe1dc;
+      font-size: 0.8rem;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: #d9ebe6;
+      font-size: 0.82rem;
+    }
+
+    .status-dot {
+      width: 9px;
+      height: 9px;
+      background: #98a2a0;
+      border-radius: 50%;
+    }
+
+    .status[data-state="online"] .status-dot {
+      background: #47cd89;
+      box-shadow: 0 0 0 4px rgba(71, 205, 137, 0.18);
+    }
+
+    .status[data-state="error"] .status-dot {
+      background: #f97066;
+    }
+
+    .reload-button {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 6px;
+    }
+
+    .reload-button:hover {
+      background: rgba(255, 255, 255, 0.18);
+    }
+
+    .shell {
+      display: grid;
+      grid-template-columns: 250px minmax(0, 1fr);
+      gap: 20px;
+      padding: 22px 0 48px;
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 94px;
+      align-self: start;
+      max-height: calc(100vh - 116px);
+      overflow-y: auto;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+    }
+
+    .sidebar-header {
+      padding: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .sidebar-header h2 {
+      margin: 0;
+      font-size: 0.92rem;
+    }
+
+    .sidebar-header p {
+      margin: 5px 0 0;
+      color: var(--muted);
+      font-size: 0.75rem;
+    }
+
+    .section-nav {
+      display: grid;
+      gap: 4px;
+      padding: 9px;
+    }
+
+    .section-link {
+      width: 100%;
+      padding: 10px;
+      display: grid;
+      gap: 3px;
+      color: var(--text);
+      text-align: left;
+      background: transparent;
+      border: 0;
+      border-radius: 5px;
+    }
+
+    .section-link:hover {
+      background: var(--surface-muted);
+    }
+
+    .section-link strong {
+      font-size: 0.83rem;
+    }
+
+    .section-link span {
+      overflow: hidden;
+      color: var(--muted);
+      font-size: 0.72rem;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .content {
+      min-width: 0;
+    }
+
+    .configuration {
+      display: grid;
+      grid-template-columns: minmax(240px, 1fr) auto;
+      gap: 12px;
+      align-items: end;
+      margin-bottom: 16px;
+      padding: 16px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+    }
+
+    label {
+      display: grid;
+      gap: 6px;
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 650;
+    }
+
+    input {
+      width: 100%;
+      height: 40px;
+      padding: 0 11px;
+      color: var(--text);
+      background: #ffffff;
+      border: 1px solid #b9c9c4;
+      border-radius: 6px;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(8, 127, 104, 0.13);
+    }
+
+    .primary-button {
+      height: 40px;
+      padding: 0 16px;
+      color: #ffffff;
+      font-weight: 700;
+      background: var(--primary);
+      border: 0;
+      border-radius: 6px;
+    }
+
+    .primary-button:hover {
+      background: var(--primary-hover);
+    }
+
+    .primary-button:disabled,
+    .reload-button:disabled {
+      opacity: 0.58;
+      cursor: wait;
+    }
+
+    .feedback {
+      min-height: 22px;
+      margin: 0 2px 10px;
+      color: var(--muted);
+      font-size: 0.84rem;
+    }
+
+    .feedback.error {
+      color: var(--danger);
+    }
+
+    .feedback.success {
+      color: var(--success);
+    }
+
+    .dashboard-sections {
+      display: grid;
+      gap: 18px;
+    }
+
+    .section-frame {
+      min-width: 0;
+      overflow: hidden;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+    }
+
+    .section-frame-header {
+      padding: 13px 16px;
+      border-bottom: 1px solid var(--border);
+      background: #f9fbfa;
+    }
+
+    .section-frame-header h2 {
+      margin: 0;
+      font-size: 0.92rem;
+    }
+
+    .section-frame-header p {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 0.76rem;
+    }
+
+    .section-frame-content {
+      min-width: 0;
+    }
+
+    .section-frame-content > section {
+      width: 100%;
+      margin: 0;
+    }
+
+    .state-box {
+      padding: 48px 22px;
+      color: var(--muted);
+      text-align: center;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+    }
+
+    .state-box strong {
+      display: block;
+      margin-bottom: 7px;
+      color: var(--text);
+    }
+
+    @media (max-width: 900px) {
+      .shell {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        position: static;
+        max-height: none;
+      }
+
+      .section-nav {
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      }
+
+      .configuration {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .primary-button {
+        grid-column: 1 / -1;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .header-inner,
+      .shell {
+        width: min(100% - 20px, 1280px);
+      }
+
+      .brand p,
+      .status span:last-child {
+        display: none;
+      }
+
+      .shell {
+        padding-top: 14px;
+      }
+
+      .configuration {
+        grid-template-columns: 1fr;
+      }
+
+      .primary-button {
+        grid-column: auto;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="brand">
+        <h1>Dashboard de análise</h1>
+        <p>Seções dinâmicas armazenadas no banco de dados</p>
+      </div>
+      <div class="header-actions">
+        <div class="status" id="connectionStatus" data-state="idle">
+          <span class="status-dot" aria-hidden="true"></span>
+          <span id="connectionText">Aguardando configuração</span>
+        </div>
+        <button
+          class="reload-button"
+          id="reloadButton"
+          type="button"
+          title="Recarregar seções"
+          aria-label="Recarregar seções"
+        >↻</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="shell">
+    <aside class="sidebar">
+      <header class="sidebar-header">
+        <h2>Seções disponíveis</h2>
+        <p id="sectionCount">Nenhuma seção carregada</p>
+      </header>
+      <nav class="section-nav" id="sectionNav" aria-label="Seções do dashboard">
+        <div class="state-box">Configure o acesso para começar.</div>
+      </nav>
+    </aside>
+
+    <div class="content">
+      <section class="configuration" aria-label="Configuração das APIs">
+        <label>
+          URL base do n8n
+          <input
+            id="n8nBaseUrl"
+            type="url"
+            value="https://SEU_DOMINIO"
+            autocomplete="url"
+          >
+        </label>
+        <button class="primary-button" id="loadButton" type="button">
+          Carregar dashboard
+        </button>
+      </section>
+
+      <div class="feedback" id="feedback" role="status" aria-live="polite"></div>
+
+      <div class="dashboard-sections" id="dashboardSections">
+        <div class="state-box">
+          <strong>Dashboard ainda não carregado</strong>
+          Informe a URL do n8n para carregar as seções.
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    "use strict";
+
+    const elements = {
+      n8nBaseUrl: document.querySelector("#n8nBaseUrl"),
+      loadButton: document.querySelector("#loadButton"),
+      reloadButton: document.querySelector("#reloadButton"),
+      feedback: document.querySelector("#feedback"),
+      connectionStatus: document.querySelector("#connectionStatus"),
+      connectionText: document.querySelector("#connectionText"),
+      sectionCount: document.querySelector("#sectionCount"),
+      sectionNav: document.querySelector("#sectionNav"),
+      dashboardSections: document.querySelector("#dashboardSections")
+    };
+
+    const runtime = {
+      baseUrl: "",
+      controllers: new Set(),
+      cleanups: new Set()
+    };
+
+    const formatters = {
+      moeda: new Intl.NumberFormat("pt-BR", {
+        style: "currency",
+        currency: "BRL"
+      }),
+      numero: new Intl.NumberFormat("pt-BR"),
+      data: new Intl.DateTimeFormat("pt-BR")
+    };
+
+    function normalizarBaseUrl(value) {
+      return String(value || "").trim().replace(/\/+$/, "");
+    }
+
+    function setStatus(state, text) {
+      elements.connectionStatus.dataset.state = state;
+      elements.connectionText.textContent = text;
+    }
+
+    function setFeedback(message = "", type = "") {
+      elements.feedback.textContent = message;
+      elements.feedback.className = `feedback ${type}`.trim();
+    }
+
+    function setLoading(isLoading) {
+      elements.loadButton.disabled = isLoading;
+      elements.reloadButton.disabled = isLoading;
+      elements.loadButton.textContent = isLoading
+        ? "Carregando..."
+        : "Carregar dashboard";
+    }
+
+    async function requestJson(path, payload = {}) {
+      if (!runtime.baseUrl) {
+        throw new Error("O dashboard não foi configurado.");
+      }
+
+      const controller = new AbortController();
+      runtime.controllers.add(controller);
+
+      try {
+        let response;
+
+        try {
+          response = await fetch(`${runtime.baseUrl}${path}`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify(payload),
+            signal: controller.signal
+          });
+        } catch (error) {
+          if (error?.name === "AbortError") {
+            throw error;
+          }
+
+          throw new Error(
+            `Não foi possível acessar ${path}. Confirme se o workflow correspondente está ativo no n8n.`
+          );
+        }
+
+        const raw = await response.text();
+        let result;
+
+        try {
+          result = raw ? JSON.parse(raw) : {};
+        } catch {
+          throw new Error("A API retornou uma resposta que não é JSON.");
+        }
+
+        if (!response.ok || result.sucesso === false) {
+          throw new Error(
+            result.erro ||
+            `Falha na API: HTTP ${response.status}.`
+          );
+        }
+
+        return result;
+      } finally {
+        runtime.controllers.delete(controller);
+      }
+    }
+
+    window.DashboardAPI = Object.freeze({
+      consultar: async (payload) => {
+        const result = await requestJson(
+          "/webhook/dashboard_dados",
+          payload
+        );
+
+        if (!Array.isArray(result.dados)) {
+          throw new Error("A API de dados não retornou o array dados.");
+        }
+
+        return result.dados;
+      },
+      formatarMoeda: (value) =>
+        formatters.moeda.format(Number(value) || 0),
+      formatarNumero: (value) =>
+        formatters.numero.format(Number(value) || 0),
+      formatarData: (value) => {
+        const date = new Date(value);
+        return Number.isNaN(date.getTime())
+          ? "-"
+          : formatters.data.format(date);
+      },
+      registrarCleanup: (callback) => {
+        if (typeof callback !== "function") {
+          throw new TypeError("O cleanup precisa ser uma função.");
+        }
+
+        runtime.cleanups.add(callback);
+        return () => runtime.cleanups.delete(callback);
+      }
+    });
+
+    async function carregarDashboard() {
+      const baseUrl = normalizarBaseUrl(elements.n8nBaseUrl.value);
+
+      if (!baseUrl) {
+        setFeedback("Informe a URL base do n8n.", "error");
+        return;
+      }
+
+      for (const controller of runtime.controllers) {
+        controller.abort();
+      }
+      runtime.controllers.clear();
+      executarCleanups();
+
+      runtime.baseUrl = baseUrl;
+
+      setLoading(true);
+      setStatus("idle", "Buscando seções");
+      setFeedback("");
+
+      try {
+        const result = await requestJson(
+          "/webhook/dashboard/sections"
+        );
+
+        const sections = normalizarRespostaSections(
+          result
+        );
+
+        renderSections(sections);
+        setStatus("online", "Dashboard atualizado");
+        setFeedback(
+          `${sections.length} seção(ões) carregada(s).`,
+          "success"
+        );
+      } catch (error) {
+        renderLoadError(error);
+        setStatus("error", "Falha ao carregar");
+        setFeedback(
+          error.message || "Não foi possível carregar o dashboard.",
+          "error"
+        );
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    function normalizarRespostaSections(result) {
+      const envelopes = Array.isArray(result)
+        ? result
+        : [result];
+
+      const sections = [];
+
+      for (const envelopeOriginal of envelopes) {
+        const envelope = desembrulharJson(
+          envelopeOriginal
+        );
+
+        if (!envelope || typeof envelope !== "object") {
+          continue;
+        }
+
+        const registros =
+          envelope.secoes ??
+          envelope.sections ??
+          envelope.dados ??
+          [];
+
+        const lista = Array.isArray(registros)
+          ? registros
+          : [registros];
+
+        for (const registroOriginal of lista) {
+          const registro = desembrulharJson(
+            registroOriginal
+          );
+
+          if (
+            !registro ||
+            typeof registro !== "object" ||
+            Array.isArray(registro)
+          ) {
+            continue;
+          }
+
+          const id = String(registro.id ?? "").trim();
+          const nome = String(registro.nome ?? "").trim();
+          const conteudo = String(
+            registro.conteudo ?? ""
+          ).trim();
+
+          if (!id || !nome || !conteudo) {
+            console.warn(
+              "Seção ignorada por dados obrigatórios ausentes:",
+              registro
+            );
+            continue;
+          }
+
+          sections.push({
+            id,
+            nome,
+            descricao: String(
+              registro.descricao ?? ""
+            ).trim(),
+            conteudo
+          });
+        }
+      }
+
+      return sections;
+    }
+
+    function desembrulharJson(value) {
+      let current = value;
+      let depth = 0;
+
+      while (
+        depth < 4 &&
+        current &&
+        typeof current === "object" &&
+        !Array.isArray(current) &&
+        current.json &&
+        typeof current.json === "object"
+      ) {
+        current = current.json;
+        depth++;
+      }
+
+      return current;
+    }
+
+    function renderSections(sections) {
+      elements.sectionNav.replaceChildren();
+      elements.dashboardSections.replaceChildren();
+      elements.sectionCount.textContent =
+        `${sections.length} seção(ões) encontrada(s)`;
+
+      if (!sections.length) {
+        const empty = createStateBox(
+          "Nenhuma seção cadastrada",
+          "Adicione registros na tabela analise_dados.dashboard_html."
+        );
+        elements.sectionNav.append(
+          createStateBox("Sem seções", "A tabela está vazia.")
+        );
+        elements.dashboardSections.append(empty);
+        return;
+      }
+
+      for (const sectionRecord of sections) {
+        const frameId = `dashboard-section-${sectionRecord.id}`;
+        const navigation = document.createElement("button");
+        navigation.type = "button";
+        navigation.className = "section-link";
+
+        const navigationTitle = document.createElement("strong");
+        navigationTitle.textContent =
+          sectionRecord.nome || `Seção ${sectionRecord.id}`;
+
+        const navigationDescription = document.createElement("span");
+        navigationDescription.textContent =
+          sectionRecord.descricao || "Sem descrição";
+
+        navigation.append(
+          navigationTitle,
+          navigationDescription
+        );
+        navigation.addEventListener("click", () => {
+          document.getElementById(frameId)?.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+          });
+        });
+
+        const frame = document.createElement("article");
+        frame.className = "section-frame";
+        frame.id = frameId;
+
+        const header = document.createElement("header");
+        header.className = "section-frame-header";
+
+        const title = document.createElement("h2");
+        title.textContent =
+          sectionRecord.nome || `Seção ${sectionRecord.id}`;
+
+        const description = document.createElement("p");
+        description.textContent =
+          sectionRecord.descricao || "Seção dinâmica";
+
+        const content = document.createElement("div");
+        content.className = "section-frame-content";
+
+        header.append(title, description);
+        frame.append(header, content);
+
+        elements.sectionNav.append(navigation);
+        elements.dashboardSections.append(frame);
+
+        mountTrustedSection(content, sectionRecord);
+      }
+    }
+
+    function executarCleanups() {
+      for (const cleanup of runtime.cleanups) {
+        try {
+          cleanup();
+        } catch (error) {
+          console.error("Falha ao limpar uma seção:", error);
+        }
+      }
+
+      runtime.cleanups.clear();
+    }
+
+    function mountTrustedSection(container, record) {
+      const html = String(record.conteudo || "").trim();
+
+      if (!html) {
+        container.append(
+          createStateBox(
+            "Seção sem conteúdo",
+            `O registro ${record.id} não possui HTML.`
+          )
+        );
+        return;
+      }
+
+      const template = document.createElement("template");
+      template.innerHTML = html;
+
+      const rootSections = Array.from(
+        template.content.children
+      ).filter((element) =>
+        element.tagName.toLowerCase() === "section"
+      );
+
+      if (rootSections.length !== 1) {
+        container.append(
+          createStateBox(
+            "Conteúdo inválido",
+            "O campo conteudo deve possuir exatamente uma <section> raiz."
+          )
+        );
+        return;
+      }
+
+      const scripts = Array.from(
+        template.content.querySelectorAll("script")
+      );
+
+      for (const oldScript of scripts) {
+        oldScript.remove();
+      }
+
+      container.append(template.content);
+
+      for (const oldScript of scripts) {
+        const script = document.createElement("script");
+        script.async = false;
+
+        for (const attribute of oldScript.attributes) {
+          script.setAttribute(attribute.name, attribute.value);
+        }
+
+        script.textContent = oldScript.textContent;
+        container.append(script);
+      }
+    }
+
+    function createStateBox(title, description) {
+      const box = document.createElement("div");
+      box.className = "state-box";
+
+      const strong = document.createElement("strong");
+      strong.textContent = title;
+
+      const text = document.createTextNode(description);
+      box.append(strong, text);
+
+      return box;
+    }
+
+    function renderLoadError(error) {
+      elements.sectionNav.replaceChildren(
+        createStateBox("Falha", "As seções não foram carregadas.")
+      );
+      elements.dashboardSections.replaceChildren(
+        createStateBox(
+          "Não foi possível carregar o dashboard",
+          error.message || "Verifique a configuração."
+        )
+      );
+      elements.sectionCount.textContent = "Falha no carregamento";
+    }
+
+    elements.loadButton.addEventListener(
+      "click",
+      carregarDashboard
+    );
+    elements.reloadButton.addEventListener(
+      "click",
+      carregarDashboard
+    );
+  </script>
+</body>
+</html>

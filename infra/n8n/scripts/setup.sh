@@ -1,6 +1,23 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+N8N_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
+
+# shellcheck source=remote-execution.sh
+source "${SCRIPT_DIR}/remote-execution.sh"
+
+load_execution_config
+
+if [[ "${1:-}" == "--local" ]]; then
+  shift
+elif should_execute_remotely; then
+  run_remote_operation "setup.sh" "$@"
+  exit 0
+elif [[ "${EXECUTION_MODE}" != "local" ]]; then
+  remote_fail "EXECUTION_MODE deve ser local ou ssh."
+fi
+
 print_intro() {
   cat <<'EOF'
 ============================================================
@@ -290,8 +307,6 @@ EOF
 
 print_intro
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-N8N_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
 ENV_FILE="${N8N_DIR}/.env"
 DOCKER_CMD=(docker)
 

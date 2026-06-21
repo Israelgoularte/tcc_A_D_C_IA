@@ -27,6 +27,63 @@ git clone https://github.com/Israelgoularte/tcc_A_D_C_IA.git
 cd tcc_A_D_C_IA/infra/n8n
 ```
 
+## Execucao local ou via SSH
+
+Os comandos `setup.sh` e `update.sh` podem ser executados diretamente no
+servidor ou a partir de outra maquina via SSH.
+
+A configuracao do modo de execucao fica em `scripts/.env`. Esse arquivo e
+local, pode conter o caminho de uma chave privada e nao deve ser versionado.
+
+Exemplo para executar diretamente no servidor:
+
+```env
+EXECUTION_MODE=local
+```
+
+Exemplo para executar via SSH:
+
+```env
+EXECUTION_MODE=ssh
+SSH_HOST=203.0.113.10
+SSH_USER=root
+SSH_PORT=22
+SSH_PASSWORD=senha-do-root
+SSH_PRIVATE_KEY=
+SSH_STRICT_HOST_KEY_CHECKING=accept-new
+REMOTE_PATH=n8n-stack
+```
+
+Quando `SSH_PASSWORD` estiver preenchido, a maquina de origem precisa possuir
+`sshpass`. No Ubuntu/WSL:
+
+```bash
+sudo apt-get update
+sudo apt-get install -y sshpass
+```
+
+A senha e passada ao `sshpass` por variavel de ambiente, sem aparecer nos
+argumentos do processo. O arquivo `scripts/.env` e ignorado pelo Git.
+
+Em ambientes reais, prefira chave SSH e mantenha `SSH_PASSWORD` vazio.
+
+`SSH_STRICT_HOST_KEY_CHECKING=accept-new` registra automaticamente um servidor
+ainda desconhecido, mas recusa a conexao caso uma chave previamente registrada
+seja alterada.
+
+No modo SSH, o script:
+
+- abre uma conexao SSH reutilizavel durante a operacao;
+- envia o conteudo de `infra/n8n`;
+- nao envia nem sobrescreve o `.env` da stack remota;
+- executa o mesmo comando no servidor em um terminal interativo.
+
+A multiplexacao SSH evita solicitar a senha novamente para cada etapa da mesma
+execucao.
+
+O computador de origem precisa ter `bash`, `ssh` e `tar`. O servidor remoto
+precisa aceitar a conexao SSH e ter `bash` e `tar`.
+
 ### Instalacao guiada
 
 Execute o setup interativo:
@@ -111,6 +168,27 @@ Habilitar personalizacao do n8n [false]: Enter
 Ao final, o setup mostra um resumo e pergunta se pode criar o `.env`. Depois pergunta se deve subir os containers.
 
 Quando os containers sobem pelo setup, ele tambem pergunta se deve cadastrar automaticamente a credencial PostgreSQL dentro do n8n. Aceite essa etapa para evitar o cadastro manual da conexao nos workflows.
+
+### Atualizacao
+
+Execute:
+
+```bash
+bash scripts/update.sh
+```
+
+Na execucao local, o script pode atualizar o repositorio com `git pull
+--ff-only` quando nao houver alteracoes locais. Em seguida:
+
+- valida o `.env` e o `docker-compose.yml`;
+- cria um backup compactado do PostgreSQL em `backups/`;
+- executa `docker compose pull`;
+- recria os containers necessarios;
+- aguarda PostgreSQL e n8n ficarem saudaveis.
+
+No modo SSH, os arquivos locais sao sincronizados primeiro e o `.env` remoto
+e preservado. A atualizacao remota nao executa `git pull`, pois usa exatamente
+os arquivos enviados pela maquina de origem.
 
 Se a importacao da credencial falhar ou se os containers ja estiverem rodando, rode:
 

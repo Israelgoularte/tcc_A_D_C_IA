@@ -1,5 +1,5 @@
 {
-  "name": "kommo_criar_estrutura",
+  "name": "03_kommo_criar_estrutura",
   "nodes": [
     {
       "parameters": {},
@@ -19,7 +19,7 @@
             {
               "id": "d88f2fa5-2240-4bc6-beff-0d677bdb36dc",
               "name": "Estrutura_de_teste",
-              "value": "{   \"funis\": [     {       \"nome\": \"Funil de Qualificação\",       \"etapas\": [         {           \"nome\": \"Novo Lead\",           \"descricao\": \"Leads que foram recentemente adicionados ao sistema e ainda não passaram por nenhuma qualificação.\"         },         {           \"nome\": \"Contato Inicial\",           \"descricao\": \"Leads que foram contatados pela primeira vez, seja por telefone, e-mail ou outro meio de comunicação.\"         },         {           \"nome\": \"Qualificação em Andamento\",           \"descricao\": \"Leads que estão passando por um processo de qualificação, onde estão sendo avaliados para determinar seu potencial como cliente.\"         },         {           \"nome\": \"Qualificado\",           \"descricao\": \"Leads que foram considerados qualificados e têm potencial para se tornarem clientes.\"         },         {           \"nome\": \"Desqualificado\",           \"descricao\": \"Leads que foram considerados desqualificados e não têm potencial para se tornarem clientes.\"         }       ]     },     {       \"nome\": \"Funil de Vendas\",       \"etapas\": [         {           \"nome\": \"Novo Lead Qualificado\",           \"descricao\": \"Leads que foram qualificados e estão prontos para serem abordados pela equipe de vendas.\"         },         {           \"nome\": \"Contato de Vendas\",           \"descricao\": \"Leads que foram contatados pela equipe de vendas para discutir suas necessidades e apresentar soluções.\"         },         {           \"nome\": \"Proposta Enviada\",           \"descricao\": \"Clientes potenciais que receberam uma proposta de venda, mas ainda não responderam.\"         },         {           \"nome\": \"Negociação\",           \"descricao\": \"Clientes potenciais que estão em processo de negociação, discutindo termos e condições da proposta.\"         }       ]     }   ],   \"campos_personalizados_lead\": [     {       \"name\": \"Serviços\",       \"type\": \"select\",       \"options\": [         \"Desenvolvimento Web\",         \"Desenvolvimento Mobile\",         \"Desenvolvimento de API\",         \"Desenvolvimento de Integração\",         \"Consultoria em TI\",         \"Suporte Técnico\"       ]     },     {       \"name\": \"Data do Contrato\",       \"type\": \"date\"     }   ],   \"campos_personalizados_contato\": [     {       \"name\": \"Cargo\",       \"type\": \"text\"     }   ],   \"campos_personalizados_empresa\": [     {       \"name\": \"LTV (Lifetime Value)\",       \"type\": \"number\"     },     {       \"name\": \"Data do Último Contrato\",       \"type\": \"date\"     }   ],   \"fake_10_usuarios\": [     {       \"email\": \"alice.silva@\",       \"papel\": \"SDR\",       \"nome\": \"Alice Silva\",       \"senha\": \"Teste1@23\"     },     {       \"email\": \"bruno.martins@\",       \"papel\": \"SDR\",       \"nome\": \"Bruno Martins\",       \"senha\": \"Demo456@A\"     },     {       \"email\": \"carla.nogueira@\",       \"papel\": \"SDR\",       \"nome\": \"Carla Nogueira\",       \"senha\": \"Senha78@9B\"     },     {       \"email\": \"diego.almeida@\",       \"papel\": \"SDR\",       \"nome\": \"Diego Almeida\",       \"senha\": \"User321@C\"     },     {       \"email\": \"eduarda.lima@\",       \"papel\": \"Closer\",       \"nome\": \"Eduarda Lima\",       \"senha\": \"Venda654@D\"     },     {       \"email\": \"felipe.rocha@\",       \"papel\": \"Closer\",       \"nome\": \"Felipe Rocha\",       \"senha\": \"Closer98@7E\"     },     {       \"email\": \"gabriela.torres@\",       \"papel\": \"Closer\",       \"nome\": \"Gabriela Torres\",       \"senha\": \"Kommo24@6F\"     },     {       \"email\": \"henrique.costa@\",       \"papel\": \"Closer\",       \"nome\": \"Henrique Costa\",       \"senha\": \"Teste13@5G\"     },     {       \"email\": \"isabela.freitas@\",       \"papel\": \"Closer\",       \"nome\": \"Isabela Freitas\",       \"senha\": \"Funil8@64H\"     },     {       \"email\": \"joao.pereira@\",       \"papel\": \"Closer\",       \"nome\": \"João Pereira\",       \"senha\": \"Lead5@79I\"     }   ] }",
+              "value": "{   \"funis\": [     {       \"nome\": \"Qualificação\",       \"etapas\": [         {           \"nome\": \"Novo Lead\",           \"descricao\": \"Leads que foram recentemente adicionados ao sistema e ainda não passaram por nenhuma qualificação.\"         },         {           \"nome\": \"Contato Inicial\",           \"descricao\": \"Leads que foram contatados pela primeira vez, seja por telefone, e-mail ou outro meio de comunicação.\"         },         {           \"nome\": \"Qualificação em Andamento\",           \"descricao\": \"Leads que estão passando por um processo de qualificação, onde estão sendo avaliados para determinar seu potencial como cliente.\"         },         {           \"nome\": \"Qualificado\",           \"descricao\": \"Leads que foram considerados qualificados e têm potencial para se tornarem clientes.\"         },         {           \"nome\": \"Desqualificado\",           \"descricao\": \"Leads que foram considerados desqualificados e não têm potencial para se tornarem clientes.\"         }       ]     },     {       \"nome\": \"Vendas\",       \"etapas\": [         {           \"nome\": \"Novo Lead Qualificado\",           \"descricao\": \"Leads que foram qualificados e estão prontos para serem abordados pela equipe de vendas.\"         },         {           \"nome\": \"Contato de Vendas\",           \"descricao\": \"Leads que foram contatados pela equipe de vendas para discutir suas necessidades e apresentar soluções.\"         },         {           \"nome\": \"Proposta Enviada\",           \"descricao\": \"Clientes potenciais que receberam uma proposta de venda, mas ainda não responderam.\"         },         {           \"nome\": \"Negociação\",           \"descricao\": \"Clientes potenciais que estão em processo de negociação, discutindo termos e condições da proposta.\"         }       ]     }   ],   \"campos_personalizados_lead\": [     {       \"name\": \"Serviços\",       \"type\": \"select\",       \"options\": [         \"Desenvolvimento Web\",         \"Desenvolvimento Mobile\",         \"Desenvolvimento de API\",         \"Desenvolvimento de Integração\",         \"Consultoria em TI\",         \"Suporte Técnico\"       ]     },     {       \"name\": \"Data do Contrato\",       \"type\": \"date\"     }   ],   \"campos_personalizados_contato\": [     {       \"name\": \"Cargo\",       \"type\": \"text\"     }   ],   \"campos_personalizados_empresa\": [     {       \"name\": \"LTV (Lifetime Value)\",       \"type\": \"number\"     },     {       \"name\": \"Data do Último Contrato\",       \"type\": \"date\"     }   ],   \"fake_10_usuarios\": [     {       \"email\": \"alice.silva@\",       \"papel\": \"SDR\",       \"nome\": \"Alice Silva\",       \"senha\": \"Teste1@23\"     },     {       \"email\": \"bruno.martins@\",       \"papel\": \"SDR\",       \"nome\": \"Bruno Martins\",       \"senha\": \"Demo456@A\"     },     {       \"email\": \"carla.nogueira@\",       \"papel\": \"SDR\",       \"nome\": \"Carla Nogueira\",       \"senha\": \"Senha78@9B\"     },     {       \"email\": \"diego.almeida@\",       \"papel\": \"SDR\",       \"nome\": \"Diego Almeida\",       \"senha\": \"User321@C\"     },     {       \"email\": \"eduarda.lima@\",       \"papel\": \"Closer\",       \"nome\": \"Eduarda Lima\",       \"senha\": \"Venda654@D\"     },     {       \"email\": \"felipe.rocha@\",       \"papel\": \"Closer\",       \"nome\": \"Felipe Rocha\",       \"senha\": \"Closer98@7E\"     },     {       \"email\": \"gabriela.torres@\",       \"papel\": \"Closer\",       \"nome\": \"Gabriela Torres\",       \"senha\": \"Kommo24@6F\"     },     {       \"email\": \"henrique.costa@\",       \"papel\": \"Closer\",       \"nome\": \"Henrique Costa\",       \"senha\": \"Teste13@5G\"     },     {       \"email\": \"isabela.freitas@\",       \"papel\": \"Closer\",       \"nome\": \"Isabela Freitas\",       \"senha\": \"Funil8@64H\"     },     {       \"email\": \"joao.pereira@\",       \"papel\": \"Closer\",       \"nome\": \"João Pereira\",       \"senha\": \"Lead5@79I\"     }   ] }",
               "type": "object"
             }
           ]
@@ -42,7 +42,7 @@
             {
               "id": "655df6d3-1ed1-4973-bfd8-43afa6c48a09",
               "name": "email_domain",
-              "value": "",
+              "value": "raelflow.com.br",
               "type": "string"
             }
           ]
@@ -120,7 +120,13 @@
         "sendBody": true,
         "specifyBody": "json",
         "jsonBody": "=[{{ $json.toJsonString() }}]",
-        "options": {}
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
       },
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.4,
@@ -151,7 +157,13 @@
         "sendBody": true,
         "specifyBody": "json",
         "jsonBody": "={{ $json.body.toJsonString() }}",
-        "options": {}
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
       },
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.4,
@@ -182,7 +194,13 @@
         "sendBody": true,
         "specifyBody": "json",
         "jsonBody": "={{ $json.body.toJsonString() }}",
-        "options": {}
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
       },
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.4,
@@ -255,7 +273,7 @@
       "type": "n8n-nodes-base.stickyNote",
       "position": [
         752,
-        -224
+        -208
       ],
       "typeVersion": 1,
       "id": "6c79c58f-1ff3-48d1-a004-98929cb5de23",
@@ -307,6 +325,402 @@
       ],
       "id": "92dc95f5-92bc-494d-a329-bc8540e5f709",
       "name": "Stop and Error"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "statuses",
+        "include": "selectedOtherFields",
+        "fieldsToInclude": "id",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        2304,
+        -272
+      ],
+      "id": "af7dd9c0-f871-4242-bf6e-96345a139f98",
+      "name": "Split Out1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f5415e05-fb82-46e4-9c17-c4978d1ec7e3",
+              "name": "statuses",
+              "value": "={{ $('Cria os funis e etapas').item.json._embedded.pipelines[0]._embedded.statuses }}",
+              "type": "array"
+            },
+            {
+              "id": "1a2cb6dc-1040-439b-b633-650581fb07cc",
+              "name": "id",
+              "value": "={{ $json.id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2080,
+        -272
+      ],
+      "id": "c255a7d7-d0ff-4246-8541-d8a60f15a0a7",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "value": "analise_dados",
+          "mode": "list",
+          "cachedResultName": "analise_dados"
+        },
+        "table": {
+          "__rl": true,
+          "value": "funis",
+          "mode": "list",
+          "cachedResultName": "funis"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id_externo": "={{ $json._embedded.pipelines[0].id }}",
+            "nome": "={{ $json._embedded.pipelines[0].name }}"
+          },
+          "matchingColumns": [
+            "id_externo",
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "id_externo",
+              "displayName": "id_externo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "nome",
+              "displayName": "nome",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "criado_em",
+              "displayName": "criado_em",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "atualizado_em",
+              "displayName": "atualizado_em",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1824,
+        -272
+      ],
+      "id": "7bd8a052-afb8-4fef-a6fa-e03250dabb68",
+      "name": "insere funil no banco de dados",
+      "credentials": {
+        "postgres": {
+          "id": "75T88sJeS9BfaHBO",
+          "name": "Postgres n8n"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "value": "analise_dados",
+          "mode": "list",
+          "cachedResultName": "analise_dados"
+        },
+        "table": {
+          "__rl": true,
+          "value": "etapas",
+          "mode": "list",
+          "cachedResultName": "etapas"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "funil_id": "={{ $json.id }}",
+            "ordem": "={{ $json.statuses.sort }}",
+            "id_externo": "={{ $json.statuses.id }}",
+            "funil_id_externo": "={{ $json.statuses.pipeline_id }}",
+            "nome": "={{ $json.statuses.name }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "id_externo",
+              "displayName": "id_externo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "funil_id",
+              "displayName": "funil_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "funil_id_externo",
+              "displayName": "funil_id_externo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "nome",
+              "displayName": "nome",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "descricao",
+              "displayName": "descricao",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "ordem",
+              "displayName": "ordem",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "criado_em",
+              "displayName": "criado_em",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "atualizado_em",
+              "displayName": "atualizado_em",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        2512,
+        -272
+      ],
+      "id": "daa59862-22b2-45f3-a760-06b9d450cb5f",
+      "name": "insere etapas no banco de dados",
+      "credentials": {
+        "postgres": {
+          "id": "75T88sJeS9BfaHBO",
+          "name": "Postgres n8n"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "_embedded.users",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        1808,
+        208
+      ],
+      "id": "8f7a79cf-ea9b-41b2-b8d9-3709e2e34799",
+      "name": "Split Out2"
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "value": "analise_dados",
+          "mode": "list",
+          "cachedResultName": "analise_dados"
+        },
+        "table": {
+          "__rl": true,
+          "value": "usuarios",
+          "mode": "list",
+          "cachedResultName": "usuarios"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id_externo": "={{ $json.id }}",
+            "nome": "={{ $json.name }}",
+            "papel": "={{ $if($json.request_id.split(\"_\",1)[0]=\"sdr\",\"SDR\",\"Closer\") }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "id_externo",
+              "displayName": "id_externo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "nome",
+              "displayName": "nome",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "papel",
+              "displayName": "papel",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "criado_em",
+              "displayName": "criado_em",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "atualizado_em",
+              "displayName": "atualizado_em",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        2016,
+        208
+      ],
+      "id": "3ca3ec17-faae-4120-a251-c5b8ed7403e4",
+      "name": "Insert rows in a table",
+      "credentials": {
+        "postgres": {
+          "id": "75T88sJeS9BfaHBO",
+          "name": "Postgres n8n"
+        }
+      }
     }
   ],
   "pinData": {},
@@ -431,6 +845,72 @@
           }
         ]
       ]
+    },
+    "Cria os funis e etapas": {
+      "main": [
+        [
+          {
+            "node": "insere funil no banco de dados",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Split Out1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out1": {
+      "main": [
+        [
+          {
+            "node": "insere etapas no banco de dados",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "insere funil no banco de dados": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "cria_usuarios": {
+      "main": [
+        [
+          {
+            "node": "Split Out2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out2": {
+      "main": [
+        [
+          {
+            "node": "Insert rows in a table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
@@ -438,7 +918,7 @@
     "executionOrder": "v1",
     "binaryMode": "separate"
   },
-  "versionId": "03394e87-dd73-429b-8e3e-c9ca84a4488b",
+  "versionId": "601ce1ba-0561-4532-8f45-74bae19976e2",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "8fb7f33e3d6fc86f0ee8d1fa5fcd9b446aecff8feb445d2ad470d015adeac75a"

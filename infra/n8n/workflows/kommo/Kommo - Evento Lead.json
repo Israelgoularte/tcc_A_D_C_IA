@@ -1,0 +1,610 @@
+{
+  "name": "Kommo - Evento Lead",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "cb103647-3dce-4fe9-aafd-2a45053a7d53",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -512,
+        -112
+      ],
+      "id": "7869e12b-b49c-4abc-b4cd-ef650f28e840",
+      "name": "Webhook",
+      "webhookId": "cb103647-3dce-4fe9-aafd-2a45053a7d53"
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "value": "analise_dados",
+          "mode": "list",
+          "cachedResultName": "analise_dados"
+        },
+        "table": {
+          "__rl": true,
+          "value": "leads",
+          "mode": "list",
+          "cachedResultName": "leads"
+        },
+        "limit": 1,
+        "where": {
+          "values": [
+            {
+              "column": "id_externo",
+              "value": "={{ $json.id.toString() }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        192,
+        -112
+      ],
+      "id": "e7d997c8-dd21-402d-919d-2f90eef47f96",
+      "name": "Select rows from a table",
+      "credentials": {
+        "postgres": {
+          "id": "75T88sJeS9BfaHBO",
+          "name": "Postgres n8n"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        304,
+        80
+      ],
+      "id": "492f8a15-1457-4399-b4ab-820a1f29ffa2",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "jsCode": "const body = $('obder_dados_atuais_lead').first().json ?? {};\nconst bd = $input.first().json ?? {};\n\nif (body.id === undefined || body.id === null || body.id === '') {\n  throw new Error('O ID do lead não foi informado.');\n}\n\nconst customFields = Array.isArray(body.custom_fields_values)\n  ? body.custom_fields_values\n  : [];\n\nconst normalizar = (valor) => {\n  if (valor === undefined || valor === null || valor === '') {\n    return null;\n  }\n\n  return valor;\n};\n\nconst paraString = (valor) => {\n  const normalizado = normalizar(valor);\n  return normalizado === null ? null : String(normalizado);\n};\n\nconst getCustomField = (...identificadores) => {\n  const normalizarIdentificador = (valor) =>\n    String(valor ?? '').trim().toLowerCase();\n\n  const procurados = identificadores.map(normalizarIdentificador);\n\n  const campo = customFields.find((item) =>\n    [\n      item.field_id,\n      item.field_name,\n      item.field_code,\n    ].some((valor) =>\n      procurados.includes(normalizarIdentificador(valor))\n    )\n  );\n\n  if (!campo || !Array.isArray(campo.values)) {\n    return null;\n  }\n\n  const valores = campo.values\n    .map((item) => normalizar(item?.value))\n    .filter((valor) => valor !== null);\n\n  if (valores.length === 0) return null;\n  if (valores.length === 1) return valores[0];\n\n  return valores;\n};\n\nconst timestampParaISO = (valor) => {\n  const normalizado = normalizar(valor);\n\n  if (normalizado === null) {\n    return null;\n  }\n\n  const timestamp = Number(normalizado);\n\n  if (!Number.isFinite(timestamp)) {\n    throw new Error(`Timestamp inválido: ${valor}`);\n  }\n\n  const data = new Date(timestamp * 1000);\n\n  if (Number.isNaN(data.getTime())) {\n    throw new Error(`Data inválida: ${valor}`);\n  }\n\n  return data.toISOString();\n};\n\nconst empresa = body._embedded?.companies?.[0];\n\nconst lead_atualizado = {\n  ...bd,\n\n  id_externo: paraString(body.id),\n  empresa_id_externo: paraString(empresa?.id),\n  etapa_id_externo: paraString(body.status_id),\n  funil_id_externo: paraString(body.pipeline_id),\n  usuario_responsavel_id_externo: paraString(\n    body.responsible_user_id\n  ),\n\n  nome: normalizar(body.name),\n\n  venda: normalizar(body.price) === null\n    ? null\n    : Number(body.price),\n\n  utm_source: getCustomField(\n    'UTM_SOURCE',\n    'utm_source',\n    143746\n  ),\n\n  // Mantém a grafia existente da coluna no banco.\n  utm_campaing: getCustomField(\n    'UTM_CAMPAIGN',\n    'utm_campaign',\n    143744\n  ),\n\n  utm_medium: getCustomField(\n    'UTM_MEDIUM',\n    'utm_medium',\n    143742\n  ),\n\n  utm_content: getCustomField(\n    'UTM_CONTENT',\n    'utm_content',\n    143740\n  ),\n\n  servicos: getCustomField(\n    'Serviços',\n    'Servicos',\n    143840\n  ),\n\n  data_contrato: timestampParaISO(\n    getCustomField('Data do Contrato', 143846)\n  ),\n\n  criado_em: timestampParaISO(body.created_at),\n  atualizado_em: timestampParaISO(body.updated_at),\n\n  is_deleted: body.is_deleted === true,\n};\n\nreturn lead_atualizado;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        464,
+        -112
+      ],
+      "id": "1b4745ed-8f11-41df-a2c3-649162018aee",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "9eaf6608-2599-4dfc-a9d8-afb67eacc894",
+              "leftValue": "={{ $json.deletado }}",
+              "rightValue": false,
+              "operator": {
+                "type": "boolean",
+                "operation": "false",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        672,
+        -112
+      ],
+      "id": "0316317f-cde4-4b11-829f-9ae76288fd6d",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "schema": {
+          "__rl": true,
+          "value": "analise_dados",
+          "mode": "list",
+          "cachedResultName": "analise_dados"
+        },
+        "table": {
+          "__rl": true,
+          "value": "leads",
+          "mode": "list",
+          "cachedResultName": "leads"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $json.id }}",
+            "venda": "={{ $json.venda }}",
+            "id_externo": "={{ $json.id_externo }}",
+            "contato_id_externo": "={{ $json.contato_id_externo }}",
+            "empresa_id_externo": "={{ $json.empresa_id_externo }}",
+            "etapa_id_externo": "={{ $json.etapa_id_externo }}",
+            "funil_id_externo": "={{ $json.funil_id_externo }}",
+            "usuario_responsavel_id_externo": "={{ $json.usuario_responsavel_id_externo }}",
+            "nome": "={{ $json.nome }}",
+            "utm_source": "={{ $json.utm_source }}",
+            "utm_campaing": "={{ $json.utm_campaing }}",
+            "utm_medium": "={{ $json.utm_medium }}",
+            "utm_content": "={{ $json.utm_content }}",
+            "servicos": "={{ $json.servicos }}",
+            "data_contrato": "={{ $json.data_contrato }}",
+            "criado_em": "={{ $json.criado_em }}",
+            "atualizado_em": "={{ $json.atualizado_em }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "id_externo",
+              "displayName": "id_externo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "contato_id_externo",
+              "displayName": "contato_id_externo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "empresa_id_externo",
+              "displayName": "empresa_id_externo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "etapa_id_externo",
+              "displayName": "etapa_id_externo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "funil_id_externo",
+              "displayName": "funil_id_externo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "usuario_responsavel_id_externo",
+              "displayName": "usuario_responsavel_id_externo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "nome",
+              "displayName": "nome",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "venda",
+              "displayName": "venda",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "utm_source",
+              "displayName": "utm_source",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "utm_campaing",
+              "displayName": "utm_campaing",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "utm_medium",
+              "displayName": "utm_medium",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "utm_content",
+              "displayName": "utm_content",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "servicos",
+              "displayName": "servicos",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "data_contrato",
+              "displayName": "data_contrato",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "criado_em",
+              "displayName": "criado_em",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "atualizado_em",
+              "displayName": "atualizado_em",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        896,
+        -208
+      ],
+      "id": "7df7bc73-f955-4b68-b6af-dbab227cc375",
+      "name": "Insert or update rows in a table",
+      "credentials": {
+        "postgres": {
+          "id": "75T88sJeS9BfaHBO",
+          "name": "Postgres n8n"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "deleteTable",
+        "schema": {
+          "__rl": true,
+          "value": "analise_dados",
+          "mode": "list",
+          "cachedResultName": "analise_dados"
+        },
+        "table": {
+          "__rl": true,
+          "value": "leads",
+          "mode": "list",
+          "cachedResultName": "leads"
+        },
+        "deleteCommand": "delete",
+        "where": {
+          "values": [
+            {
+              "column": "id",
+              "value": "={{ $json.lead.id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        912,
+        -16
+      ],
+      "id": "339b9deb-4db4-41aa-b734-29982e5a5363",
+      "name": "Delete table or rows",
+      "credentials": {
+        "postgres": {
+          "id": "75T88sJeS9BfaHBO",
+          "name": "Postgres n8n"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "U2zPJpKifuM8xMJS",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/U2zPJpKifuM8xMJS",
+          "cachedResultName": "01_kommo_credenciais"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        -256,
+        -112
+      ],
+      "id": "78df604e-76e0-4302-adc8-af77f4cc5c85",
+      "name": "Call '01_kommo_credenciais'"
+    },
+    {
+      "parameters": {
+        "url": "=https://{{ $json.kommo_subdomain }}.kommo.com/api/v4/leads/{{ $('Webhook').item.json.body[\"leads[update][0][id]\"] || $('Webhook').item.json.body[\"leads[delete][0][id]\"] || $('Webhook').item.json.body[\"leads[add][0][id]\"] || $('Webhook').item.json.body[\"leads[status][0][id]\"]}}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "authorization",
+              "value": "=Bearer {{ $json.token }}"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -48,
+        -112
+      ],
+      "id": "cf005504-a212-41db-a3ae-4100000db69c",
+      "name": "obder_dados_atuais_lead"
+    }
+  ],
+  "pinData": {
+    "Webhook": [
+      {
+        "json": {
+          "headers": {
+            "host": "work.raelflow.com",
+            "user-agent": "amoCRM-Webhooks/3.0",
+            "content-length": "3998",
+            "accept-encoding": "gzip",
+            "content-type": "application/x-www-form-urlencoded",
+            "x-amocrm-requestid": "f2bef1ad-57bd-49f9-871d-a3fc105d59e0",
+            "x-forwarded-for": "142.0.207.172",
+            "x-forwarded-host": "work.raelflow.com",
+            "x-forwarded-port": "443",
+            "x-forwarded-proto": "https",
+            "x-forwarded-server": "e4262c059b6a",
+            "x-real-ip": "142.0.207.172"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "account[subdomain]": "tcc2",
+            "account[id]": "36644739",
+            "account[_links][self]": "https://tcc2.amocrm.com",
+            "leads[update][0][id]": "230302",
+            "leads[update][0][name]": "Suporte Técnico - Otávio Cardoso Torres",
+            "leads[update][0][status_id]": "107915627",
+            "leads[update][0][price]": "3336",
+            "leads[update][0][price_with_minor_units]": "3336",
+            "leads[update][0][responsible_user_id]": "15364855",
+            "leads[update][0][last_modified]": "1782000644",
+            "leads[update][0][modified_user_id]": "10506903",
+            "leads[update][0][created_user_id]": "0",
+            "leads[update][0][date_create]": "1767069859",
+            "leads[update][0][pipeline_id]": "13982759",
+            "leads[update][0][account_id]": "36644739",
+            "leads[update][0][custom_fields][0][id]": "143740",
+            "leads[update][0][custom_fields][0][name]": "utm_content",
+            "leads[update][0][custom_fields][0][values][0][value]": "diagnostico",
+            "leads[update][0][custom_fields][0][code]": "UTM_CONTENT",
+            "leads[update][0][custom_fields][1][id]": "143742",
+            "leads[update][0][custom_fields][1][name]": "utm_medium",
+            "leads[update][0][custom_fields][1][values][0][value]": "referral",
+            "leads[update][0][custom_fields][1][code]": "UTM_MEDIUM",
+            "leads[update][0][custom_fields][2][id]": "143744",
+            "leads[update][0][custom_fields][2][name]": "utm_campaign",
+            "leads[update][0][custom_fields][2][values][0][value]": "remarketing-2025-suporte_tecnico",
+            "leads[update][0][custom_fields][2][code]": "UTM_CAMPAIGN",
+            "leads[update][0][custom_fields][3][id]": "143746",
+            "leads[update][0][custom_fields][3][name]": "utm_source",
+            "leads[update][0][custom_fields][3][values][0][value]": "instagram",
+            "leads[update][0][custom_fields][3][code]": "UTM_SOURCE",
+            "leads[update][0][custom_fields][4][id]": "143748",
+            "leads[update][0][custom_fields][4][name]": "utm_term",
+            "leads[update][0][custom_fields][4][values][0][value]": "suporte_tecnico",
+            "leads[update][0][custom_fields][4][code]": "UTM_TERM",
+            "leads[update][0][custom_fields][5][id]": "143750",
+            "leads[update][0][custom_fields][5][name]": "utm_referrer",
+            "leads[update][0][custom_fields][5][values][0][value]": "https://www.instagram.com/",
+            "leads[update][0][custom_fields][5][code]": "UTM_REFERRER",
+            "leads[update][0][custom_fields][6][id]": "143752",
+            "leads[update][0][custom_fields][6][name]": "referrer",
+            "leads[update][0][custom_fields][6][values][0][value]": "https://www.instagram.com/",
+            "leads[update][0][custom_fields][6][code]": "REFERRER",
+            "leads[update][0][custom_fields][7][id]": "143754",
+            "leads[update][0][custom_fields][7][name]": "gclientid",
+            "leads[update][0][custom_fields][7][values][0][value]": "GA1.1.329042446.1763134482",
+            "leads[update][0][custom_fields][7][code]": "GCLIENTID",
+            "leads[update][0][custom_fields][8][id]": "143758",
+            "leads[update][0][custom_fields][8][name]": "fbclid",
+            "leads[update][0][custom_fields][8][values][0][value]": "fbclid_3364146450",
+            "leads[update][0][custom_fields][8][code]": "FBCLID",
+            "leads[update][0][custom_fields][9][id]": "143840",
+            "leads[update][0][custom_fields][9][name]": "Serviços",
+            "leads[update][0][custom_fields][9][values][0][value]": "Suporte Técnico",
+            "leads[update][0][custom_fields][9][values][0][enum]": "105014",
+            "leads[update][0][created_at]": "1767069859",
+            "leads[update][0][updated_at]": "1782000644"
+          },
+          "webhookUrl": "https://work.raelflow.com/webhook/cb103647-3dce-4fe9-aafd-2a45053a7d53",
+          "executionMode": "production"
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Call '01_kommo_credenciais'",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Select rows from a table": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Insert or update rows in a table",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Delete table or rows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call '01_kommo_credenciais'": {
+      "main": [
+        [
+          {
+            "node": "obder_dados_atuais_lead",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "obder_dados_atuais_lead": {
+      "main": [
+        [
+          {
+            "node": "Select rows from a table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "c6474678-ad75-4593-aefe-0c10c0116309",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "8fb7f33e3d6fc86f0ee8d1fa5fcd9b446aecff8feb445d2ad470d015adeac75a"
+  },
+  "id": "quJBju22dKcCtD5w",
+  "tags": []
+}

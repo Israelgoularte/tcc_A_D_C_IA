@@ -1,0 +1,1917 @@
+{
+  "name": "04_dados_de_teste",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -224,
+        -32
+      ],
+      "id": "0f60856f-52ea-406b-8dbc-b591a337c5e7",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "9ce56f02-6967-4372-b32d-c5f8eada46a2",
+              "name": "quantidade_de_leads",
+              "value": 3000,
+              "type": "number"
+            },
+            {
+              "id": "55cbe6b9-7753-4c03-8e32-e3b7a9719533",
+              "name": "quantidade_de_empresas",
+              "value": 3000,
+              "type": "number"
+            },
+            {
+              "id": "87d7912a-ae5f-4f2e-ad89-097addf9f5c5",
+              "name": "quantidade_de_contatos",
+              "value": 3000,
+              "type": "number"
+            },
+            {
+              "id": "c0b17187-0f58-4061-a513-26654907c797",
+              "name": "data_inicio",
+              "value": "01/01/2025",
+              "type": "string"
+            },
+            {
+              "id": "4c54301a-242e-43a3-8b9f-016c6cf99e0e",
+              "name": "=data_termino",
+              "value": "31/12/2025",
+              "type": "string"
+            },
+            {
+              "id": "acd8dcc0-b009-4f24-83ee-1c4527fbfe83",
+              "name": "servicos",
+              "value": "[\"Desenvolvimento Web\",         \"Desenvolvimento Mobile\",         \"Desenvolvimento de API\",         \"Desenvolvimento de Integração\",         \"Consultoria em TI\",         \"Suporte Técnico\"]",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        80,
+        -288
+      ],
+      "id": "41f31744-422b-40ef-83a3-9618a948fd23",
+      "name": "dados_basicos"
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "value": "analise_dados",
+          "mode": "list",
+          "cachedResultName": "analise_dados"
+        },
+        "table": {
+          "__rl": true,
+          "value": "funis",
+          "mode": "list",
+          "cachedResultName": "funis"
+        },
+        "returnAll": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        80,
+        -128
+      ],
+      "id": "28b0c09c-f501-404a-9e2d-d1e49c08f25d",
+      "name": "funis",
+      "credentials": {
+        "postgres": {
+          "id": "75T88sJeS9BfaHBO",
+          "name": "Postgres n8n"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "value": "analise_dados",
+          "mode": "list",
+          "cachedResultName": "analise_dados"
+        },
+        "table": {
+          "__rl": true,
+          "value": "etapas",
+          "mode": "list",
+          "cachedResultName": "etapas"
+        },
+        "returnAll": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        80,
+        64
+      ],
+      "id": "87405438-886a-49da-8efa-dd052c81459f",
+      "name": "etapas",
+      "credentials": {
+        "postgres": {
+          "id": "75T88sJeS9BfaHBO",
+          "name": "Postgres n8n"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "value": "analise_dados",
+          "mode": "list",
+          "cachedResultName": "analise_dados"
+        },
+        "table": {
+          "__rl": true,
+          "value": "usuarios",
+          "mode": "list",
+          "cachedResultName": "usuarios"
+        },
+        "returnAll": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        80,
+        240
+      ],
+      "id": "622be8d1-910a-4f0e-a5ee-952c245ab94b",
+      "name": "usuarios",
+      "credentials": {
+        "postgres": {
+          "id": "75T88sJeS9BfaHBO",
+          "name": "Postgres n8n"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "combineBySql",
+        "numberInputs": 8,
+        "query": "SELECT * FROM input1 LEFT JOIN input2 LEFT JOIN input3 LEFT JOIN input4 LEFT JOIN input5 LEFT JOIN input6 LEFT JOIN input7 LEFT JOIN input8",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        928,
+        32
+      ],
+      "id": "149a3503-f458-4547-9067-97a7d0ebd458",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "destinationFieldName": "funis",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        288,
+        -128
+      ],
+      "id": "f41edf12-9788-46c5-9028-bcfc955f9f4c",
+      "name": "Aggregate"
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "destinationFieldName": "etapas",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        288,
+        64
+      ],
+      "id": "9103a52d-8ed8-4b19-962d-07c36cedafff",
+      "name": "Aggregate1"
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "destinationFieldName": "usuarios",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        288,
+        240
+      ],
+      "id": "0221fb0d-a6ae-4d44-a750-2fd4098ea4c4",
+      "name": "Aggregate2"
+    },
+    {
+      "parameters": {
+        "jsCode": "const inputItems = $input.all();\n\nif (inputItems.length === 0) {\n  throw new Error('Nenhum item foi recebido pelo node Code.');\n}\n\n/**\n * ============================================================\n * DADOS SINTÉTICOS UTILIZADOS NA GERAÇÃO\n * ============================================================\n */\n\nconst PRIMEIROS_NOMES = [\n  'Amanda', 'André', 'Bianca', 'Bruno', 'Caio', 'Camila',\n  'Carolina', 'Daniel', 'Débora', 'Eduardo', 'Elisa', 'Felipe',\n  'Fernando', 'Gabriel', 'Giovana', 'Helena', 'Igor', 'Isadora',\n  'Joana', 'João', 'Júlia', 'Larissa', 'Leonardo', 'Lucas',\n  'Mariana', 'Mateus', 'Natália', 'Otávio', 'Patrícia', 'Paula',\n  'Rafael', 'Renata', 'Rodrigo', 'Sabrina', 'Samuel', 'Tatiana',\n  'Vinícius', 'Vitória'\n];\n\nconst NOMES_COMPOSTOS = [\n  'Ana Clara',\n  'Ana Júlia',\n  'Ana Luiza',\n  'Ana Paula',\n  'Carlos Eduardo',\n  'João Gabriel',\n  'João Lucas',\n  'João Pedro',\n  'José Carlos',\n  'José Eduardo',\n  'Luiz Felipe',\n  'Luiz Gustavo',\n  'Maria Clara',\n  'Maria Eduarda',\n  'Maria Fernanda',\n  'Maria Júlia',\n  'Maria Luiza',\n  'Pedro Henrique',\n  'Paulo Henrique'\n];\n\nconst NOMES_INTERMEDIARIOS = [\n  'Aparecida',\n  'Augusto',\n  'Cristina',\n  'Eduardo',\n  'Fernanda',\n  'Gabriel',\n  'Gustavo',\n  'Helena',\n  'Henrique',\n  'Júlia',\n  'Luiza',\n  'Maria',\n  'Paulo',\n  'Pedro',\n  'Rafael',\n  'Regina',\n  'Renato',\n  'Ricardo'\n];\n\nconst SOBRENOMES = [\n  'Albuquerque', 'Almeida', 'Alves', 'Amaral', 'Andrade',\n  'Araújo', 'Barbosa', 'Batista', 'Campos', 'Cardoso',\n  'Carvalho', 'Castro', 'Cavalcante', 'Correia', 'Costa',\n  'Cunha', 'Dias', 'Duarte', 'Farias', 'Ferreira',\n  'Freitas', 'Gomes', 'Lima', 'Lopes', 'Machado',\n  'Marques', 'Martins', 'Medeiros', 'Melo', 'Monteiro',\n  'Moraes', 'Moreira', 'Nascimento', 'Nogueira', 'Oliveira',\n  'Pereira', 'Ramos', 'Rezende', 'Ribeiro', 'Rocha',\n  'Santana', 'Santos', 'Silva', 'Souza', 'Teixeira',\n  'Torres', 'Vasconcelos', 'Vieira'\n];\n\nconst PREFIXOS_EMPRESA = [\n  'Ápice', 'Atlas', 'Aurora', 'Cobalto', 'Delta', 'Elo',\n  'Fluxo', 'Horizonte', 'Impulso', 'Integra', 'Lumina',\n  'Métrica', 'Nexa', 'Nova', 'Orbe', 'Ponto', 'Prisma',\n  'Vértice', 'Via', 'Viva'\n];\n\nconst PREFIXOS_INSTITUCIONAIS_EMPRESA = [\n  'Grupo',\n  'Instituto',\n  'Núcleo',\n  'Rede',\n  'Central',\n  'Hub',\n  'Base',\n  'Aliança'\n];\n\nconst SEGMENTOS_EMPRESA = [\n  'Comercial',\n  'Consultoria',\n  'Digital',\n  'Engenharia',\n  'Gestão',\n  'Indústria',\n  'Logística',\n  'Negócios',\n  'Operações',\n  'Serviços',\n  'Soluções',\n  'Tecnologia',\n  'Varejo'\n];\n\nconst COMPLEMENTOS_EMPRESA = [\n  'Brasil',\n  'Corporativo',\n  'Empresarial',\n  'Estratégica',\n  'Integrada',\n  'Inteligente',\n  'Nacional',\n  'Prime',\n  'Pro',\n  'Tech',\n  'Digital',\n  'Global'\n];\n\nconst TERMINACOES_EMPRESA = [\n  'Ltda.',\n  'Soluções',\n  'Serviços',\n  'Tecnologia',\n  'Consultoria',\n  'Negócios',\n  'Operações'\n];\n\nconst CARGOS = [\n  'Diretor Comercial',\n  'Gerente de Operações',\n  'Coordenador de TI',\n  'Analista de Sistemas',\n  'Gerente de Projetos',\n  'Diretor Executivo',\n  'Coordenador Comercial',\n  'Gerente Administrativo',\n  'Product Owner',\n  'Sócio Administrador',\n  'Head de Tecnologia',\n  'Analista de Negócios'\n];\n\n/**\n * Pesos sazonais mensais.\n *\n * Não representam limites máximos.\n * Servem somente para criar meses com maior e menor entrada de leads.\n */\nconst PESOS_SAZONAIS_MES = {\n  1: 0.78,\n  2: 0.88,\n  3: 1.12,\n  4: 0.98,\n  5: 1.06,\n  6: 1.17,\n  7: 0.91,\n  8: 1.03,\n  9: 1.15,\n  10: 1.21,\n  11: 1.07,\n  12: 0.84\n};\n\n/**\n * ============================================================\n * FUNÇÕES UTILITÁRIAS\n * ============================================================\n */\n\n/**\n * Gerador pseudoaleatório determinístico.\n *\n * A mesma seed produz novamente os mesmos registros.\n */\nfunction criarGeradorAleatorio(seedInicial) {\n  let seed = Number(seedInicial) || 2025;\n\n  return function random() {\n    seed |= 0;\n    seed = (seed + 0x6D2B79F5) | 0;\n\n    let resultado = Math.imul(seed ^ (seed >>> 15), 1 | seed);\n\n    resultado =\n      resultado +\n      Math.imul(resultado ^ (resultado >>> 7), 61 | resultado) ^\n      resultado;\n\n    return ((resultado ^ (resultado >>> 14)) >>> 0) / 4294967296;\n  };\n}\n\nfunction inteiroAleatorio(random, minimo, maximo) {\n  return Math.floor(random() * (maximo - minimo + 1)) + minimo;\n}\n\nfunction decimalAleatorio(random, minimo, maximo, casas = 2) {\n  const valor = random() * (maximo - minimo) + minimo;\n  return Number(valor.toFixed(casas));\n}\n\nfunction escolherAleatorio(random, array) {\n  if (!Array.isArray(array) || array.length === 0) {\n    throw new Error('Tentativa de selecionar um item em uma lista vazia.');\n  }\n\n  return array[inteiroAleatorio(random, 0, array.length - 1)];\n}\n\nfunction escolherComPeso(random, opcoes) {\n  if (!Array.isArray(opcoes) || opcoes.length === 0) {\n    throw new Error('A lista ponderada está vazia.');\n  }\n\n  const total = opcoes.reduce(\n    (soma, opcao) => soma + Number(opcao.peso || 0),\n    0\n  );\n\n  if (total <= 0) {\n    throw new Error('A lista ponderada não possui pesos válidos.');\n  }\n\n  let sorteio = random() * total;\n\n  for (const opcao of opcoes) {\n    sorteio -= Number(opcao.peso || 0);\n\n    if (sorteio <= 0) {\n      return opcao.valor;\n    }\n  }\n\n  return opcoes[opcoes.length - 1].valor;\n}\n\nfunction normalizarTexto(valor) {\n  return String(valor || '')\n    .trim()\n    .toLowerCase()\n    .normalize('NFD')\n    .replace(/[\\u0300-\\u036f]/g, '');\n}\n\nfunction criarSlug(valor) {\n  return normalizarTexto(valor)\n    .replace(/[^a-z0-9]+/g, '-')\n    .replace(/^-+|-+$/g, '');\n}\n\nfunction pad(numero, tamanho = 2) {\n  return String(numero).padStart(tamanho, '0');\n}\n\nfunction formatarNumeroFinanceiro(valor) {\n  return Number(Number(valor || 0).toFixed(2));\n}\n\nfunction menorData(dataA, dataB) {\n  return dataA.getTime() <= dataB.getTime() ? dataA : dataB;\n}\n\nfunction maiorData(dataA, dataB) {\n  return dataA.getTime() >= dataB.getTime() ? dataA : dataB;\n}\n\nfunction adicionarDias(data, quantidade) {\n  const novaData = new Date(data.getTime());\n  novaData.setUTCDate(novaData.getUTCDate() + quantidade);\n  return novaData;\n}\n\nfunction dataAleatoriaEntre(random, inicio, termino) {\n  const minimo = inicio.getTime();\n  const maximo = termino.getTime();\n\n  if (maximo < minimo) {\n    throw new Error('O intervalo utilizado para gerar uma data é inválido.');\n  }\n\n  const timestamp = Math.floor(\n    random() * (maximo - minimo + 1) + minimo\n  );\n\n  return new Date(timestamp);\n}\n\n/**\n * Aceita:\n *\n * 01/01/2025\n * 2025-01-01\n * 2025-01-01T10:00:00.000Z\n */\nfunction converterData(valor, nomeCampo) {\n  if (!valor) {\n    throw new Error(`O campo \"${nomeCampo}\" não foi informado.`);\n  }\n\n  const texto = String(valor).trim();\n\n  const formatoBR = /^(\\d{2})\\/(\\d{2})\\/(\\d{4})$/;\n  const correspondenciaBR = texto.match(formatoBR);\n\n  if (correspondenciaBR) {\n    const [, dia, mes, ano] = correspondenciaBR;\n\n    const data = new Date(\n      Date.UTC(\n        Number(ano),\n        Number(mes) - 1,\n        Number(dia),\n        0,\n        0,\n        0,\n        0\n      )\n    );\n\n    const dataValida =\n      data.getUTCFullYear() === Number(ano) &&\n      data.getUTCMonth() === Number(mes) - 1 &&\n      data.getUTCDate() === Number(dia);\n\n    if (!dataValida) {\n      throw new Error(\n        `A data \"${texto}\" do campo \"${nomeCampo}\" é inválida.`\n      );\n    }\n\n    return data;\n  }\n\n  const formatoISO = /^\\d{4}-\\d{2}-\\d{2}(?:T.*)?$/;\n\n  if (!formatoISO.test(texto)) {\n    throw new Error(\n      `A data \"${texto}\" do campo \"${nomeCampo}\" possui formato inválido.`\n    );\n  }\n\n  const data = new Date(texto);\n\n  if (Number.isNaN(data.getTime())) {\n    throw new Error(\n      `A data \"${texto}\" do campo \"${nomeCampo}\" é inválida.`\n    );\n  }\n\n  return data;\n}\n\nfunction inicioDoDia(data) {\n  return new Date(\n    Date.UTC(\n      data.getUTCFullYear(),\n      data.getUTCMonth(),\n      data.getUTCDate(),\n      0,\n      0,\n      0,\n      0\n    )\n  );\n}\n\nfunction fimDoDia(data) {\n  return new Date(\n    Date.UTC(\n      data.getUTCFullYear(),\n      data.getUTCMonth(),\n      data.getUTCDate(),\n      23,\n      59,\n      59,\n      999\n    )\n  );\n}\n\n/**\n * ============================================================\n * GERAÇÃO DE NOMES DE PESSOAS\n * ============================================================\n */\n\nfunction criarNomePessoa(random) {\n  const usarNomeComposto = random() < 0.28;\n\n  const primeiroNome = usarNomeComposto\n    ? escolherAleatorio(random, NOMES_COMPOSTOS)\n    : escolherAleatorio(random, PRIMEIROS_NOMES);\n\n  /**\n   * Aproximadamente:\n   *\n   * 28% com primeiro nome + sobrenome.\n   * 47% com primeiro nome + dois sobrenomes.\n   * 25% com primeiro nome + nome intermediário + dois sobrenomes.\n   *\n   * Caso o primeiro nome já seja composto, o total de partes aumenta.\n   */\n  const formato = escolherComPeso(random, [\n    {\n      valor: 'curto',\n      peso: 28\n    },\n    {\n      valor: 'medio',\n      peso: 47\n    },\n    {\n      valor: 'longo',\n      peso: 25\n    }\n  ]);\n\n  const sobrenome1 = escolherAleatorio(\n    random,\n    SOBRENOMES\n  );\n\n  let sobrenome2 = escolherAleatorio(\n    random,\n    SOBRENOMES\n  );\n\n  while (sobrenome2 === sobrenome1) {\n    sobrenome2 = escolherAleatorio(\n      random,\n      SOBRENOMES\n    );\n  }\n\n  if (formato === 'curto') {\n    return `${primeiroNome} ${sobrenome1}`;\n  }\n\n  if (formato === 'medio') {\n    return `${primeiroNome} ${sobrenome1} ${sobrenome2}`;\n  }\n\n  const nomeIntermediario = escolherAleatorio(\n    random,\n    NOMES_INTERMEDIARIOS\n  );\n\n  return (\n    `${primeiroNome} ` +\n    `${nomeIntermediario} ` +\n    `${sobrenome1} ` +\n    `${sobrenome2}`\n  );\n}\n\n/**\n * ============================================================\n * GERAÇÃO DE NOMES DE EMPRESAS\n * ============================================================\n */\n\nfunction criarNomeEmpresaBase(random) {\n  const formato = escolherComPeso(random, [\n    {\n      valor: 'simples',\n      peso: 35\n    },\n    {\n      valor: 'composta',\n      peso: 42\n    },\n    {\n      valor: 'institucional',\n      peso: 23\n    }\n  ]);\n\n  const prefixo = escolherAleatorio(\n    random,\n    PREFIXOS_EMPRESA\n  );\n\n  const segmento = escolherAleatorio(\n    random,\n    SEGMENTOS_EMPRESA\n  );\n\n  if (formato === 'simples') {\n    return `${prefixo} ${segmento}`;\n  }\n\n  if (formato === 'composta') {\n    const complemento = escolherAleatorio(\n      random,\n      COMPLEMENTOS_EMPRESA\n    );\n\n    return `${prefixo} ${segmento} ${complemento}`;\n  }\n\n  const prefixoInstitucional = escolherAleatorio(\n    random,\n    PREFIXOS_INSTITUCIONAIS_EMPRESA\n  );\n\n  const terminacao = escolherAleatorio(\n    random,\n    TERMINACOES_EMPRESA\n  );\n\n  return (\n    `${prefixoInstitucional} ` +\n    `${prefixo} ` +\n    `${segmento} ` +\n    `${terminacao}`\n  );\n}\n\n/**\n * Garante nomes empresariais únicos.\n *\n * Caso ocorra repetição, um complemento numérico sintético será adicionado.\n */\nfunction criarNomeEmpresaUnico(random, nomesUtilizados) {\n  const nomeBase = criarNomeEmpresaBase(random);\n\n  if (!nomesUtilizados.has(nomeBase)) {\n    nomesUtilizados.add(nomeBase);\n    return nomeBase;\n  }\n\n  let contador = 2;\n  let nomeComComplemento = `${nomeBase} ${contador}`;\n\n  while (nomesUtilizados.has(nomeComComplemento)) {\n    contador += 1;\n    nomeComComplemento = `${nomeBase} ${contador}`;\n  }\n\n  nomesUtilizados.add(nomeComComplemento);\n\n  return nomeComComplemento;\n}\n\n/**\n * ============================================================\n * DADOS DE CONTATO FICTÍCIOS\n * ============================================================\n */\n\nfunction criarTelefoneContato(indice) {\n  /**\n   * DDD 00 propositalmente inválido.\n   */\n  const numero = String(indice)\n    .padStart(8, '0')\n    .slice(-8);\n\n  return `+55 00 9${numero.slice(0, 4)}-${numero.slice(4)}`;\n}\n\nfunction criarTelefoneEmpresa(indice) {\n  /**\n   * DDD 00 propositalmente inválido.\n   */\n  const numero = String(indice)\n    .padStart(4, '0')\n    .slice(-4);\n\n  return `+55 00 3000-${numero}`;\n}\n\n/**\n * ============================================================\n * LOCALIZAÇÃO DA ESTRUTURA PRINCIPAL DO INPUT\n * ============================================================\n */\n\n/**\n * Aceita:\n *\n * {\n *   \"quantidade_de_leads\": 6000,\n *   ...\n * }\n *\n * ou:\n *\n * {\n *   \"Estrutura_de_teste\": {\n *     \"quantidade_de_leads\": 6000,\n *     ...\n *   }\n * }\n */\nfunction obterEstrutura(json) {\n  if (!json || typeof json !== 'object' || Array.isArray(json)) {\n    throw new Error(\n      'O input recebido precisa ser um objeto JSON válido.'\n    );\n  }\n\n  if (\n    Object.prototype.hasOwnProperty.call(\n      json,\n      'quantidade_de_leads'\n    ) ||\n    Object.prototype.hasOwnProperty.call(\n      json,\n      'funis'\n    ) ||\n    Object.prototype.hasOwnProperty.call(\n      json,\n      'usuarios'\n    )\n  ) {\n    return json;\n  }\n\n  for (const valor of Object.values(json)) {\n    if (\n      valor &&\n      typeof valor === 'object' &&\n      !Array.isArray(valor) &&\n      (\n        Object.prototype.hasOwnProperty.call(\n          valor,\n          'quantidade_de_leads'\n        ) ||\n        Object.prototype.hasOwnProperty.call(\n          valor,\n          'funis'\n        ) ||\n        Object.prototype.hasOwnProperty.call(\n          valor,\n          'usuarios'\n        )\n      )\n    ) {\n      return valor;\n    }\n  }\n\n  throw new Error(\n    'Não foi possível localizar a estrutura principal no input.'\n  );\n}\n\n/**\n * ============================================================\n * LEITURA DINÂMICA DOS SERVIÇOS\n * ============================================================\n */\n\n/**\n * Aceita:\n *\n * \"servicos\": [\n *   \"Desenvolvimento Web\",\n *   \"Consultoria em TI\"\n * ]\n *\n * ou:\n *\n * \"servicos\": [\n *   { \"nome\": \"Desenvolvimento Web\" },\n *   { \"name\": \"Consultoria em TI\" }\n * ]\n *\n * Também aceita:\n *\n * \"campos_personalizados_lead\": [\n *   {\n *     \"name\": \"Serviços\",\n *     \"type\": \"select\",\n *     \"options\": [...]\n *   }\n * ]\n */\nfunction obterServicos(estrutura) {\n  const listaDireta =\n    estrutura.servicos ||\n    estrutura['serviços'] ||\n    estrutura.lista_de_servicos ||\n    estrutura['lista_de_serviços'];\n\n  if (Array.isArray(listaDireta)) {\n    const servicos = listaDireta\n      .map((servico) => {\n        if (typeof servico === 'string') {\n          return servico.trim();\n        }\n\n        if (servico && typeof servico === 'object') {\n          return String(\n            servico.nome ||\n            servico.name ||\n            servico.value ||\n            ''\n          ).trim();\n        }\n\n        return '';\n      })\n      .filter(Boolean);\n\n    if (servicos.length > 0) {\n      return [...new Set(servicos)];\n    }\n  }\n\n  const camposLead = Array.isArray(\n    estrutura.campos_personalizados_lead\n  )\n    ? estrutura.campos_personalizados_lead\n    : [];\n\n  const campoServicos = camposLead.find((campo) => {\n    const nomeCampo = normalizarTexto(\n      campo.name ||\n      campo.nome\n    );\n\n    return (\n      nomeCampo === 'servicos' ||\n      nomeCampo === 'servico'\n    );\n  });\n\n  if (campoServicos) {\n    const opcoes =\n      campoServicos.options ||\n      campoServicos.enums ||\n      campoServicos.opcoes ||\n      [];\n\n    const servicos = opcoes\n      .map((opcao) => {\n        if (typeof opcao === 'string') {\n          return opcao.trim();\n        }\n\n        if (opcao && typeof opcao === 'object') {\n          return String(\n            opcao.nome ||\n            opcao.name ||\n            opcao.value ||\n            ''\n          ).trim();\n        }\n\n        return '';\n      })\n      .filter(Boolean);\n\n    if (servicos.length > 0) {\n      return [...new Set(servicos)];\n    }\n  }\n\n  throw new Error(\n    'Nenhum serviço foi encontrado. Informe a propriedade \"servicos\" no input.'\n  );\n}\n\n/**\n * ============================================================\n * DISTRIBUIÇÃO SAZONAL DOS LEADS\n * ============================================================\n */\n\nfunction obterMesesEntreDatas(dataInicio, dataTermino) {\n  const meses = [];\n\n  let cursor = new Date(\n    Date.UTC(\n      dataInicio.getUTCFullYear(),\n      dataInicio.getUTCMonth(),\n      1\n    )\n  );\n\n  const limite = new Date(\n    Date.UTC(\n      dataTermino.getUTCFullYear(),\n      dataTermino.getUTCMonth(),\n      1\n    )\n  );\n\n  while (cursor.getTime() <= limite.getTime()) {\n    const inicioMes = new Date(\n      Date.UTC(\n        cursor.getUTCFullYear(),\n        cursor.getUTCMonth(),\n        1,\n        0,\n        0,\n        0,\n        0\n      )\n    );\n\n    const fimMes = new Date(\n      Date.UTC(\n        cursor.getUTCFullYear(),\n        cursor.getUTCMonth() + 1,\n        0,\n        23,\n        59,\n        59,\n        999\n      )\n    );\n\n    meses.push({\n      ano: cursor.getUTCFullYear(),\n      mes: cursor.getUTCMonth() + 1,\n      inicio: maiorData(inicioMes, dataInicio),\n      termino: menorData(fimMes, dataTermino)\n    });\n\n    cursor = new Date(\n      Date.UTC(\n        cursor.getUTCFullYear(),\n        cursor.getUTCMonth() + 1,\n        1\n      )\n    );\n  }\n\n  return meses;\n}\n\nfunction distribuirQuantidadePorMes(\n  random,\n  quantidade,\n  meses\n) {\n  const mesesComPeso = meses.map((mes) => {\n    const pesoBase =\n      PESOS_SAZONAIS_MES[mes.mes] || 1;\n\n    /**\n     * Variação adicional para evitar uma distribuição mecânica.\n     */\n    const variacao = decimalAleatorio(\n      random,\n      0.88,\n      1.12,\n      4\n    );\n\n    return {\n      ...mes,\n      peso: pesoBase * variacao\n    };\n  });\n\n  const somaPesos = mesesComPeso.reduce(\n    (soma, mes) => soma + mes.peso,\n    0\n  );\n\n  const distribuicao = mesesComPeso.map((mes) => {\n    const quantidadeExata =\n      quantidade * (mes.peso / somaPesos);\n\n    const quantidadeInicial =\n      Math.floor(quantidadeExata);\n\n    return {\n      ...mes,\n      quantidade: quantidadeInicial,\n      fracao: quantidadeExata - quantidadeInicial\n    };\n  });\n\n  const quantidadeDistribuida =\n    distribuicao.reduce(\n      (soma, mes) => soma + mes.quantidade,\n      0\n    );\n\n  let restante =\n    quantidade - quantidadeDistribuida;\n\n  distribuicao\n    .sort((a, b) => b.fracao - a.fracao)\n    .forEach((mes) => {\n      if (restante > 0) {\n        mes.quantidade += 1;\n        restante -= 1;\n      }\n    });\n\n  return distribuicao.sort((a, b) => {\n    if (a.ano !== b.ano) {\n      return a.ano - b.ano;\n    }\n\n    return a.mes - b.mes;\n  });\n}\n\n/**\n * ============================================================\n * CLASSIFICAÇÃO DAS ETAPAS\n * ============================================================\n */\n\nfunction obterPesoEtapa(nomeEtapa) {\n  const nome = normalizarTexto(nomeEtapa);\n\n  if (nome.includes('incoming')) return 10;\n  if (nome.includes('novo lead qualificado')) return 13;\n  if (nome.includes('novo lead')) return 16;\n  if (nome.includes('contato inicial')) return 15;\n  if (nome.includes('qualificacao em andamento')) return 14;\n  if (nome === 'qualificado') return 11;\n  if (nome.includes('desqualificado')) return 8;\n  if (nome.includes('contato de vendas')) return 12;\n  if (nome.includes('proposta')) return 10;\n  if (nome.includes('negociacao')) return 8;\n  if (nome.includes('closed - won')) return 7;\n  if (nome.includes('closed - lost')) return 9;\n\n  return 5;\n}\n\nfunction etapaEhGanha(nomeEtapa) {\n  const nome = normalizarTexto(nomeEtapa);\n\n  return (\n    nome.includes('closed - won') ||\n    nome.includes('fechado - ganhou') ||\n    nome.includes('fechado ganho') ||\n    nome === 'ganho' ||\n    nome === 'ganhou'\n  );\n}\n\nfunction etapaEhDesqualificada(nomeEtapa) {\n  const nome = normalizarTexto(nomeEtapa);\n\n  return nome.includes('desqualificado');\n}\n\nfunction etapaEhPerdida(nomeEtapa) {\n  const nome = normalizarTexto(nomeEtapa);\n\n  return (\n    etapaEhDesqualificada(nomeEtapa) ||\n    nome.includes('closed - lost') ||\n    nome.includes('fechado - perdido') ||\n    nome.includes('fechado perdido') ||\n    nome === 'perdido'\n  );\n}\n\nfunction etapaEhPropostaOuNegociacao(nomeEtapa) {\n  const nome = normalizarTexto(nomeEtapa);\n\n  return (\n    nome.includes('proposta') ||\n    nome.includes('negociacao')\n  );\n}\n\n/**\n * Define os indicadores comerciais do lead.\n */\nfunction classificarEtapaComercial(\n  random,\n  nomeEtapa\n) {\n  const vendaRealizada =\n    etapaEhGanha(nomeEtapa);\n\n  const leadPerdido =\n    etapaEhPerdida(nomeEtapa);\n\n  const desqualificado =\n    etapaEhDesqualificada(nomeEtapa);\n\n  const propostaOuNegociacao =\n    etapaEhPropostaOuNegociacao(nomeEtapa);\n\n  if (vendaRealizada) {\n    return {\n      proposta_gerada: true,\n      possui_valor_comercial: true,\n      venda_realizada: true,\n      lead_perdido: false\n    };\n  }\n\n  if (propostaOuNegociacao) {\n    return {\n      proposta_gerada: true,\n      possui_valor_comercial: true,\n      venda_realizada: false,\n      lead_perdido: false\n    };\n  }\n\n  if (desqualificado) {\n    return {\n      proposta_gerada: false,\n      possui_valor_comercial: false,\n      venda_realizada: false,\n      lead_perdido: true\n    };\n  }\n\n  if (leadPerdido) {\n    /**\n     * Parte das oportunidades perdidas recebeu proposta\n     * antes do encerramento.\n     */\n    const propostaGerada = random() < 0.7;\n\n    return {\n      proposta_gerada: propostaGerada,\n      possui_valor_comercial: propostaGerada,\n      venda_realizada: false,\n      lead_perdido: true\n    };\n  }\n\n  return {\n    proposta_gerada: false,\n    possui_valor_comercial: false,\n    venda_realizada: false,\n    lead_perdido: false\n  };\n}\n\n/**\n * ============================================================\n * UTMS\n * ============================================================\n */\n\nfunction gerarUtm(random, servico, criadoEm) {\n  const trimestre =\n    Math.floor(criadoEm.getUTCMonth() / 3) + 1;\n\n  const ano =\n    criadoEm.getUTCFullYear();\n\n  const servicoSlug =\n    criarSlug(servico);\n\n  const plataforma = escolherComPeso(random, [\n    {\n      valor: 'meta',\n      peso: 58\n    },\n    {\n      valor: 'google',\n      peso: 42\n    }\n  ]);\n\n  if (plataforma === 'meta') {\n    const source = escolherComPeso(random, [\n      {\n        valor: 'instagram',\n        peso: 62\n      },\n      {\n        valor: 'facebook',\n        peso: 38\n      }\n    ]);\n\n    return {\n      utm_source: source,\n      utm_campaing:\n        `meta_${servicoSlug}_q${trimestre}_${ano}`,\n      utm_medium: 'paid_social',\n      utm_content: escolherAleatorio(random, [\n        'carrossel_case',\n        'video_demonstracao',\n        'imagem_beneficio',\n        'remarketing_visitantes',\n        'formulario_leads'\n      ])\n    };\n  }\n\n  return {\n    utm_source: 'google',\n    utm_campaing:\n      `google_${servicoSlug}_q${trimestre}_${ano}`,\n    utm_medium: 'cpc',\n    utm_content: escolherAleatorio(random, [\n      'pesquisa_servico',\n      'pesquisa_orcamento',\n      'pesquisa_empresa',\n      'display_remarketing',\n      'performance_max'\n    ])\n  };\n}\n\n/**\n * ============================================================\n * PROCESSAMENTO PRINCIPAL\n * ============================================================\n */\n\nconst resultados = [];\n\nfor (const inputItem of inputItems) {\n  const estrutura =\n    obterEstrutura(inputItem.json);\n\n  const quantidade = Number(\n    estrutura.quantidade_de_leads\n  );\n\n  const seed = Number(\n    estrutura.seed ?? 2025\n  );\n\n  const valorMinimoVenda = Number(\n    estrutura.valor_minimo_venda ?? 2500\n  );\n\n  const valorMaximoVenda = Number(\n    estrutura.valor_maximo_venda ?? 120000\n  );\n\n  if (\n    !Number.isInteger(quantidade) ||\n    quantidade <= 0\n  ) {\n    throw new Error(\n      'O campo \"quantidade_de_leads\" precisa ser um número inteiro maior que zero.'\n    );\n  }\n\n  if (quantidade > 100000) {\n    throw new Error(\n      'A quantidade solicitada excede o limite de 100000 registros por execução.'\n    );\n  }\n\n  if (\n    !Number.isFinite(valorMinimoVenda) ||\n    valorMinimoVenda < 0\n  ) {\n    throw new Error(\n      'O campo \"valor_minimo_venda\" precisa ser maior ou igual a zero.'\n    );\n  }\n\n  if (\n    !Number.isFinite(valorMaximoVenda) ||\n    valorMaximoVenda <= 0\n  ) {\n    throw new Error(\n      'O campo \"valor_maximo_venda\" precisa ser maior que zero.'\n    );\n  }\n\n  if (valorMaximoVenda < valorMinimoVenda) {\n    throw new Error(\n      'O valor máximo da venda precisa ser maior ou igual ao valor mínimo.'\n    );\n  }\n\n  const dataInicio = inicioDoDia(\n    converterData(\n      estrutura.data_inicio,\n      'data_inicio'\n    )\n  );\n\n  const dataTermino = fimDoDia(\n    converterData(\n      estrutura.data_termino,\n      'data_termino'\n    )\n  );\n\n  if (dataTermino.getTime() < dataInicio.getTime()) {\n    throw new Error(\n      'A data de término precisa ser maior ou igual à data de início.'\n    );\n  }\n\n  const funis = Array.isArray(\n    estrutura.funis\n  )\n    ? estrutura.funis\n    : [];\n\n  const etapas = Array.isArray(\n    estrutura.etapas\n  )\n    ? estrutura.etapas\n    : [];\n\n  const usuarios = Array.isArray(\n    estrutura.usuarios\n  )\n    ? estrutura.usuarios\n    : [];\n\n  const servicos =\n    obterServicos(estrutura);\n\n  if (funis.length === 0) {\n    throw new Error(\n      'Nenhum funil foi recebido no campo \"funis\".'\n    );\n  }\n\n  if (etapas.length === 0) {\n    throw new Error(\n      'Nenhuma etapa foi recebida no campo \"etapas\".'\n    );\n  }\n\n  if (usuarios.length === 0) {\n    throw new Error(\n      'Nenhum usuário foi recebido no campo \"usuarios\".'\n    );\n  }\n\n  const random =\n    criarGeradorAleatorio(seed);\n\n  const meses =\n    obterMesesEntreDatas(\n      dataInicio,\n      dataTermino\n    );\n\n  const distribuicaoMensal =\n    distribuirQuantidadePorMes(\n      random,\n      quantidade,\n      meses\n    );\n\n  /**\n   * Cerca de 72% dos leads terão empresas distintas.\n   *\n   * Algumas empresas poderão aparecer em mais de um lead,\n   * simulando recorrência ou novas demandas.\n   */\n  const quantidadeEmpresas = Math.max(\n    1,\n    Math.ceil(quantidade * 0.72)\n  );\n\n  const empresas = [];\n  const nomesEmpresasUtilizados = new Set();\n\n  for (\n    let indice = 1;\n    indice <= quantidadeEmpresas;\n    indice++\n  ) {\n    empresas.push({\n      empresa_id_simulado:\n        `EMP-${pad(indice, 6)}`,\n\n      nome:\n        criarNomeEmpresaUnico(\n          random,\n          nomesEmpresasUtilizados\n        ),\n\n      telefone:\n        criarTelefoneEmpresa(indice),\n\n      email:\n        `empresa${pad(indice, 6)}@exemplo.invalid`,\n\n      ltv: 0,\n\n      data_ultimo_contrato: null,\n\n      criado_em: null,\n\n      atualizado_em: null\n    });\n  }\n\n  /**\n   * Gera datas de criação respeitando a sazonalidade mensal.\n   */\n  const datasCriacao = [];\n\n  for (const mes of distribuicaoMensal) {\n    for (\n      let indice = 0;\n      indice < mes.quantidade;\n      indice++\n    ) {\n      datasCriacao.push(\n        dataAleatoriaEntre(\n          random,\n          mes.inicio,\n          mes.termino\n        )\n      );\n    }\n  }\n\n  datasCriacao.sort(\n    (a, b) =>\n      a.getTime() - b.getTime()\n  );\n\n  /**\n   * Registros temporários necessários para calcular\n   * o LTV final das empresas.\n   */\n  const registrosTemporarios = [];\n\n  for (\n    let indice = 0;\n    indice < quantidade;\n    indice++\n  ) {\n    const numeroSequencial =\n      indice + 1;\n\n    const criadoEm =\n      datasCriacao[indice];\n\n    const limiteAtualizacao = menorData(\n      adicionarDias(\n        criadoEm,\n        inteiroAleatorio(\n          random,\n          1,\n          90\n        )\n      ),\n      dataTermino\n    );\n\n    const atualizadoEm =\n      dataAleatoriaEntre(\n        random,\n        criadoEm,\n        limiteAtualizacao\n      );\n\n    /**\n     * Algumas empresas recebem mais de um lead.\n     */\n    const indiceEmpresa =\n      Math.floor(\n        Math.pow(random(), 1.35) *\n        empresas.length\n      );\n\n    const empresa = empresas[\n      Math.min(\n        indiceEmpresa,\n        empresas.length - 1\n      )\n    ];\n\n    const contatoNome =\n      criarNomePessoa(random);\n\n    const cargo =\n      escolherAleatorio(\n        random,\n        CARGOS\n      );\n\n    const servico =\n      escolherAleatorio(\n        random,\n        servicos\n      );\n\n    const usuario =\n      escolherAleatorio(\n        random,\n        usuarios\n      );\n\n    const funil =\n      escolherAleatorio(\n        random,\n        funis\n      );\n\n    const etapasDoFunil =\n      etapas.filter(\n        (etapa) =>\n          String(etapa.funil_id) ===\n          String(funil.id)\n      );\n\n    if (etapasDoFunil.length === 0) {\n      throw new Error(\n        `Nenhuma etapa foi encontrada para o funil \"${funil.nome}\".`\n      );\n    }\n\n    const etapa =\n      escolherComPeso(\n        random,\n        etapasDoFunil.map(\n          (item) => ({\n            valor: item,\n            peso: obterPesoEtapa(\n              item.nome\n            )\n          })\n        )\n      );\n\n    const classificacao =\n      classificarEtapaComercial(\n        random,\n        etapa.nome\n      );\n\n    /**\n     * O valor representa o potencial comercial da oportunidade.\n     *\n     * Pode existir em:\n     *\n     * - propostas enviadas;\n     * - negociações;\n     * - vendas ganhas;\n     * - parte das oportunidades perdidas.\n     */\n    const valorVenda =\n      classificacao.possui_valor_comercial\n        ? decimalAleatorio(\n            random,\n            valorMinimoVenda,\n            valorMaximoVenda,\n            2\n          )\n        : 0;\n\n    /**\n     * A data do contrato somente existe para vendas ganhas.\n     */\n    const dataContrato =\n      classificacao.venda_realizada\n        ? dataAleatoriaEntre(\n            random,\n            criadoEm,\n            atualizadoEm\n          )\n        : null;\n\n    const utm =\n      gerarUtm(\n        random,\n        servico,\n        criadoEm\n      );\n\n    if (\n      !empresa.criado_em ||\n      criadoEm < empresa.criado_em\n    ) {\n      empresa.criado_em = criadoEm;\n    }\n\n    if (\n      !empresa.atualizado_em ||\n      atualizadoEm > empresa.atualizado_em\n    ) {\n      empresa.atualizado_em =\n        atualizadoEm;\n    }\n\n    /**\n     * LTV considera exclusivamente contratos ganhos.\n     */\n    if (\n      classificacao.venda_realizada\n    ) {\n      empresa.ltv +=\n        valorVenda;\n\n      if (\n        !empresa.data_ultimo_contrato ||\n        dataContrato >\n          empresa.data_ultimo_contrato\n      ) {\n        empresa.data_ultimo_contrato =\n          dataContrato;\n      }\n    }\n\n    registrosTemporarios.push({\n      numeroSequencial,\n      criadoEm,\n      atualizadoEm,\n      dataContrato,\n      classificacao,\n      valorVenda,\n      empresa,\n      contatoNome,\n      cargo,\n      servico,\n      usuario,\n      funil,\n      etapa,\n      utm\n    });\n  }\n\n  /**\n   * Monta o retorno final após o cálculo definitivo do LTV.\n   */\n  for (\n    const registro\n    of registrosTemporarios\n  ) {\n    const {\n      numeroSequencial,\n      criadoEm,\n      atualizadoEm,\n      dataContrato,\n      classificacao,\n      valorVenda,\n      empresa,\n      contatoNome,\n      cargo,\n      servico,\n      usuario,\n      funil,\n      etapa,\n      utm\n    } = registro;\n\n    resultados.push({\n      json: {\n        lead: {\n          lead_id_simulado:\n            `LEAD-${pad(\n              numeroSequencial,\n              6\n            )}`,\n\n          nome:\n            `Projeto ${servico} - ${empresa.nome}`,\n\n          funil_id:\n            String(\n              funil.id || ''\n            ),\n\n          funil_id_externo:\n            String(\n              funil.id_externo || ''\n            ),\n\n          funil_name:\n            String(\n              funil.nome || ''\n            ),\n\n          etapa_id:\n            String(\n              etapa.id || ''\n            ),\n\n          etapa_id_externo:\n            String(\n              etapa.id_externo || ''\n            ),\n\n          etapa_name:\n            String(\n              etapa.nome || ''\n            ),\n\n          /**\n           * Valor potencial ou realizado da oportunidade.\n           */\n          venda:\n            formatarNumeroFinanceiro(\n              valorVenda\n            ),\n\n          /**\n           * true somente quando houve fechamento ganho.\n           */\n          venda_realizada:\n            classificacao.venda_realizada,\n\n          /**\n           * true quando a oportunidade recebeu uma proposta.\n           */\n          proposta_gerada:\n            classificacao.proposta_gerada,\n\n          /**\n           * true para perdas e desqualificações.\n           */\n          lead_perdido:\n            classificacao.lead_perdido,\n\n          usuario_responsavel_id:\n            String(\n              usuario.id || ''\n            ),\n\n          usuario_responsavel_id_externo:\n            String(\n              usuario.id_externo || ''\n            ),\n\n          usuario_responsavel:\n            String(\n              usuario.nome || ''\n            ),\n\n          usuario_responsavel_papel:\n            String(\n              usuario.papel || ''\n            ),\n\n          utm_source:\n            utm.utm_source,\n\n          /**\n           * Mantido como \"utm_campaing\" para respeitar\n           * a estrutura originalmente solicitada.\n           *\n           * A grafia convencional é \"utm_campaign\".\n           */\n          utm_campaing:\n            utm.utm_campaing,\n\n          utm_medium:\n            utm.utm_medium,\n\n          utm_content:\n            utm.utm_content,\n\n          servicos:\n            servico,\n\n          data_contrato:\n            dataContrato\n              ? dataContrato.toISOString()\n              : null,\n\n          criado_em:\n            criadoEm.toISOString(),\n\n          atualizado_em:\n            atualizadoEm.toISOString(),\n\n          mes_referencia:\n            `${criadoEm.getUTCFullYear()}-${pad(\n              criadoEm.getUTCMonth() + 1\n            )}`\n        },\n\n        contato: {\n          contato_id_simulado:\n            `CON-${pad(\n              numeroSequencial,\n              6\n            )}`,\n\n          nome:\n            contatoNome,\n\n          telefone:\n            criarTelefoneContato(\n              numeroSequencial\n            ),\n\n          email:\n            `contato${pad(\n              numeroSequencial,\n              6\n            )}@exemplo.invalid`,\n\n          cargo,\n\n          criado_em:\n            criadoEm.toISOString(),\n\n          atualizado_em:\n            atualizadoEm.toISOString()\n        },\n\n        empresa: {\n          empresa_id_simulado:\n            empresa.empresa_id_simulado,\n\n          nome:\n            empresa.nome,\n\n          telefone:\n            empresa.telefone,\n\n          email:\n            empresa.email,\n\n          /**\n           * LTV considera somente contratos efetivamente ganhos.\n           */\n          ltv:\n            formatarNumeroFinanceiro(\n              empresa.ltv\n            ),\n\n          data_ultimo_contrato:\n            empresa.data_ultimo_contrato\n              ? empresa.data_ultimo_contrato.toISOString()\n              : null,\n\n          criado_em:\n            empresa.criado_em\n              ? empresa.criado_em.toISOString()\n              : criadoEm.toISOString(),\n\n          atualizado_em:\n            empresa.atualizado_em\n              ? empresa.atualizado_em.toISOString()\n              : atualizadoEm.toISOString()\n        }\n      }\n    });\n  }\n}\n\nreturn resultados;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4432,
+        848
+      ],
+      "id": "6145387a-13ef-4be6-a2c2-081e95ce5b8c",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "jsCode": "const inputItems = $input.all();\n\nconst PRIMEIROS_NOMES = [\n  'Amanda', 'André', 'Bianca', 'Bruno', 'Caio', 'Camila',\n  'Carolina', 'Daniel', 'Débora', 'Eduardo', 'Elisa', 'Felipe',\n  'Fernando', 'Gabriel', 'Giovana', 'Helena', 'Igor', 'Isadora',\n  'Joana', 'João', 'Júlia', 'Larissa', 'Leonardo', 'Lucas',\n  'Mariana', 'Mateus', 'Natália', 'Otávio', 'Patrícia', 'Paula',\n  'Rafael', 'Renata', 'Rodrigo', 'Sabrina', 'Samuel', 'Tatiana',\n  'Vinícius', 'Vitória'\n];\n\nconst NOMES_COMPOSTOS = [\n  'Ana Clara', 'Ana Júlia', 'Ana Luiza', 'Ana Paula',\n  'Carlos Eduardo', 'João Gabriel', 'João Lucas', 'João Pedro',\n  'José Carlos', 'José Eduardo', 'Luiz Felipe', 'Luiz Gustavo',\n  'Maria Clara', 'Maria Eduarda', 'Maria Fernanda', 'Maria Júlia',\n  'Maria Luiza', 'Pedro Henrique', 'Paulo Henrique'\n];\n\nconst NOMES_INTERMEDIARIOS = [\n  'Aparecida', 'Augusto', 'Cristina', 'Eduardo', 'Fernanda',\n  'Gabriel', 'Gustavo', 'Helena', 'Henrique', 'Júlia',\n  'Luiza', 'Maria', 'Paulo', 'Pedro', 'Rafael', 'Regina',\n  'Renato', 'Ricardo'\n];\n\nconst SOBRENOMES = [\n  'Albuquerque', 'Almeida', 'Alves', 'Amaral', 'Andrade',\n  'Araújo', 'Barbosa', 'Batista', 'Campos', 'Cardoso',\n  'Carvalho', 'Castro', 'Cavalcante', 'Correia', 'Costa',\n  'Cunha', 'Dias', 'Duarte', 'Farias', 'Ferreira',\n  'Freitas', 'Gomes', 'Lima', 'Lopes', 'Machado',\n  'Marques', 'Martins', 'Medeiros', 'Melo', 'Monteiro',\n  'Moraes', 'Moreira', 'Nascimento', 'Nogueira', 'Oliveira',\n  'Pereira', 'Ramos', 'Rezende', 'Ribeiro', 'Rocha',\n  'Santana', 'Santos', 'Silva', 'Souza', 'Teixeira',\n  'Torres', 'Vasconcelos', 'Vieira'\n];\n\nconst CARGOS = [\n  'Diretor Comercial',\n  'Gerente de Operações',\n  'Coordenador de TI',\n  'Analista de Sistemas',\n  'Gerente de Projetos',\n  'Diretor Executivo',\n  'Coordenador Comercial',\n  'Gerente Administrativo',\n  'Product Owner',\n  'Sócio Administrador',\n  'Head de Tecnologia',\n  'Analista de Negócios',\n  'Gerente Financeiro',\n  'Coordenador de Marketing',\n  'Supervisor de Atendimento'\n];\n\nconst LIMITE_CONTATOS_POR_BODY = 250;\nconst LIMITE_CONTATOS_POR_EXECUCAO = 25000;\n\nif (inputItems.length === 0) {\n  throw new Error('Nenhum item foi recebido pelo node Code.');\n}\n\nconst empresas = normalizarEmpresas(inputItems);\nconst configuracao = obterConfiguracaoGeral();\nconst quantidade = Number(configuracao.quantidade_de_contatos);\nconst seed = Number(configuracao.seed ?? 2025);\n\nif (!Number.isInteger(quantidade) || quantidade <= 0) {\n  throw new Error(\n    'O campo \"quantidade_de_contatos\" precisa ser um número inteiro maior que zero no node Merge.'\n  );\n}\n\nif (quantidade > LIMITE_CONTATOS_POR_EXECUCAO) {\n  throw new Error(\n    `A quantidade solicitada excede o limite de ${LIMITE_CONTATOS_POR_EXECUCAO} contatos por execução.`\n  );\n}\n\nif (empresas.length === 0) {\n  throw new Error('Nenhuma empresa válida foi recebida no input do node Code.');\n}\n\nconst dataInicio = inicioDoDia(converterData(configuracao.data_inicio, 'data_inicio'));\nconst dataTermino = fimDoDia(converterData(configuracao.data_termino, 'data_termino'));\n\nif (dataTermino.getTime() < dataInicio.getTime()) {\n  throw new Error('A data de término precisa ser maior ou igual à data de início.');\n}\n\nconst random = criarGeradorAleatorio(seed);\nconst emailsUtilizados = new Set();\nconst contatos = [];\nconst body = [];\n\nfor (let indice = 1; indice <= quantidade; indice++) {\n  const empresa = escolherEmpresaParaContato(random, empresas, indice);\n  validarEmpresaParaVinculo(empresa, indice);\n\n  const nome = criarNomePessoa(random);\n  const cargo = escolherAleatorio(random, CARGOS);\n  const dataMinimaContato = obterDataMinimaContato(empresa, dataInicio, dataTermino);\n  const criadoEm = dataAleatoriaEntre(random, dataMinimaContato, dataTermino);\n  const atualizadoEm = dataAleatoriaEntre(random, criadoEm, dataTermino);\n  const email = criarEmailContato(nome, indice, emailsUtilizados);\n\n  const contato = criarContatoLocal(indice, empresa, nome, cargo, email, criadoEm, atualizadoEm);\n\n  contatos.push(contato);\n  body.push(criarBodyContatoKommo(contato, configuracao));\n}\n\nconst lotesBody = dividirEmLotes(body, LIMITE_CONTATOS_POR_BODY);\nconst lotesContatos = dividirEmLotes(contatos, LIMITE_CONTATOS_POR_BODY);\nconst resultados = [];\n\nfor (let indiceLote = 0; indiceLote < lotesBody.length; indiceLote++) {\n  resultados.push({\n    json: {\n      body: lotesBody[indiceLote],\n      contatos: lotesContatos[indiceLote],\n      lote: indiceLote + 1,\n      total_lotes: lotesBody.length,\n      quantidade_no_lote: lotesBody[indiceLote].length\n    }\n  });\n}\n\nreturn resultados;\n\nfunction obterConfiguracaoGeral() {\n  let itensMerge = [];\n\n  try {\n    itensMerge = $('Merge').all();\n  } catch (erro) {\n    itensMerge = [];\n  }\n\n  const configuracao = itensMerge\n    .map((item) => item?.json ?? item)\n    .find((json) => json && typeof json === 'object' && !Array.isArray(json));\n\n  if (!configuracao) {\n    throw new Error('Não foi possível localizar os dados de configuração no node \"Merge\".');\n  }\n\n  return configuracao;\n}\n\nfunction normalizarEmpresas(itens) {\n  return itens\n    .flatMap((item) => {\n      const json = item?.json ?? item;\n      return Array.isArray(json) ? json : [json];\n    })\n    .map((empresa) => empresa?.json ?? empresa)\n    .filter((empresa) => empresa && typeof empresa === 'object' && !Array.isArray(empresa));\n}\n\nfunction validarEmpresaParaVinculo(empresa, indiceContato) {\n  if (!valorPreenchido(empresa.id)) {\n    throw new Error(`A empresa selecionada para o contato ${indiceContato} não possui \"id\" do banco.`);\n  }\n\n  if (!valorPreenchido(empresa.id_externo)) {\n    throw new Error(\n      `A empresa \"${empresa.nome || empresa.id}\" selecionada para o contato ${indiceContato} não possui \"id_externo\" da Kommo.`\n    );\n  }\n\n  const idExterno = Number(empresa.id_externo);\n\n  if (!Number.isInteger(idExterno) || idExterno <= 0) {\n    throw new Error(\n      `A empresa \"${empresa.nome || empresa.id}\" possui \"id_externo\" inválido para vínculo na Kommo.`\n    );\n  }\n}\n\nfunction escolherEmpresaParaContato(random, listaEmpresas, indice) {\n  if (indice <= listaEmpresas.length) {\n    return listaEmpresas[indice - 1];\n  }\n\n  return listaEmpresas[Math.floor(random() * listaEmpresas.length)];\n}\n\nfunction criarContatoLocal(indice, empresa, nome, cargo, email, criadoEm, atualizadoEm) {\n  return {\n    contato_id_simulado: `CON-${pad(indice, 6)}`,\n    id_externo: '',\n    empresa_id: String(empresa.id),\n    empresa_id_externo: String(empresa.id_externo),\n    empresa_nome: empresa.nome || '',\n    nome,\n    telefone: criarTelefoneContato(indice),\n    email,\n    cargo,\n    criado_em: criadoEm.toISOString(),\n    atualizado_em: atualizadoEm.toISOString()\n  };\n}\n\nfunction criarBodyContatoKommo(contato, configuracao) {\n  const customFieldsValues = [];\n\n  adicionarCampoPersonalizado(\n    customFieldsValues,\n    { field_code: 'PHONE' },\n    contato.telefone,\n    { enum_code: 'WORK' }\n  );\n\n  adicionarCampoPersonalizado(\n    customFieldsValues,\n    { field_code: 'EMAIL' },\n    contato.email,\n    { enum_code: 'WORK' }\n  );\n\n  adicionarCampoPersonalizado(customFieldsValues, { field_code: 'POSITION' }, contato.cargo);\n\n  const bodyContato = {\n    request_id: contato.contato_id_simulado,\n    name: contato.nome,\n    created_at: unixSegundos(contato.criado_em),\n    updated_at: unixSegundos(contato.atualizado_em),\n    custom_fields_values: customFieldsValues,\n    _embedded: {\n      companies: [\n        {\n          id: Number(contato.empresa_id_externo)\n        }\n      ]\n    }\n  };\n\n  const responsibleUserId = valorOuNulo(\n    configuracao.responsible_user_id || configuracao.usuario_responsavel_id || configuracao.responsavel_id\n  );\n\n  if (responsibleUserId !== null) {\n    bodyContato.responsible_user_id = Number(responsibleUserId);\n  }\n\n  const createdBy = valorOuNulo(configuracao.created_by || configuracao.criado_por);\n  const updatedBy = valorOuNulo(configuracao.updated_by || configuracao.atualizado_por);\n\n  if (createdBy !== null) {\n    bodyContato.created_by = Number(createdBy);\n  }\n\n  if (updatedBy !== null) {\n    bodyContato.updated_by = Number(updatedBy);\n  }\n\n  return bodyContato;\n}\n\nfunction adicionarCampoPersonalizado(campos, campo, valor, opcoes = {}) {\n  if (!campo || valor === undefined || valor === null || valor === '') {\n    return;\n  }\n\n  const item = {\n    ...campo,\n    values: [\n      {\n        value: valor\n      }\n    ]\n  };\n\n  if (opcoes.enum_code) {\n    item.values[0].enum_code = opcoes.enum_code;\n  }\n\n  campos.push(item);\n}\n\nfunction obterDataMinimaContato(empresa, dataInicio, dataTermino) {\n  const criadoEmpresa = converterDataOpcional(empresa.criado_em);\n\n  if (!criadoEmpresa || criadoEmpresa.getTime() < dataInicio.getTime()) {\n    return dataInicio;\n  }\n\n  if (criadoEmpresa.getTime() > dataTermino.getTime()) {\n    return dataInicio;\n  }\n\n  return criadoEmpresa;\n}\n\nfunction criarNomePessoa(random) {\n  const usarNomeComposto = random() < 0.28;\n\n  const primeiroNome = usarNomeComposto\n    ? escolherAleatorio(random, NOMES_COMPOSTOS)\n    : escolherAleatorio(random, PRIMEIROS_NOMES);\n\n  const formato = escolherComPeso(random, [\n    { valor: 'curto', peso: 28 },\n    { valor: 'medio', peso: 47 },\n    { valor: 'longo', peso: 25 }\n  ]);\n\n  const sobrenome1 = escolherAleatorio(random, SOBRENOMES);\n  let sobrenome2 = escolherAleatorio(random, SOBRENOMES);\n\n  while (sobrenome2 === sobrenome1) {\n    sobrenome2 = escolherAleatorio(random, SOBRENOMES);\n  }\n\n  if (formato === 'curto') {\n    return `${primeiroNome} ${sobrenome1}`;\n  }\n\n  if (formato === 'medio') {\n    return `${primeiroNome} ${sobrenome1} ${sobrenome2}`;\n  }\n\n  const nomeIntermediario = escolherAleatorio(random, NOMES_INTERMEDIARIOS);\n\n  return `${primeiroNome} ${nomeIntermediario} ${sobrenome1} ${sobrenome2}`;\n}\n\nfunction criarTelefoneContato(indice) {\n  const numero = String(indice).padStart(8, '0').slice(-8);\n  return `+55 00 9${numero.slice(0, 4)}-${numero.slice(4)}`;\n}\n\nfunction criarEmailContato(nome, indice, emailsUtilizados) {\n  const base = criarSlug(nome);\n  let email = `${base}.${pad(indice, 6)}@exemplo.invalid`;\n\n  let contador = 2;\n  while (emailsUtilizados.has(email)) {\n    email = `${base}.${pad(indice, 6)}.${contador}@exemplo.invalid`;\n    contador += 1;\n  }\n\n  emailsUtilizados.add(email);\n  return email;\n}\n\nfunction criarGeradorAleatorio(seedInicial) {\n  let seed = Number(seedInicial) || 2025;\n\n  return function random() {\n    seed |= 0;\n    seed = (seed + 0x6D2B79F5) | 0;\n\n    let resultado = Math.imul(seed ^ (seed >>> 15), 1 | seed);\n\n    resultado =\n      resultado +\n      Math.imul(resultado ^ (resultado >>> 7), 61 | resultado) ^\n      resultado;\n\n    return ((resultado ^ (resultado >>> 14)) >>> 0) / 4294967296;\n  };\n}\n\nfunction escolherAleatorio(random, array) {\n  if (!Array.isArray(array) || array.length === 0) {\n    throw new Error('Tentativa de selecionar um item em uma lista vazia.');\n  }\n\n  return array[Math.floor(random() * array.length)];\n}\n\nfunction escolherComPeso(random, opcoes) {\n  const total = opcoes.reduce(\n    (soma, opcao) => soma + Number(opcao.peso || 0),\n    0\n  );\n\n  let sorteio = random() * total;\n\n  for (const opcao of opcoes) {\n    sorteio -= Number(opcao.peso || 0);\n\n    if (sorteio <= 0) {\n      return opcao.valor;\n    }\n  }\n\n  return opcoes[opcoes.length - 1].valor;\n}\n\nfunction pad(numero, tamanho = 2) {\n  return String(numero).padStart(tamanho, '0');\n}\n\nfunction normalizarTexto(valor) {\n  return String(valor || '')\n    .trim()\n    .toLowerCase()\n    .normalize('NFD')\n    .replace(/[\\u0300-\\u036f]/g, '');\n}\n\nfunction criarSlug(valor) {\n  return normalizarTexto(valor)\n    .replace(/[^a-z0-9]+/g, '-')\n    .replace(/^-+|-+$/g, '');\n}\n\nfunction valorPreenchido(valor) {\n  return valor !== undefined && valor !== null && String(valor).trim() !== '';\n}\n\nfunction valorOuNulo(valor) {\n  if (valor === undefined || valor === null || valor === '') {\n    return null;\n  }\n\n  return valor;\n}\n\nfunction converterData(valor, nomeCampo) {\n  if (!valor) {\n    throw new Error(`O campo \"${nomeCampo}\" não foi informado.`);\n  }\n\n  const data = converterDataOpcional(valor);\n\n  if (!data) {\n    throw new Error(`A data \"${valor}\" do campo \"${nomeCampo}\" é inválida.`);\n  }\n\n  return data;\n}\n\nfunction converterDataOpcional(valor) {\n  if (!valor) {\n    return null;\n  }\n\n  const texto = String(valor).trim();\n  const formatoBR = /^(\\d{2})\\/(\\d{2})\\/(\\d{4})$/;\n  const matchBR = texto.match(formatoBR);\n\n  if (matchBR) {\n    const [, dia, mes, ano] = matchBR;\n    const data = new Date(Date.UTC(Number(ano), Number(mes) - 1, Number(dia)));\n\n    const dataValida =\n      data.getUTCFullYear() === Number(ano) &&\n      data.getUTCMonth() === Number(mes) - 1 &&\n      data.getUTCDate() === Number(dia);\n\n    return dataValida ? data : null;\n  }\n\n  const data = new Date(texto);\n  return Number.isNaN(data.getTime()) ? null : data;\n}\n\nfunction inicioDoDia(data) {\n  return new Date(Date.UTC(\n    data.getUTCFullYear(),\n    data.getUTCMonth(),\n    data.getUTCDate(),\n    0, 0, 0, 0\n  ));\n}\n\nfunction fimDoDia(data) {\n  return new Date(Date.UTC(\n    data.getUTCFullYear(),\n    data.getUTCMonth(),\n    data.getUTCDate(),\n    23, 59, 59, 999\n  ));\n}\n\nfunction dataAleatoriaEntre(random, inicio, termino) {\n  const minimo = inicio.getTime();\n  const maximo = termino.getTime();\n\n  if (maximo < minimo) {\n    throw new Error('O intervalo de datas é inválido.');\n  }\n\n  const timestamp = Math.floor(random() * (maximo - minimo + 1) + minimo);\n  return new Date(timestamp);\n}\n\nfunction unixSegundos(data) {\n  if (!data) {\n    return null;\n  }\n\n  const dataConvertida = data instanceof Date ? data : new Date(data);\n\n  if (Number.isNaN(dataConvertida.getTime())) {\n    return null;\n  }\n\n  return Math.floor(dataConvertida.getTime() / 1000);\n}\n\nfunction dividirEmLotes(array, tamanhoLote) {\n  const lotes = [];\n\n  for (let indice = 0; indice < array.length; indice += tamanhoLote) {\n    lotes.push(array.slice(indice, indice + tamanhoLote));\n  }\n\n  return lotes;\n}\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2320,
+        64
+      ],
+      "id": "7ccc4995-4a69-4544-a26b-de90c28ce2a3",
+      "name": "Code in JavaScript2"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://{{ $('Merge').item.json.kommo_subdomain }}.kommo.com/api/v4/companies",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "accept",
+              "value": "application/json"
+            },
+            {
+              "name": "authorization",
+              "value": "=Bearer {{ $('Merge').item.json.token }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.body.toJsonString()}}",
+        "options": {
+          "batching": {
+            "batch": {
+              "batchSize": 1,
+              "batchInterval": 300
+            }
+          },
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        1424,
+        -144
+      ],
+      "id": "6eb578bb-0fc1-40de-af63-320b4bdc3bfc",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "U2zPJpKifuM8xMJS",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/U2zPJpKifuM8xMJS",
+          "cachedResultName": "01_kommo_credenciais"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        48,
+        496
+      ],
+      "id": "52742666-a779-4ca9-aa05-4d5b93f9c81f",
+      "name": "Call '01_kommo_credenciais'"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "fieldsToMatchString": "request_id",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1888,
+        64
+      ],
+      "id": "907dd7e7-cbd7-40d9-a2c0-c4abd6f0b90e",
+      "name": "Merge1"
+    },
+    {
+      "parameters": {
+        "jsCode": "const inputItems = $input.all();\n\nconst PREFIXOS_EMPRESA = [\n  'Ápice', 'Atlas', 'Aurora', 'Cobalto', 'Delta', 'Elo', 'Fluxo',\n  'Horizonte', 'Impulso', 'Integra', 'Lumina', 'Métrica', 'Nexa',\n  'Nova', 'Orbe', 'Ponto', 'Prisma', 'Vértice', 'Via', 'Viva',\n  'Athenas', 'Boreal', 'Caminho', 'Cenário', 'Conecta', 'Domínio',\n  'Essência', 'Farol', 'Gênese', 'Inova', 'Jornada', 'Kairós',\n  'Legado', 'Marco', 'Nobre', 'Origem', 'Pilar', 'Quantum',\n  'Raiz', 'Sinapse', 'Tríade', 'Unika', 'Valore', 'Zênite'\n];\n\nconst SEGMENTOS_EMPRESA = [\n  'Comercial', 'Consultoria', 'Digital', 'Engenharia', 'Gestão',\n  'Indústria', 'Logística', 'Negócios', 'Operações', 'Serviços',\n  'Soluções', 'Tecnologia', 'Varejo', 'Marketing', 'Dados',\n  'Automação', 'Energia', 'Educação', 'Saúde', 'Financeiro',\n  'Imobiliário', 'Alimentos', 'Transportes', 'Telecom',\n  'Agronegócio', 'Arquitetura', 'Jurídico', 'Segurança',\n  'Recursos Humanos', 'Projetos'\n];\n\nconst COMPLEMENTOS_EMPRESA = [\n  'Brasil', 'Corporativo', 'Empresarial', 'Estratégica', 'Integrada',\n  'Inteligente', 'Nacional', 'Prime', 'Pro', 'Tech', 'Digital',\n  'Global', 'Avançada', 'Moderna', 'Executiva', 'Especializada',\n  'Aplicada', 'Dinâmica', 'Essencial', 'Premium', 'Performance',\n  'Analytics', 'Cloud', 'Smart', 'Next', 'Plus', 'Master', 'One'\n];\n\nconst REGIOES_EMPRESA = [\n  'Norte', 'Sul', 'Leste', 'Oeste', 'Central', 'Paulista',\n  'Carioca', 'Mineira', 'Nordeste', 'Sudeste', 'Centro-Oeste',\n  'Metropolitana', 'Interior', 'Capital', 'Litoral', 'Serra',\n  'Vale', 'Regional', 'Urbana', 'Nacional'\n];\n\nconst TIPOS_EMPRESA = [\n  'Ltda.', 'S.A.', 'ME', 'EPP', 'Holding', 'Group',\n  'Labs', 'Studio', 'Partners', 'Company'\n];\n\nconst LIMITE_EMPRESAS_POR_BODY = 250;\n\nif (inputItems.length === 0) {\n  throw new Error('Nenhum item foi recebido pelo node Code.');\n}\n\nfunction obterEstrutura(json) {\n  if (!json || typeof json !== 'object' || Array.isArray(json)) {\n    throw new Error('O input recebido precisa ser um objeto JSON válido.');\n  }\n\n  if (Object.prototype.hasOwnProperty.call(json, 'quantidade_de_empresas')) {\n    return json;\n  }\n\n  if (\n    json.demais_dados &&\n    typeof json.demais_dados === 'object' &&\n    Object.prototype.hasOwnProperty.call(json.demais_dados, 'quantidade_de_empresas')\n  ) {\n    return json.demais_dados;\n  }\n\n  for (const valor of Object.values(json)) {\n    if (\n      valor &&\n      typeof valor === 'object' &&\n      !Array.isArray(valor) &&\n      Object.prototype.hasOwnProperty.call(valor, 'quantidade_de_empresas')\n    ) {\n      return valor;\n    }\n  }\n\n  throw new Error(\n    'Não foi possível localizar o campo \"quantidade_de_empresas\" no input.'\n  );\n}\n\nfunction criarNomeEmpresaBase(random) {\n  const formato = escolherAleatorio(random, [\n    'padrao',\n    'regional',\n    'juridico',\n    'institucional',\n    'tecnologico'\n  ]);\n\n  const prefixo = escolherAleatorio(random, PREFIXOS_EMPRESA);\n  const segmento = escolherAleatorio(random, SEGMENTOS_EMPRESA);\n  const complemento = escolherAleatorio(random, COMPLEMENTOS_EMPRESA);\n  const regiao = escolherAleatorio(random, REGIOES_EMPRESA);\n  const tipo = escolherAleatorio(random, TIPOS_EMPRESA);\n\n  if (formato === 'padrao') {\n    return `${prefixo} ${segmento} ${complemento}`;\n  }\n\n  if (formato === 'regional') {\n    return `${prefixo} ${segmento} ${regiao}`;\n  }\n\n  if (formato === 'juridico') {\n    return `${prefixo} ${segmento} ${tipo}`;\n  }\n\n  if (formato === 'institucional') {\n    return `${prefixo} ${complemento} ${segmento} ${tipo}`;\n  }\n\n  return `${prefixo} ${segmento} ${complemento} ${regiao}`;\n}\n\nfunction criarNomeEmpresaUnico(random, nomesUtilizados) {\n  let nome = criarNomeEmpresaBase(random);\n  let contador = 2;\n\n  while (nomesUtilizados.has(nome)) {\n    nome = `${criarNomeEmpresaBase(random)} ${contador}`;\n    contador += 1;\n  }\n\n  nomesUtilizados.add(nome);\n  return nome;\n}\n\nfunction criarTelefoneEmpresa(indice) {\n  const numero = String(indice).padStart(4, '0').slice(-4);\n  return `+55 00 3000-${numero}`;\n}\n\nfunction criarGeradorAleatorio(seedInicial) {\n  let seed = Number(seedInicial) || 2025;\n\n  return function random() {\n    seed |= 0;\n    seed = (seed + 0x6D2B79F5) | 0;\n\n    let resultado = Math.imul(seed ^ (seed >>> 15), 1 | seed);\n\n    resultado =\n      resultado +\n      Math.imul(resultado ^ (resultado >>> 7), 61 | resultado) ^\n      resultado;\n\n    return ((resultado ^ (resultado >>> 14)) >>> 0) / 4294967296;\n  };\n}\n\nfunction escolherAleatorio(random, array) {\n  return array[Math.floor(random() * array.length)];\n}\n\nfunction pad(numero, tamanho = 2) {\n  return String(numero).padStart(tamanho, '0');\n}\n\nfunction converterData(valor, nomeCampo) {\n  if (!valor) {\n    throw new Error(`O campo \"${nomeCampo}\" não foi informado.`);\n  }\n\n  const texto = String(valor).trim();\n  const formatoBR = /^(\\d{2})\\/(\\d{2})\\/(\\d{4})$/;\n  const matchBR = texto.match(formatoBR);\n\n  if (matchBR) {\n    const [, dia, mes, ano] = matchBR;\n\n    const data = new Date(\n      Date.UTC(Number(ano), Number(mes) - 1, Number(dia))\n    );\n\n    const dataValida =\n      data.getUTCFullYear() === Number(ano) &&\n      data.getUTCMonth() === Number(mes) - 1 &&\n      data.getUTCDate() === Number(dia);\n\n    if (!dataValida) {\n      throw new Error(`A data \"${texto}\" do campo \"${nomeCampo}\" é inválida.`);\n    }\n\n    return data;\n  }\n\n  const data = new Date(texto);\n\n  if (Number.isNaN(data.getTime())) {\n    throw new Error(`A data \"${texto}\" do campo \"${nomeCampo}\" é inválida.`);\n  }\n\n  return data;\n}\n\nfunction inicioDoDia(data) {\n  return new Date(Date.UTC(\n    data.getUTCFullYear(),\n    data.getUTCMonth(),\n    data.getUTCDate(),\n    0, 0, 0, 0\n  ));\n}\n\nfunction fimDoDia(data) {\n  return new Date(Date.UTC(\n    data.getUTCFullYear(),\n    data.getUTCMonth(),\n    data.getUTCDate(),\n    23, 59, 59, 999\n  ));\n}\n\nfunction dataAleatoriaEntre(random, inicio, termino) {\n  const minimo = inicio.getTime();\n  const maximo = termino.getTime();\n\n  if (maximo < minimo) {\n    throw new Error('O intervalo de datas é inválido.');\n  }\n\n  const timestamp = Math.floor(random() * (maximo - minimo + 1) + minimo);\n  return new Date(timestamp);\n}\n\nfunction unixSegundos(data) {\n  if (!data) {\n    return null;\n  }\n\n  const dataConvertida = data instanceof Date ? data : new Date(data);\n\n  if (Number.isNaN(dataConvertida.getTime())) {\n    return null;\n  }\n\n  return Math.floor(dataConvertida.getTime() / 1000);\n}\n\nfunction normalizarTexto(valor) {\n  return String(valor || '')\n    .normalize('NFD')\n    .replace(/[\\u0300-\\u036f]/g, '')\n    .toLowerCase();\n}\n\nfunction valorOuNulo(valor) {\n  if (valor === undefined || valor === null || valor === '') {\n    return null;\n  }\n\n  return valor;\n}\n\nfunction campoPorIdOuCodigo(valor) {\n  const campo = valorOuNulo(valor);\n\n  if (campo === null) {\n    return null;\n  }\n\n  if (typeof campo === 'object') {\n    if (valorOuNulo(campo.field_id) !== null) {\n      return { field_id: Number(campo.field_id) };\n    }\n\n    if (valorOuNulo(campo.field_code) !== null) {\n      return { field_code: String(campo.field_code) };\n    }\n\n    if (valorOuNulo(campo.id) !== null) {\n      return { field_id: Number(campo.id) };\n    }\n\n    return null;\n  }\n\n  const texto = String(campo).trim();\n\n  if (/^\\d+$/.test(texto)) {\n    return { field_id: Number(texto) };\n  }\n\n  return { field_code: texto };\n}\n\nfunction encontrarCampoEmLista(campos, nomesPossiveis) {\n  if (!Array.isArray(campos)) {\n    return null;\n  }\n\n  const nomesNormalizados = nomesPossiveis.map(normalizarTexto);\n\n  for (const campo of campos) {\n    const nome = normalizarTexto(campo.name || campo.nome || campo.code || campo.codigo);\n    const bateComNome = nomesNormalizados.some((nomePossivel) => nome.includes(nomePossivel));\n\n    if (bateComNome) {\n      return campoPorIdOuCodigo(campo);\n    }\n  }\n\n  return null;\n}\n\nfunction obterConfiguracaoCamposEmpresa(estrutura) {\n  const origem =\n    estrutura.campos_empresa ||\n    estrutura.campos_personalizados_empresa ||\n    estrutura.campos_kommo_empresa ||\n    estrutura.custom_fields_empresa ||\n    null;\n\n  if (Array.isArray(origem)) {\n    return {\n      idExterno: encontrarCampoEmLista(origem, ['id externo', 'id_externo']),\n      ltv: encontrarCampoEmLista(origem, ['ltv', 'lifetime value']),\n      dataUltimoContrato: encontrarCampoEmLista(origem, ['data ultimo contrato', 'data_ultimo_contrato'])\n    };\n  }\n\n  if (!origem || typeof origem !== 'object') {\n    return {\n      idExterno: null,\n      ltv: null,\n      dataUltimoContrato: null\n    };\n  }\n\n  return {\n    idExterno: campoPorIdOuCodigo(\n      origem.id_externo || origem.idExterno || origem.id_externo_field_id || origem.idExternoFieldId\n    ),\n    ltv: campoPorIdOuCodigo(\n      origem.ltv || origem.ltv_field_id || origem.ltvFieldId\n    ),\n    dataUltimoContrato: campoPorIdOuCodigo(\n      origem.data_ultimo_contrato ||\n      origem.dataUltimoContrato ||\n      origem.data_ultimo_contrato_field_id ||\n      origem.dataUltimoContratoFieldId\n    )\n  };\n}\n\nfunction adicionarCampoPersonalizado(campos, campo, valor, opcoes = {}) {\n  if (!campo || valor === undefined || valor === null || valor === '') {\n    return;\n  }\n\n  const item = {\n    ...campo,\n    values: [\n      {\n        value: valor\n      }\n    ]\n  };\n\n  if (opcoes.enum_code) {\n    item.values[0].enum_code = opcoes.enum_code;\n  }\n\n  campos.push(item);\n}\n\nfunction criarEmpresaLocal(indice, nome, criadoEm, atualizadoEm) {\n  return {\n    empresa_id_simulado: `EMP-${pad(indice, 6)}`,\n    id_externo: '',\n    nome,\n    telefone: criarTelefoneEmpresa(indice),\n    email: `empresa${pad(indice, 6)}@exemplo.invalid`,\n    ltv: 0,\n    data_ultimo_contrato: null,\n    criado_em: criadoEm.toISOString(),\n    atualizado_em: atualizadoEm.toISOString()\n  };\n}\n\nfunction criarBodyEmpresaKommo(empresa, estrutura, camposEmpresa) {\n  const customFieldsValues = [];\n\n  adicionarCampoPersonalizado(\n    customFieldsValues,\n    { field_code: 'PHONE' },\n    empresa.telefone,\n    { enum_code: 'WORK' }\n  );\n\n  adicionarCampoPersonalizado(\n    customFieldsValues,\n    { field_code: 'EMAIL' },\n    empresa.email,\n    { enum_code: 'WORK' }\n  );\n\n  adicionarCampoPersonalizado(customFieldsValues, camposEmpresa.idExterno, empresa.id_externo);\n  adicionarCampoPersonalizado(customFieldsValues, camposEmpresa.ltv, String(empresa.ltv));\n\n  if (empresa.data_ultimo_contrato) {\n    adicionarCampoPersonalizado(\n      customFieldsValues,\n      camposEmpresa.dataUltimoContrato,\n      unixSegundos(empresa.data_ultimo_contrato)\n    );\n  }\n\n  const body = {\n    request_id: empresa.empresa_id_simulado,\n    name: empresa.nome,\n    created_at: unixSegundos(empresa.criado_em),\n    updated_at: unixSegundos(empresa.atualizado_em),\n    custom_fields_values: customFieldsValues\n  };\n\n  const responsibleUserId = valorOuNulo(\n    estrutura.responsible_user_id || estrutura.usuario_responsavel_id || estrutura.responsavel_id\n  );\n\n  if (responsibleUserId !== null) {\n    body.responsible_user_id = Number(responsibleUserId);\n  }\n\n  const createdBy = valorOuNulo(estrutura.created_by || estrutura.criado_por);\n  const updatedBy = valorOuNulo(estrutura.updated_by || estrutura.atualizado_por);\n\n  if (createdBy !== null) {\n    body.created_by = Number(createdBy);\n  }\n\n  if (updatedBy !== null) {\n    body.updated_by = Number(updatedBy);\n  }\n\n  return body;\n}\n\nfunction dividirEmLotes(array, tamanhoLote) {\n  const lotes = [];\n\n  for (let indice = 0; indice < array.length; indice += tamanhoLote) {\n    lotes.push(array.slice(indice, indice + tamanhoLote));\n  }\n\n  return lotes;\n}\n\nconst resultados = [];\n\nfor (const inputItem of inputItems) {\n  const estrutura = obterEstrutura(inputItem.json);\n\n  const quantidade = Number(estrutura.quantidade_de_empresas);\n  const seed = Number(estrutura.seed ?? 2025);\n\n  if (!Number.isInteger(quantidade) || quantidade <= 0) {\n    throw new Error(\n      'O campo \"quantidade_de_empresas\" precisa ser um número inteiro maior que zero.'\n    );\n  }\n\n  if (quantidade > 25000) {\n    throw new Error(\n      'A quantidade solicitada excede o limite de 25000 empresas por execução.'\n    );\n  }\n\n  const dataInicio = inicioDoDia(\n    converterData(estrutura.data_inicio, 'data_inicio')\n  );\n\n  const dataTermino = fimDoDia(\n    converterData(estrutura.data_termino, 'data_termino')\n  );\n\n  if (dataTermino.getTime() < dataInicio.getTime()) {\n    throw new Error(\n      'A data de término precisa ser maior ou igual à data de início.'\n    );\n  }\n\n  const random = criarGeradorAleatorio(seed);\n  const nomesUtilizados = new Set();\n  const camposEmpresa = obterConfiguracaoCamposEmpresa(estrutura);\n  const empresas = [];\n  const body = [];\n\n  for (let indice = 1; indice <= quantidade; indice++) {\n    const nome = criarNomeEmpresaUnico(random, nomesUtilizados);\n    const criadoEm = dataAleatoriaEntre(random, dataInicio, dataTermino);\n    const atualizadoEm = dataAleatoriaEntre(random, criadoEm, dataTermino);\n    const empresa = criarEmpresaLocal(indice, nome, criadoEm, atualizadoEm);\n\n    empresas.push(empresa);\n    body.push(criarBodyEmpresaKommo(empresa, estrutura, camposEmpresa));\n  }\n\n  const lotesBody = dividirEmLotes(body, LIMITE_EMPRESAS_POR_BODY);\n  const lotesEmpresas = dividirEmLotes(empresas, LIMITE_EMPRESAS_POR_BODY);\n\n  for (let indiceLote = 0; indiceLote < lotesBody.length; indiceLote++) {\n    resultados.push({\n      json: {\n        body: lotesBody[indiceLote],\n        empresas: lotesEmpresas[indiceLote],\n        lote: indiceLote + 1,\n        total_lotes: lotesBody.length,\n        quantidade_no_lote: lotesBody[indiceLote].length\n      }\n    });\n  }\n}\n\nreturn resultados;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1168,
+        128
+      ],
+      "id": "2351be44-a760-460e-9993-7a2d149a1c51",
+      "name": "Code in JavaScript1"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "body",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        1376,
+        80
+      ],
+      "id": "dd596983-faad-490a-ac4e-e7d77157bfb5",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "_embedded.companies",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        1616,
+        -96
+      ],
+      "id": "19babf98-1aba-4657-9a15-d7cccbfe2893",
+      "name": "Split Out1"
+    },
+    {
+      "parameters": {
+        "content": "## Cria empresas",
+        "height": 608,
+        "width": 1120
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1104,
+        -256
+      ],
+      "typeVersion": 1,
+      "id": "d06ecb13-b049-432e-a0a7-1e8218b3ab31",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## Cria Contatos",
+        "height": 608,
+        "width": 1152
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        2288,
+        -256
+      ],
+      "typeVersion": 1,
+      "id": "168596b1-de26-4809-a315-b9d2e4b6b42e",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "body",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        2608,
+        64
+      ],
+      "id": "efe49827-e1d3-45d9-8cd5-d2015504d913",
+      "name": "Split Out2"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://{{ $('Merge').first().json.kommo_subdomain }}.kommo.com/api/v4/contacts",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "accept",
+              "value": "application/json"
+            },
+            {
+              "name": "authorization",
+              "value": "=Bearer {{ $('Merge').first().json.token }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.body.toJsonString()}}",
+        "options": {
+          "batching": {
+            "batch": {
+              "batchSize": 1,
+              "batchInterval": 300
+            }
+          },
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        2528,
+        -144
+      ],
+      "id": "ac007702-e096-4456-8987-effa068193a6",
+      "name": "HTTP Request1"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "fieldsToMatchString": "request_id",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        2976,
+        48
+      ],
+      "id": "baec961e-8a74-42a7-8523-da37364a051d",
+      "name": "Merge2"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "_embedded.contacts",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        2704,
+        -96
+      ],
+      "id": "259084b8-42a7-414e-9f5e-96a525cbba62",
+      "name": "Split Out3"
+    },
+    {
+      "parameters": {
+        "jsCode": "const inputItems = $input.all();\n\nconst LIMITE_LEADS_POR_BODY = 250;\nconst LIMITE_LEADS_POR_EXECUCAO = 25000;\n\nconst UTM_SOURCES = [\n  'google',\n  'facebook',\n  'instagram',\n  'linkedin',\n  'organic',\n  'referral',\n  'email'\n];\n\nconst UTM_MEDIUMS = [\n  'cpc',\n  'social',\n  'organic',\n  'referral',\n  'email',\n  'display'\n];\n\nconst UTM_CONTENTS = [\n  'landing-page',\n  'formulario-site',\n  'whatsapp',\n  'ebook',\n  'diagnostico',\n  'webinar'\n];\n\nconst CAMPANHAS = [\n  'aquisicao-2025',\n  'remarketing-2025',\n  'conteudo-ti',\n  'consultoria-dados',\n  'automacao-comercial'\n];\n\nif (inputItems.length === 0) {\n  throw new Error('Nenhum item foi recebido pelo node Code.');\n}\n\nconst contatos = normalizarContatos(inputItems);\nconst configuracao = obterConfiguracaoGeral();\n\nconst quantidade = Number(configuracao.quantidade_de_leads);\nconst seed = Number(configuracao.seed ?? 2025);\n\nif (!Number.isInteger(quantidade) || quantidade <= 0) {\n  throw new Error(\n    'O campo \"quantidade_de_leads\" precisa ser um número inteiro maior que zero no node Merge.'\n  );\n}\n\nif (quantidade > LIMITE_LEADS_POR_EXECUCAO) {\n  throw new Error(\n    `A quantidade solicitada excede o limite de ${LIMITE_LEADS_POR_EXECUCAO} leads por execução.`\n  );\n}\n\nif (contatos.length === 0) {\n  throw new Error('Nenhum contato válido foi recebido no input do node Code.');\n}\n\nconst funis = normalizarEntidades(configuracao.funis, 'funis');\nconst etapas = normalizarEntidades(configuracao.etapas, 'etapas');\nconst usuarios = normalizarEntidades(configuracao.usuarios, 'usuarios');\nconst servicos = normalizarListaTexto(configuracao.servicos);\n\nif (funis.length === 0) {\n  throw new Error('Nenhum funil foi encontrado nos dados do node Merge.');\n}\n\nif (etapas.length === 0) {\n  throw new Error('Nenhuma etapa foi encontrada nos dados do node Merge.');\n}\n\nif (usuarios.length === 0) {\n  throw new Error('Nenhum usuário foi encontrado nos dados do node Merge.');\n}\n\nif (servicos.length === 0) {\n  throw new Error(\n    'Nenhum serviço foi encontrado no campo \"servicos\" do node Merge.'\n  );\n}\n\nconst dataInicio = inicioDoDia(\n  converterData(configuracao.data_inicio, 'data_inicio')\n);\n\nconst dataTermino = fimDoDia(\n  converterData(configuracao.data_termino, 'data_termino')\n);\n\nif (dataTermino.getTime() < dataInicio.getTime()) {\n  throw new Error(\n    'A data de término precisa ser maior ou igual à data de início.'\n  );\n}\n\nconst random = criarGeradorAleatorio(seed);\nconst camposLead = obterConfiguracaoCamposLead(configuracao);\n\nconst leads = [];\nconst body = [];\n\nfor (let indice = 1; indice <= quantidade; indice++) {\n  const contato = escolherContatoParaLead(random, contatos, indice);\n\n  validarContatoParaVinculo(contato, indice);\n\n  const servico = escolherAleatorio(random, servicos);\n\n  const contextoFunil = escolherFunilEtapaUsuario(\n    random,\n    funis,\n    etapas,\n    usuarios\n  );\n\n  const dataMinimaLead = obterDataMinimaLead(\n    contato,\n    dataInicio,\n    dataTermino\n  );\n\n  const criadoEm = dataAleatoriaEntre(\n    random,\n    dataMinimaLead,\n    dataTermino\n  );\n\n  const atualizadoEm = dataAleatoriaEntre(\n    random,\n    criadoEm,\n    dataTermino\n  );\n\n  /*\n   * Data do Contrato existe somente para leads ganhos.\n   * Quando aplicável, usa exatamente o mesmo valor de updated_at.\n   */\n  const dataContrato = etapaRepresentaLeadGanho(\n    contextoFunil.etapa\n  )\n    ? atualizadoEm\n    : null;\n\n  const venda = calcularValorVenda(\n    random,\n    servico,\n    contextoFunil.etapa\n  );\n\n  const utm = criarUtm(random, servico);\n\n  const lead = criarLeadLocal(\n    indice,\n    contato,\n    contextoFunil,\n    servico,\n    venda,\n    utm,\n    dataContrato,\n    criadoEm,\n    atualizadoEm\n  );\n\n  leads.push(lead);\n  body.push(criarBodyLeadKommo(lead, camposLead));\n}\n\nconst lotesBody = dividirEmLotes(body, LIMITE_LEADS_POR_BODY);\nconst lotesLeads = dividirEmLotes(leads, LIMITE_LEADS_POR_BODY);\n\nconst resultados = [];\n\nfor (\n  let indiceLote = 0;\n  indiceLote < lotesBody.length;\n  indiceLote++\n) {\n  resultados.push({\n    json: {\n      body: lotesBody[indiceLote],\n      leads: lotesLeads[indiceLote],\n      lote: indiceLote + 1,\n      total_lotes: lotesBody.length,\n      quantidade_no_lote: lotesBody[indiceLote].length\n    }\n  });\n}\n\nreturn resultados;\n\n/**\n * Localiza e consolida a configuração recebida pelo node Merge.\n */\nfunction obterConfiguracaoGeral() {\n  let itensMerge = [];\n\n  try {\n    itensMerge = $('Merge').all();\n  } catch (erro) {\n    itensMerge = [];\n  }\n\n  const itensJson = itensMerge\n    .flatMap((item) => {\n      const json = item?.json ?? item;\n\n      return Array.isArray(json)\n        ? json\n        : [json];\n    })\n    .map((json) => json?.json ?? json)\n    .filter(\n      (json) =>\n        json &&\n        typeof json === 'object' &&\n        !Array.isArray(json)\n    );\n\n  const configuracao = consolidarConfiguracaoMerge(itensJson);\n\n  if (!configuracao) {\n    throw new Error(\n      'Não foi possível localizar os dados de configuração no node \"Merge\".'\n    );\n  }\n\n  return configuracao;\n}\n\n/**\n * Consolida os diferentes itens retornados pelo node Merge.\n */\nfunction consolidarConfiguracaoMerge(itensJson) {\n  if (itensJson.length === 0) {\n    return null;\n  }\n\n  const configuracao = {\n    funis: [],\n    etapas: [],\n    usuarios: [],\n    servicos: [],\n    campos_lead: []\n  };\n\n  for (const json of itensJson) {\n    mesclarCamposEscalares(configuracao, json);\n\n    adicionarLista(configuracao.funis, json.funis);\n    adicionarLista(configuracao.etapas, json.etapas);\n    adicionarLista(configuracao.usuarios, json.usuarios);\n    adicionarLista(configuracao.servicos, json.servicos);\n\n    adicionarLista(\n      configuracao.campos_lead,\n      extrairCamposLead(json)\n    );\n\n    if (pareceCampoPersonalizadoLead(json)) {\n      configuracao.campos_lead.push(json);\n    }\n  }\n\n  configuracao.funis = removerDuplicadosPorChave(\n    configuracao.funis,\n    ['id_externo', 'id', 'nome']\n  );\n\n  configuracao.etapas = removerDuplicadosPorChave(\n    configuracao.etapas,\n    ['funil_id_externo', 'id_externo', 'id', 'nome']\n  );\n\n  configuracao.usuarios = removerDuplicadosPorChave(\n    configuracao.usuarios,\n    ['id_externo', 'id', 'nome']\n  );\n\n  configuracao.servicos = [\n    ...new Set(\n      configuracao.servicos\n        .map((servico) => String(servico).trim())\n        .filter(Boolean)\n    )\n  ];\n\n  configuracao.campos_lead = removerDuplicadosPorChave(\n    configuracao.campos_lead,\n    [\n      'id',\n      'field_id',\n      'code',\n      'field_code',\n      'name',\n      'nome'\n    ]\n  );\n\n  return configuracao;\n}\n\n/**\n * Mescla campos simples de configuração.\n */\nfunction mesclarCamposEscalares(destino, origem) {\n  const chavesEscalares = [\n    'quantidade_de_leads',\n    'quantidade_de_empresas',\n    'quantidade_de_contatos',\n    'data_inicio',\n    'data_termino',\n    'seed',\n    'kommo_subdomain',\n    'token',\n    'responsible_user_id',\n    'usuario_responsavel_id',\n    'responsavel_id',\n    'created_by',\n    'criado_por',\n    'updated_by',\n    'atualizado_por'\n  ];\n\n  for (const chave of chavesEscalares) {\n    if (valorPreenchido(origem[chave])) {\n      destino[chave] = origem[chave];\n    }\n  }\n}\n\n/**\n * Adiciona elementos de uma lista ao array de destino.\n */\nfunction adicionarLista(destino, valor) {\n  if (!Array.isArray(valor)) {\n    return;\n  }\n\n  for (const item of valor) {\n    const normalizado = item?.json ?? item;\n\n    if (\n      normalizado !== undefined &&\n      normalizado !== null\n    ) {\n      destino.push(normalizado);\n    }\n  }\n}\n\n/**\n * Extrai campos personalizados de leads das possíveis estruturas.\n */\nfunction extrairCamposLead(json) {\n  const campos = [];\n\n  adicionarLista(campos, json.lead_fields);\n  adicionarLista(campos, json.campos_lead);\n  adicionarLista(campos, json.campos_personalizados_lead);\n  adicionarLista(campos, json.campos_kommo_lead);\n  adicionarLista(campos, json.custom_fields_lead);\n  adicionarLista(campos, json.custom_fields);\n  adicionarLista(campos, json.campos);\n  adicionarLista(campos, json.campos_disponiveis);\n  adicionarLista(campos, json.campos_disponíveis);\n  adicionarLista(campos, json.fields);\n  adicionarLista(campos, json._embedded?.custom_fields);\n\n  return campos.filter(pareceCampoPersonalizadoLead);\n}\n\n/**\n * Verifica se o objeto possui estrutura semelhante\n * a um campo personalizado da Kommo.\n */\nfunction pareceCampoPersonalizadoLead(valor) {\n  if (\n    !valor ||\n    typeof valor !== 'object' ||\n    Array.isArray(valor)\n  ) {\n    return false;\n  }\n\n  const temIdentificadorCampo =\n    valorPreenchido(valor.field_id) ||\n    valorPreenchido(valor.field_code) ||\n    valorPreenchido(valor.id) ||\n    valorPreenchido(valor.code);\n\n  const temNomeCampo =\n    valorPreenchido(valor.name) ||\n    valorPreenchido(valor.nome);\n\n  const pareceCampoKommo =\n    valorPreenchido(valor.type) ||\n    valorPreenchido(valor.field_type) ||\n    valorPreenchido(valor.enums) ||\n    valorPreenchido(valor.sort);\n\n  return (\n    temIdentificadorCampo &&\n    temNomeCampo &&\n    pareceCampoKommo\n  );\n}\n\n/**\n * Remove duplicados com base em uma combinação de chaves.\n */\nfunction removerDuplicadosPorChave(lista, chaves) {\n  const resultado = [];\n  const vistos = new Set();\n\n  for (const item of lista) {\n    if (\n      item === undefined ||\n      item === null\n    ) {\n      continue;\n    }\n\n    if (typeof item !== 'object') {\n      const chavePrimitiva = String(item);\n\n      if (!vistos.has(chavePrimitiva)) {\n        vistos.add(chavePrimitiva);\n        resultado.push(item);\n      }\n\n      continue;\n    }\n\n    const chave = chaves\n      .map((nomeChave) =>\n        String(item[nomeChave] ?? '').trim()\n      )\n      .filter(Boolean)\n      .join('|');\n\n    const chaveFinal = chave || JSON.stringify(item);\n\n    if (!vistos.has(chaveFinal)) {\n      vistos.add(chaveFinal);\n      resultado.push(item);\n    }\n  }\n\n  return resultado;\n}\n\n/**\n * Normaliza contatos recebidos pelo input principal.\n */\nfunction normalizarContatos(itens) {\n  return itens\n    .flatMap((item) => {\n      const json = item?.json ?? item;\n\n      return Array.isArray(json)\n        ? json\n        : [json];\n    })\n    .map((contato) => contato?.json ?? contato)\n    .filter(\n      (contato) =>\n        contato &&\n        typeof contato === 'object' &&\n        !Array.isArray(contato)\n    );\n}\n\n/**\n * Normaliza listas de entidades.\n */\nfunction normalizarEntidades(valor, nomeCampo) {\n  if (!Array.isArray(valor)) {\n    throw new Error(\n      `O campo \"${nomeCampo}\" precisa ser uma lista no node Merge.`\n    );\n  }\n\n  return valor\n    .map((item) => item?.json ?? item)\n    .filter(\n      (item) =>\n        item &&\n        typeof item === 'object' &&\n        !Array.isArray(item)\n    );\n}\n\n/**\n * Normaliza listas simples de texto.\n */\nfunction normalizarListaTexto(valor) {\n  if (!Array.isArray(valor)) {\n    return [];\n  }\n\n  return valor\n    .map((item) => String(item || '').trim())\n    .filter(Boolean);\n}\n\n/**\n * Valida se o contato possui os IDs necessários.\n */\nfunction validarContatoParaVinculo(contato, indiceLead) {\n  if (!valorPreenchido(contato.id)) {\n    throw new Error(\n      `O contato selecionado para o lead ${indiceLead} não possui \"id\" do banco.`\n    );\n  }\n\n  if (!valorPreenchido(contato.id_externo)) {\n    throw new Error(\n      `O contato \"${contato.nome || contato.id}\" selecionado para o lead ${indiceLead} não possui \"id_externo\" da Kommo.`\n    );\n  }\n\n  if (!valorPreenchido(contato.empresa_id_externo)) {\n    throw new Error(\n      `O contato \"${contato.nome || contato.id}\" selecionado para o lead ${indiceLead} não possui \"empresa_id_externo\" da Kommo.`\n    );\n  }\n\n  validarIdExternoNumerico(\n    contato.id_externo,\n    `contato \"${contato.nome || contato.id}\"`\n  );\n\n  validarIdExternoNumerico(\n    contato.empresa_id_externo,\n    `empresa do contato \"${contato.nome || contato.id}\"`\n  );\n}\n\n/**\n * Valida IDs externos utilizados nos vínculos da Kommo.\n */\nfunction validarIdExternoNumerico(valor, contexto) {\n  const id = Number(valor);\n\n  if (\n    !Number.isInteger(id) ||\n    id <= 0\n  ) {\n    throw new Error(\n      `O id externo da ${contexto} é inválido para vínculo na Kommo.`\n    );\n  }\n}\n\n/**\n * Seleciona contatos de maneira sequencial inicialmente.\n * Caso existam mais leads do que contatos, seleciona aleatoriamente.\n */\nfunction escolherContatoParaLead(\n  random,\n  listaContatos,\n  indice\n) {\n  if (indice <= listaContatos.length) {\n    return listaContatos[indice - 1];\n  }\n\n  return listaContatos[\n    Math.floor(random() * listaContatos.length)\n  ];\n}\n\n/**\n * Seleciona funil, etapa e usuário.\n */\nfunction escolherFunilEtapaUsuario(\n  random,\n  funis,\n  etapas,\n  usuarios\n) {\n  const funil = escolherFunil(random, funis);\n\n  const etapasDoFunil = etapas\n    .filter(\n      (etapa) =>\n        String(etapa.funil_id_externo || '') ===\n        String(funil.id_externo || '')\n    )\n    .filter(etapaPermitidaParaCriacaoLead)\n    .sort(\n      (a, b) =>\n        Number(a.ordem || 0) -\n        Number(b.ordem || 0)\n    );\n\n  if (etapasDoFunil.length === 0) {\n    throw new Error(\n      `Nenhuma etapa válida para criação de lead foi encontrada no funil \"${funil.nome}\".`\n    );\n  }\n\n  const etapa = escolherEtapa(random, etapasDoFunil);\n\n  const usuario = escolherUsuarioResponsavel(\n    random,\n    usuarios,\n    funil,\n    etapa\n  );\n\n  validarIdExternoNumerico(\n    etapa.funil_id_externo,\n    `funil externo da etapa \"${etapa.nome}\"`\n  );\n\n  validarIdExternoNumerico(\n    etapa.id_externo,\n    `etapa \"${etapa.nome}\"`\n  );\n\n  validarIdExternoNumerico(\n    usuario.id_externo,\n    `usuário \"${usuario.nome}\"`\n  );\n\n  return {\n    funil,\n    etapa,\n    usuario\n  };\n}\n\n/**\n * Impede criação em etapas internas não permitidas.\n */\nfunction etapaPermitidaParaCriacaoLead(etapa) {\n  const idExterno = String(\n    etapa.id_externo || ''\n  ).trim();\n\n  const nome = normalizarTexto(etapa.nome);\n\n  if (idExterno === '143') {\n    return false;\n  }\n\n  if (nome.includes('closed - lost')) {\n    return false;\n  }\n\n  if (nome.includes('incoming leads')) {\n    return false;\n  }\n\n  return true;\n}\n\n/**\n * Identifica a etapa padrao de ganho da Kommo ou uma etapa\n * equivalente nomeada em portugues/ingles.\n */\nfunction etapaRepresentaLeadGanho(etapa) {\n  const idExterno = String(\n    etapa?.id_externo || ''\n  ).trim();\n\n  const nome = normalizarTexto(etapa?.nome);\n\n  return (\n    idExterno === '142' ||\n    nome.includes('closed - won') ||\n    nome.includes('fechado - ganho') ||\n    nome.includes('venda ganha') ||\n    nome === 'ganho'\n  );\n}\n\n/**\n * Prioriza os funis de vendas e qualificação.\n */\nfunction escolherFunil(random, funis) {\n  const vendas = funis.find((funil) =>\n    normalizarTexto(funil.nome).includes('vendas')\n  );\n\n  const qualificacao = funis.find((funil) =>\n    normalizarTexto(funil.nome).includes('qualificacao')\n  );\n\n  if (vendas && qualificacao) {\n    return random() < 0.58\n      ? vendas\n      : qualificacao;\n  }\n\n  return escolherAleatorio(random, funis);\n}\n\n/**\n * Seleciona uma etapa com base em peso.\n */\nfunction escolherEtapa(random, etapasDoFunil) {\n  const opcoes = etapasDoFunil.map((etapa) => ({\n    valor: etapa,\n    peso: pesoEtapa(etapa)\n  }));\n\n  return escolherComPeso(random, opcoes);\n}\n\n/**\n * Define pesos para as etapas.\n */\nfunction pesoEtapa(etapa) {\n  const nome = normalizarTexto(etapa.nome);\n\n  if (etapaRepresentaLeadGanho(etapa)) {\n    return 12;\n  }\n\n  if (\n    nome.includes('closed - lost') ||\n    nome.includes('desqualificado')\n  ) {\n    return 10;\n  }\n\n  if (nome.includes('negociacao')) {\n    return 14;\n  }\n\n  if (nome.includes('proposta')) {\n    return 16;\n  }\n\n  if (nome.includes('qualificado')) {\n    return 18;\n  }\n\n  if (nome.includes('andamento')) {\n    return 16;\n  }\n\n  if (nome.includes('contato')) {\n    return 18;\n  }\n\n  if (nome.includes('novo')) {\n    return 20;\n  }\n\n  if (nome.includes('incoming')) {\n    return 8;\n  }\n\n  return 10;\n}\n\n/**\n * Prioriza closers ou SDRs com base no contexto do lead.\n */\nfunction escolherUsuarioResponsavel(\n  random,\n  usuarios,\n  funil,\n  etapa\n) {\n  const nomeFunil = normalizarTexto(funil.nome);\n  const nomeEtapa = normalizarTexto(etapa.nome);\n\n  const preferirCloser =\n    nomeFunil.includes('vendas') ||\n    nomeEtapa.includes('proposta') ||\n    nomeEtapa.includes('negociacao') ||\n    etapaRepresentaLeadGanho(etapa);\n\n  const papelPreferido = preferirCloser\n    ? 'closer'\n    : 'sdr';\n\n  const usuariosPreferidos = usuarios.filter(\n    (usuario) =>\n      normalizarTexto(usuario.papel) === papelPreferido\n  );\n\n  if (usuariosPreferidos.length > 0) {\n    return escolherAleatorio(\n      random,\n      usuariosPreferidos\n    );\n  }\n\n  return escolherAleatorio(random, usuarios);\n}\n\n/**\n * Monta o objeto local utilizado na geração do payload.\n */\nfunction criarLeadLocal(\n  indice,\n  contato,\n  contextoFunil,\n  servico,\n  venda,\n  utm,\n  dataContrato,\n  criadoEm,\n  atualizadoEm\n) {\n  return {\n    indice_simulado: indice,\n    lead_id_simulado: `LEA-${pad(indice, 6)}`,\n    id_externo: '',\n\n    contato_id: String(contato.id),\n    contato_id_externo: String(contato.id_externo),\n    contato_nome: contato.nome || '',\n\n    empresa_id_externo: String(\n      contato.empresa_id_externo\n    ),\n\n    etapa_id_externo: String(\n      contextoFunil.etapa.id_externo\n    ),\n\n    etapa_nome: contextoFunil.etapa.nome || '',\n\n    funil_id_externo: String(\n      contextoFunil.etapa.funil_id_externo\n    ),\n\n    funil_nome: contextoFunil.funil.nome || '',\n\n    usuario_responsavel_id_externo: String(\n      contextoFunil.usuario.id_externo\n    ),\n\n    usuario_responsavel_nome:\n      contextoFunil.usuario.nome || '',\n\n    nome: `${servico} - ${contato.nome || `Contato ${indice}`}`,\n\n    venda,\n\n    utm_source: utm.source,\n    utm_campaing: utm.campaign,\n    utm_medium: utm.medium,\n    utm_content: utm.content,\n    utm_term: utm.term,\n    utm_referrer: utm.utmReferrer,\n\n    referrer: utm.referrer,\n    gclientid: utm.gclientid,\n    gclid: utm.gclid,\n    fbclid: utm.fbclid,\n\n    servicos: servico,\n\n    criado_em: criadoEm.toISOString(),\n\n    atualizado_em: atualizadoEm.toISOString(),\n\n    ...(dataContrato\n      ? {\n          data_contrato:\n            dataContrato.toISOString()\n        }\n      : {})\n  };\n}\n\n/**\n * Monta o payload enviado para a API da Kommo.\n */\nfunction criarBodyLeadKommo(lead, camposLead) {\n  const customFieldsValues = [];\n\n  adicionarCampoPersonalizado(\n    customFieldsValues,\n    camposLead.utmSource,\n    lead.utm_source\n  );\n\n  adicionarCampoPersonalizado(\n    customFieldsValues,\n    camposLead.utmCampaign,\n    lead.utm_campaing\n  );\n\n  adicionarCampoPersonalizado(\n    customFieldsValues,\n    camposLead.utmMedium,\n    lead.utm_medium\n  );\n\n  adicionarCampoPersonalizado(\n    customFieldsValues,\n    camposLead.utmContent,\n    lead.utm_content\n  );\n\n  adicionarCampoPersonalizado(\n    customFieldsValues,\n    camposLead.utmTerm,\n    lead.utm_term\n  );\n\n  adicionarCampoPersonalizado(\n    customFieldsValues,\n    camposLead.utmReferrer,\n    lead.utm_referrer\n  );\n\n  adicionarCampoPersonalizado(\n    customFieldsValues,\n    camposLead.referrer,\n    lead.referrer\n  );\n\n  adicionarCampoPersonalizado(\n    customFieldsValues,\n    camposLead.gclientid,\n    lead.gclientid\n  );\n\n  adicionarCampoPersonalizado(\n    customFieldsValues,\n    camposLead.gclid,\n    lead.gclid\n  );\n\n  adicionarCampoPersonalizado(\n    customFieldsValues,\n    camposLead.fbclid,\n    lead.fbclid\n  );\n\n  adicionarCampoPersonalizado(\n    customFieldsValues,\n    camposLead.servicos,\n    lead.servicos\n  );\n\n  /*\n   * O valor enviado para Data do Contrato é convertido\n   * para Unix timestamp exatamente como updated_at.\n   */\n  if (lead.data_contrato) {\n    adicionarCampoPersonalizado(\n      customFieldsValues,\n      camposLead.dataContrato,\n      unixSegundos(lead.data_contrato)\n    );\n  }\n\n  const bodyLead = {\n    request_id: String(\n      Number(lead.indice_simulado)\n    ),\n\n    name: lead.nome,\n\n    price: Number(lead.venda),\n\n    pipeline_id: Number(\n      lead.funil_id_externo\n    ),\n\n    status_id: Number(\n      lead.etapa_id_externo\n    ),\n\n    responsible_user_id: Number(\n      lead.usuario_responsavel_id_externo\n    ),\n\n    created_at: unixSegundos(\n      lead.criado_em\n    ),\n\n    updated_at: unixSegundos(\n      lead.atualizado_em\n    ),\n\n    _embedded: {\n      contacts: [\n        {\n          id: Number(\n            lead.contato_id_externo\n          ),\n          is_main: true\n        }\n      ],\n\n      companies: [\n        {\n          id: Number(\n            lead.empresa_id_externo\n          )\n        }\n      ]\n    }\n  };\n\n  if (customFieldsValues.length > 0) {\n    bodyLead.custom_fields_values =\n      customFieldsValues;\n  }\n\n  return bodyLead;\n}\n\n/**\n * Localiza os campos personalizados pelo nome, ID ou código.\n */\nfunction obterConfiguracaoCamposLead(configuracao) {\n  const origem =\n    configuracao.campos_lead ||\n    configuracao.campos_personalizados_lead ||\n    configuracao.campos_kommo_lead ||\n    configuracao.custom_fields_lead ||\n    null;\n\n  if (Array.isArray(origem)) {\n    return {\n      utmSource: encontrarCampoEmLista(\n        origem,\n        [\n          'utm source',\n          'utm_source',\n          'utm-source',\n          'origem utm'\n        ]\n      ),\n\n      utmCampaign: encontrarCampoEmLista(\n        origem,\n        [\n          'utm campaign',\n          'utm campaing',\n          'utm_campaing',\n          'utm_campaign',\n          'campanha utm'\n        ]\n      ),\n\n      utmMedium: encontrarCampoEmLista(\n        origem,\n        [\n          'utm medium',\n          'utm_medium',\n          'utm-medium',\n          'midia utm',\n          'mídia utm'\n        ]\n      ),\n\n      utmContent: encontrarCampoEmLista(\n        origem,\n        [\n          'utm content',\n          'utm_content',\n          'utm-content',\n          'conteudo utm',\n          'conteúdo utm'\n        ]\n      ),\n\n      utmTerm: encontrarCampoEmLista(\n        origem,\n        [\n          'utm term',\n          'utm_term',\n          'utm-term',\n          'termo utm'\n        ]\n      ),\n\n      utmReferrer: encontrarCampoEmLista(\n        origem,\n        [\n          'utm referrer',\n          'utm_referrer',\n          'utm-referrer'\n        ]\n      ),\n\n      referrer: encontrarCampoEmLista(\n        origem,\n        [\n          'referrer',\n          'referer',\n          'referenciador'\n        ]\n      ),\n\n      gclientid: encontrarCampoEmLista(\n        origem,\n        [\n          'gclientid',\n          'gclient id',\n          'google client id'\n        ]\n      ),\n\n      gclid: encontrarCampoEmLista(\n        origem,\n        ['gclid']\n      ),\n\n      fbclid: encontrarCampoEmLista(\n        origem,\n        ['fbclid']\n      ),\n\n      servicos: encontrarCampoEmLista(\n        origem,\n        [\n          'servicos',\n          'serviços',\n          'servios',\n          'servi?os',\n          'servico',\n          'serviço',\n          'servio',\n          'servi?o',\n          'service',\n          'services'\n        ]\n      ),\n\n      dataContrato: encontrarCampoEmLista(\n        origem,\n        [\n          'data contrato',\n          'data_contrato',\n          'contrato',\n          'contract date'\n        ]\n      )\n    };\n  }\n\n  if (\n    !origem ||\n    typeof origem !== 'object'\n  ) {\n    return {\n      utmSource: null,\n      utmCampaign: null,\n      utmMedium: null,\n      utmContent: null,\n      utmTerm: null,\n      utmReferrer: null,\n      referrer: null,\n      gclientid: null,\n      gclid: null,\n      fbclid: null,\n      servicos: null,\n      dataContrato: null\n    };\n  }\n\n  return {\n    utmSource: campoPorIdOuCodigo(\n      origem.utm_source ||\n      origem.utmSource ||\n      origem.utm_source_field_id\n    ),\n\n    utmCampaign: campoPorIdOuCodigo(\n      origem.utm_campaing ||\n      origem.utm_campaign ||\n      origem.utmCampaign ||\n      origem.utm_campaign_field_id\n    ),\n\n    utmMedium: campoPorIdOuCodigo(\n      origem.utm_medium ||\n      origem.utmMedium ||\n      origem.utm_medium_field_id\n    ),\n\n    utmContent: campoPorIdOuCodigo(\n      origem.utm_content ||\n      origem.utmContent ||\n      origem.utm_content_field_id\n    ),\n\n    utmTerm: campoPorIdOuCodigo(\n      origem.utm_term ||\n      origem.utmTerm ||\n      origem.utm_term_field_id\n    ),\n\n    utmReferrer: campoPorIdOuCodigo(\n      origem.utm_referrer ||\n      origem.utmReferrer ||\n      origem.utm_referrer_field_id\n    ),\n\n    referrer: campoPorIdOuCodigo(\n      origem.referrer ||\n      origem.referer ||\n      origem.referrer_field_id\n    ),\n\n    gclientid: campoPorIdOuCodigo(\n      origem.gclientid ||\n      origem.gclientId ||\n      origem.gclientid_field_id\n    ),\n\n    gclid: campoPorIdOuCodigo(\n      origem.gclid ||\n      origem.gclid_field_id\n    ),\n\n    fbclid: campoPorIdOuCodigo(\n      origem.fbclid ||\n      origem.fbclid_field_id\n    ),\n\n    servicos: campoPorIdOuCodigo(\n      origem.servicos ||\n      origem.serviços ||\n      origem.servico ||\n      origem.serviço\n    ),\n\n    dataContrato: campoPorIdOuCodigo(\n      origem.data_contrato ||\n      origem.dataContrato ||\n      origem.data_contrato_field_id\n    )\n  };\n}\n\n/**\n * Procura um campo em uma lista utilizando nomes possíveis.\n */\nfunction encontrarCampoEmLista(\n  campos,\n  nomesPossiveis\n) {\n  const nomesNormalizados =\n    nomesPossiveis.map(normalizarTexto);\n\n  for (const campo of campos) {\n    const identificadoresCampo =\n      obterIdentificadoresCampoNormalizados(campo);\n\n    if (\n      identificadoresCampo.some(\n        (identificador) =>\n          nomesNormalizados.includes(\n            identificador\n          )\n      )\n    ) {\n      return normalizarConfiguracaoCampo(campo);\n    }\n  }\n\n  for (const campo of campos) {\n    const identificadoresCampo =\n      obterIdentificadoresCampoNormalizados(campo);\n\n    const bateComNome =\n      identificadoresCampo.some(\n        (identificador) =>\n          nomesNormalizados.some(\n            (nomePossivel) =>\n              identificador.includes(\n                nomePossivel\n              ) ||\n              nomePossivel.includes(\n                identificador\n              )\n          )\n      );\n\n    if (bateComNome) {\n      return normalizarConfiguracaoCampo(campo);\n    }\n  }\n\n  return null;\n}\n\n/**\n * Retorna possíveis nomes e códigos normalizados.\n */\nfunction obterIdentificadoresCampoNormalizados(\n  campo\n) {\n  return [\n    campo.name,\n    campo.nome,\n    campo.code,\n    campo.codigo,\n    campo.field_code,\n    campo.field_name\n  ]\n    .map(normalizarTexto)\n    .filter(Boolean);\n}\n\n/**\n * Normaliza um campo recebido por ID ou código.\n */\nfunction campoPorIdOuCodigo(valor) {\n  const campo = valorOuNulo(valor);\n\n  if (campo === null) {\n    return null;\n  }\n\n  if (typeof campo === 'object') {\n    return normalizarConfiguracaoCampo(campo);\n  }\n\n  const texto = String(campo).trim();\n\n  if (/^\\d+$/.test(texto)) {\n    return {\n      field_id: Number(texto)\n    };\n  }\n\n  return {\n    field_code: texto\n  };\n}\n\n/**\n * Adiciona um campo personalizado ao payload.\n */\nfunction adicionarCampoPersonalizado(\n  campos,\n  campo,\n  valor\n) {\n  if (\n    !campo ||\n    valor === undefined ||\n    valor === null ||\n    valor === ''\n  ) {\n    return;\n  }\n\n  const identificadorCampo =\n    criarIdentificadorCampoKommo(campo);\n\n  const valores =\n    criarValoresCampoPersonalizado(\n      campo,\n      valor\n    );\n\n  if (\n    !identificadorCampo ||\n    valores.length === 0\n  ) {\n    return;\n  }\n\n  campos.push({\n    ...identificadorCampo,\n    values: valores\n  });\n}\n\n/**\n * Normaliza a configuração de um campo da Kommo.\n */\nfunction normalizarConfiguracaoCampo(campo) {\n  if (\n    !campo ||\n    typeof campo !== 'object' ||\n    Array.isArray(campo)\n  ) {\n    return null;\n  }\n\n  const fieldId =\n    valorOuNulo(campo.field_id) ??\n    valorOuNulo(campo.id);\n\n  const fieldCode =\n    valorOuNulo(campo.field_code) ??\n    valorOuNulo(campo.code);\n\n  const configuracao = {};\n\n  if (fieldId !== null) {\n    const id = Number(fieldId);\n\n    if (\n      Number.isInteger(id) &&\n      id > 0\n    ) {\n      configuracao.field_id = id;\n    }\n  } else if (fieldCode !== null) {\n    configuracao.field_code =\n      String(fieldCode).trim();\n  }\n\n  if (\n    !configuracao.field_id &&\n    !configuracao.field_code\n  ) {\n    return null;\n  }\n\n  configuracao.name = String(\n    campo.name ||\n    campo.nome ||\n    campo.field_name ||\n    ''\n  ).trim();\n\n  configuracao.type = String(\n    campo.type ||\n    campo.field_type ||\n    ''\n  ).trim();\n\n  configuracao.enums =\n    Array.isArray(campo.enums)\n      ? campo.enums\n      : [];\n\n  return configuracao;\n}\n\n/**\n * Retorna o identificador aceito pela API da Kommo.\n */\nfunction criarIdentificadorCampoKommo(campo) {\n  if (\n    valorOuNulo(campo.field_id) !== null\n  ) {\n    return {\n      field_id: Number(campo.field_id)\n    };\n  }\n\n  if (\n    valorOuNulo(campo.field_code) !== null\n  ) {\n    return {\n      field_code: String(campo.field_code)\n    };\n  }\n\n  return null;\n}\n\n/**\n * Cria a lista de valores do campo personalizado.\n */\nfunction criarValoresCampoPersonalizado(\n  campo,\n  valor\n) {\n  if (Array.isArray(valor)) {\n    return valor.flatMap((item) =>\n      criarValoresCampoPersonalizado(\n        campo,\n        item\n      )\n    );\n  }\n\n  const tipoCampo = normalizarTexto(\n    campo.type\n  );\n\n  if (\n    [\n      'select',\n      'radiobutton',\n      'category'\n    ].includes(tipoCampo)\n  ) {\n    const enumEncontrado =\n      encontrarEnumCampo(\n        campo.enums,\n        valor\n      );\n\n    if (!enumEncontrado) {\n      const nomeCampo =\n        campo.name ||\n        campo.field_code ||\n        campo.field_id ||\n        'campo personalizado';\n\n      throw new Error(\n        `O valor \"${valor}\" não existe nos enums do campo de lead \"${nomeCampo}\".`\n      );\n    }\n\n    return [\n      {\n        value: String(\n          enumEncontrado.value\n        ),\n        enum_id: Number(\n          enumEncontrado.id\n        )\n      }\n    ];\n  }\n\n  if (tipoCampo === 'multiselect') {\n    const enumEncontrado =\n      encontrarEnumCampo(\n        campo.enums,\n        valor\n      );\n\n    if (!enumEncontrado) {\n      const nomeCampo =\n        campo.name ||\n        campo.field_code ||\n        campo.field_id ||\n        'campo personalizado';\n\n      throw new Error(\n        `O valor \"${valor}\" não existe nos enums do campo de lead \"${nomeCampo}\".`\n      );\n    }\n\n    return [\n      {\n        value: String(\n          enumEncontrado.value\n        ),\n        enum_id: Number(\n          enumEncontrado.id\n        )\n      }\n    ];\n  }\n\n  return [\n    {\n      value: valor\n    }\n  ];\n}\n\n/**\n * Localiza um valor em uma lista de enums.\n */\nfunction encontrarEnumCampo(enums, valor) {\n  if (\n    !Array.isArray(enums) ||\n    enums.length === 0\n  ) {\n    return null;\n  }\n\n  const valorNormalizado =\n    normalizarTexto(valor);\n\n  return (\n    enums.find(\n      (item) =>\n        normalizarTexto(item.value) ===\n        valorNormalizado\n    ) ||\n    null\n  );\n}\n\n/**\n * Calcula o valor simulado de venda.\n */\nfunction calcularValorVenda(\n  random,\n  servico,\n  etapa\n) {\n  const nomeServico =\n    normalizarTexto(servico);\n\n  let minimo = 1800;\n  let maximo = 12000;\n\n  if (nomeServico.includes('mobile')) {\n    minimo = 9000;\n    maximo = 45000;\n  } else if (\n    nomeServico.includes('api') ||\n    nomeServico.includes('integracao')\n  ) {\n    minimo = 7000;\n    maximo = 36000;\n  } else if (nomeServico.includes('web')) {\n    minimo = 4500;\n    maximo = 28000;\n  } else if (\n    nomeServico.includes('consultoria')\n  ) {\n    minimo = 3500;\n    maximo = 22000;\n  } else if (\n    nomeServico.includes('suporte')\n  ) {\n    minimo = 1200;\n    maximo = 9000;\n  }\n\n  const multiplicador =\n    etapaRepresentaLeadGanho(etapa)\n      ? 1.15\n      : 1;\n\n  const valor = Math.round(\n    (\n      minimo +\n      random() * (maximo - minimo)\n    ) *\n    multiplicador\n  );\n\n  return Math.max(0, valor);\n}\n\n/**\n * Gera informações simuladas de UTM.\n */\nfunction criarUtm(random, servico) {\n  const source = escolherAleatorio(\n    random,\n    UTM_SOURCES\n  );\n\n  const medium =\n    source === 'organic'\n      ? 'organic'\n      : escolherAleatorio(\n          random,\n          UTM_MEDIUMS\n        );\n\n  const content = escolherAleatorio(\n    random,\n    UTM_CONTENTS\n  );\n\n  const campanhaBase = escolherAleatorio(\n    random,\n    CAMPANHAS\n  );\n\n  const campanhaServico = criarSlug(\n    servico\n  ).replace(/-/g, '_');\n\n  const referrer =\n    criarReferrerPorOrigem(source);\n\n  return {\n    source,\n    medium,\n    content,\n\n    campaign:\n      `${campanhaBase}-${campanhaServico}`,\n\n    term: campanhaServico,\n\n    utmReferrer: referrer,\n\n    referrer,\n\n    gclientid:\n      `GA1.1.${inteiroAleatorio(\n        random,\n        100000000,\n        999999999\n      )}.${inteiroAleatorio(\n        random,\n        1700000000,\n        1799999999\n      )}`,\n\n    gclid:\n      source === 'google'\n        ? `gclid_${inteiroAleatorio(\n            random,\n            1000000000,\n            9999999999\n          )}`\n        : null,\n\n    fbclid:\n      [\n        'facebook',\n        'instagram'\n      ].includes(source)\n        ? `fbclid_${inteiroAleatorio(\n            random,\n            1000000000,\n            9999999999\n          )}`\n        : null\n  };\n}\n\n/**\n * Cria o referrer com base na origem.\n */\nfunction criarReferrerPorOrigem(source) {\n  const origem =\n    normalizarTexto(source);\n\n  if (origem === 'google') {\n    return 'https://www.google.com/';\n  }\n\n  if (origem === 'facebook') {\n    return 'https://www.facebook.com/';\n  }\n\n  if (origem === 'instagram') {\n    return 'https://www.instagram.com/';\n  }\n\n  if (origem === 'linkedin') {\n    return 'https://www.linkedin.com/';\n  }\n\n  if (origem === 'email') {\n    return 'mailto:campanha@example.com';\n  }\n\n  return 'https://site.example.com/';\n}\n\n/**\n * Gera número inteiro aleatório.\n */\nfunction inteiroAleatorio(\n  random,\n  minimo,\n  maximo\n) {\n  return Math.floor(\n    minimo +\n    random() *\n      (maximo - minimo + 1)\n  );\n}\n\n/**\n * Calcula a menor data possível para criação do lead.\n */\nfunction obterDataMinimaLead(\n  contato,\n  dataInicio,\n  dataTermino\n) {\n  const criadoContato =\n    converterDataOpcional(\n      contato.criado_em\n    );\n\n  if (\n    !criadoContato ||\n    criadoContato.getTime() <\n      dataInicio.getTime()\n  ) {\n    return dataInicio;\n  }\n\n  if (\n    criadoContato.getTime() >\n    dataTermino.getTime()\n  ) {\n    return dataInicio;\n  }\n\n  return criadoContato;\n}\n\n/**\n * Cria gerador pseudoaleatório determinístico.\n */\nfunction criarGeradorAleatorio(\n  seedInicial\n) {\n  let seed = Number(seedInicial) || 2025;\n\n  return function random() {\n    seed |= 0;\n\n    seed =\n      (seed + 0x6D2B79F5) |\n      0;\n\n    let resultado = Math.imul(\n      seed ^ (seed >>> 15),\n      1 | seed\n    );\n\n    resultado =\n      (\n        resultado +\n        Math.imul(\n          resultado ^\n            (resultado >>> 7),\n          61 | resultado\n        )\n      ) ^\n      resultado;\n\n    return (\n      (\n        resultado ^\n        (resultado >>> 14)\n      ) >>>\n      0\n    ) / 4294967296;\n  };\n}\n\n/**\n * Seleciona item aleatório.\n */\nfunction escolherAleatorio(\n  random,\n  array\n) {\n  if (\n    !Array.isArray(array) ||\n    array.length === 0\n  ) {\n    throw new Error(\n      'Tentativa de selecionar um item em uma lista vazia.'\n    );\n  }\n\n  return array[\n    Math.floor(random() * array.length)\n  ];\n}\n\n/**\n * Seleciona uma opção considerando pesos.\n */\nfunction escolherComPeso(\n  random,\n  opcoes\n) {\n  const total = opcoes.reduce(\n    (soma, opcao) =>\n      soma +\n      Number(opcao.peso || 0),\n    0\n  );\n\n  let sorteio = random() * total;\n\n  for (const opcao of opcoes) {\n    sorteio -= Number(\n      opcao.peso || 0\n    );\n\n    if (sorteio <= 0) {\n      return opcao.valor;\n    }\n  }\n\n  return opcoes[\n    opcoes.length - 1\n  ].valor;\n}\n\n/**\n * Preenche número com zeros à esquerda.\n */\nfunction pad(numero, tamanho = 2) {\n  return String(numero).padStart(\n    tamanho,\n    '0'\n  );\n}\n\n/**\n * Normaliza textos para comparações.\n */\nfunction normalizarTexto(valor) {\n  return String(valor || '')\n    .trim()\n    .toLowerCase()\n    .normalize('NFD')\n    .replace(\n      /[\\u0300-\\u036f]/g,\n      ''\n    );\n}\n\n/**\n * Cria slug a partir de texto.\n */\nfunction criarSlug(valor) {\n  return normalizarTexto(valor)\n    .replace(\n      /[^a-z0-9]+/g,\n      '-'\n    )\n    .replace(\n      /^-+|-+$/g,\n      ''\n    );\n}\n\n/**\n * Verifica se valor foi preenchido.\n */\nfunction valorPreenchido(valor) {\n  return (\n    valor !== undefined &&\n    valor !== null &&\n    String(valor).trim() !== ''\n  );\n}\n\n/**\n * Retorna null para valores vazios.\n */\nfunction valorOuNulo(valor) {\n  if (\n    valor === undefined ||\n    valor === null ||\n    valor === ''\n  ) {\n    return null;\n  }\n\n  return valor;\n}\n\n/**\n * Converte uma data obrigatória.\n */\nfunction converterData(\n  valor,\n  nomeCampo\n) {\n  if (!valor) {\n    throw new Error(\n      `O campo \"${nomeCampo}\" não foi informado.`\n    );\n  }\n\n  const data =\n    converterDataOpcional(valor);\n\n  if (!data) {\n    throw new Error(\n      `A data \"${valor}\" do campo \"${nomeCampo}\" é inválida.`\n    );\n  }\n\n  return data;\n}\n\n/**\n * Converte uma data opcional.\n */\nfunction converterDataOpcional(valor) {\n  if (!valor) {\n    return null;\n  }\n\n  const texto =\n    String(valor).trim();\n\n  const formatoBR =\n    /^(\\d{2})\\/(\\d{2})\\/(\\d{4})$/;\n\n  const matchBR =\n    texto.match(formatoBR);\n\n  if (matchBR) {\n    const [\n      ,\n      dia,\n      mes,\n      ano\n    ] = matchBR;\n\n    const data = new Date(\n      Date.UTC(\n        Number(ano),\n        Number(mes) - 1,\n        Number(dia)\n      )\n    );\n\n    const dataValida =\n      data.getUTCFullYear() ===\n        Number(ano) &&\n      data.getUTCMonth() ===\n        Number(mes) - 1 &&\n      data.getUTCDate() ===\n        Number(dia);\n\n    return dataValida\n      ? data\n      : null;\n  }\n\n  const data = new Date(texto);\n\n  return Number.isNaN(\n    data.getTime()\n  )\n    ? null\n    : data;\n}\n\n/**\n * Ajusta uma data para o início do dia em UTC.\n */\nfunction inicioDoDia(data) {\n  return new Date(\n    Date.UTC(\n      data.getUTCFullYear(),\n      data.getUTCMonth(),\n      data.getUTCDate(),\n      0,\n      0,\n      0,\n      0\n    )\n  );\n}\n\n/**\n * Ajusta uma data para o fim do dia em UTC.\n */\nfunction fimDoDia(data) {\n  return new Date(\n    Date.UTC(\n      data.getUTCFullYear(),\n      data.getUTCMonth(),\n      data.getUTCDate(),\n      23,\n      59,\n      59,\n      999\n    )\n  );\n}\n\n/**\n * Gera uma data aleatória em um intervalo.\n */\nfunction dataAleatoriaEntre(\n  random,\n  inicio,\n  termino\n) {\n  const minimo = inicio.getTime();\n  const maximo = termino.getTime();\n\n  if (maximo < minimo) {\n    throw new Error(\n      'O intervalo de datas é inválido.'\n    );\n  }\n\n  const timestamp = Math.floor(\n    random() *\n      (maximo - minimo + 1) +\n      minimo\n  );\n\n  return new Date(timestamp);\n}\n\n/**\n * Converte Date ou texto ISO para Unix timestamp em segundos.\n */\nfunction unixSegundos(data) {\n  if (!data) {\n    return null;\n  }\n\n  const dataConvertida =\n    data instanceof Date\n      ? data\n      : new Date(data);\n\n  if (\n    Number.isNaN(\n      dataConvertida.getTime()\n    )\n  ) {\n    return null;\n  }\n\n  return Math.floor(\n    dataConvertida.getTime() /\n      1000\n  );\n}\n\n/**\n * Divide arrays em lotes.\n */\nfunction dividirEmLotes(\n  array,\n  tamanhoLote\n) {\n  const lotes = [];\n\n  for (\n    let indice = 0;\n    indice < array.length;\n    indice += tamanhoLote\n  ) {\n    lotes.push(\n      array.slice(\n        indice,\n        indice + tamanhoLote\n      )\n    );\n  }\n\n  return lotes;\n}\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3552,
+        48
+      ],
+      "id": "ac4fcd57-66ae-46c4-b4b8-30302a55dc2a",
+      "name": "Code in JavaScript3"
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "value": "analise_dados",
+          "mode": "list",
+          "cachedResultName": "analise_dados"
+        },
+        "table": {
+          "__rl": true,
+          "value": "empresas",
+          "mode": "list",
+          "cachedResultName": "empresas"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "nome": "={{ $json.name }}",
+            "telefone": "={{ $json.custom_fields_values[0].values[0].value }}",
+            "email": "={{ $json.custom_fields_values[1].values[0].value }}",
+            "criado_em": "={{ $json.created_at.toDateTime('s') }}",
+            "atualizado_em": "={{ $json.updated_at.toDateTime('s') }}",
+            "id_externo": "={{ $json.id }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "id_externo",
+              "displayName": "id_externo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "nome",
+              "displayName": "nome",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "telefone",
+              "displayName": "telefone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "ltv",
+              "displayName": "ltv",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "data_ultimo_contrato",
+              "displayName": "data_ultimo_contrato",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "criado_em",
+              "displayName": "criado_em",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "atualizado_em",
+              "displayName": "atualizado_em",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        2080,
+        64
+      ],
+      "id": "f4c7758c-14a7-4c08-a2ed-71c9e9fcad44",
+      "name": "salva_empresas_bd",
+      "credentials": {
+        "postgres": {
+          "id": "75T88sJeS9BfaHBO",
+          "name": "Postgres n8n"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "value": "analise_dados",
+          "mode": "list",
+          "cachedResultName": "analise_dados"
+        },
+        "table": {
+          "__rl": true,
+          "value": "contatos",
+          "mode": "list",
+          "cachedResultName": "contatos"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id_externo": "={{ $json.id }}",
+            "nome": "={{ $json.name }}",
+            "criado_em": "={{ $json.created_at.toDateTime('s') }}",
+            "atualizado_em": "={{ $json.updated_at.toDateTime('s') }}",
+            "telefone": "={{ $json.custom_fields_values[0].values[0].value }}",
+            "email": "={{ $json.custom_fields_values[1].values[0].value }}",
+            "cargo": "={{ $json.custom_fields_values[2].values[0].value }}",
+            "empresa_id_externo": "={{ $json._embedded.companies[0].id }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "id_externo",
+              "displayName": "id_externo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "empresa_id",
+              "displayName": "empresa_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "empresa_id_externo",
+              "displayName": "empresa_id_externo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "nome",
+              "displayName": "nome",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "telefone",
+              "displayName": "telefone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "cargo",
+              "displayName": "cargo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "criado_em",
+              "displayName": "criado_em",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "atualizado_em",
+              "displayName": "atualizado_em",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        3232,
+        48
+      ],
+      "id": "f33ad382-b893-4dfa-9d57-1eccc6c27118",
+      "name": "salva_contatos_bd",
+      "credentials": {
+        "postgres": {
+          "id": "75T88sJeS9BfaHBO",
+          "name": "Postgres n8n"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "=https://{{ $json.kommo_subdomain }}.kommo.com/api/v4/leads/custom_fields",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "accept",
+              "value": "application/json"
+            },
+            {
+              "name": "authorization",
+              "value": "=Bearer {{ $json.token }}"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        256,
+        544
+      ],
+      "id": "bf83e322-755c-434b-9aa8-b2546d697607",
+      "name": "lead_fields"
+    },
+    {
+      "parameters": {
+        "url": "=https://{{ $json.kommo_subdomain }}.kommo.com/api/v4/contacts/custom_fields",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "accept",
+              "value": "application/json"
+            },
+            {
+              "name": "authorization",
+              "value": "=Bearer {{ $json.token }}"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        256,
+        704
+      ],
+      "id": "5cd0e625-8d12-4e00-975d-58fb87f7703e",
+      "name": "contato_fields"
+    },
+    {
+      "parameters": {
+        "url": "=https://{{ $json.kommo_subdomain }}.kommo.com/api/v4/companies/custom_fields",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "accept",
+              "value": "application/json"
+            },
+            {
+              "name": "authorization",
+              "value": "=Bearer {{ $json.token }}"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        256,
+        896
+      ],
+      "id": "a09e70e1-1ad7-430b-9cd8-97014601db2a",
+      "name": "empresa_fields"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "dc5826b3-1c83-4fd8-8ed3-e509474761ee",
+              "name": "empresa_fields",
+              "value": "={{ $json._embedded.custom_fields }}",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        464,
+        896
+      ],
+      "id": "7fb1e4d6-1941-4397-9218-9e583c4b9612",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "dc5826b3-1c83-4fd8-8ed3-e509474761ee",
+              "name": "lead_fields",
+              "value": "={{ $json._embedded.custom_fields }}",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        480,
+        544
+      ],
+      "id": "c147e973-61d7-4ad3-9858-dc3a184eaa20",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "dc5826b3-1c83-4fd8-8ed3-e509474761ee",
+              "name": "contato_fields",
+              "value": "={{ $json._embedded.custom_fields }}",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        480,
+        704
+      ],
+      "id": "e33196c1-44d8-4aa2-8dee-83a09b1afc02",
+      "name": "Edit Fields2"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "body",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        3904,
+        48
+      ],
+      "id": "50652d14-ed48-4bb1-bcf6-13be36079401",
+      "name": "Split Out4"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://{{ $('Merge').first().json.kommo_subdomain }}.kommo.com/api/v4/leads",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "accept",
+              "value": "application/json"
+            },
+            {
+              "name": "authorization",
+              "value": "=Bearer {{ $('Merge').first().json.token }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.body.toJsonString()}}",
+        "options": {
+          "batching": {
+            "batch": {
+              "batchSize": 1,
+              "batchInterval": 300
+            }
+          },
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        3792,
+        -176
+      ],
+      "id": "68678755-5e4c-451d-8677-9bd49aacc12e",
+      "name": "HTTP Request2"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "fieldsToMatchString": "request_id",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        4272,
+        32
+      ],
+      "id": "add67715-7c4b-4505-920d-1b8fa13db61f",
+      "name": "Merge3"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "_embedded.leads",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        4000,
+        -176
+      ],
+      "id": "abad0073-4cd1-477e-83bd-556147d1737b",
+      "name": "Split Out5"
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "value": "analise_dados",
+          "mode": "list",
+          "cachedResultName": "analise_dados"
+        },
+        "table": {
+          "__rl": true,
+          "value": "leads",
+          "mode": "list",
+          "cachedResultName": "leads"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id_externo": "={{ $json.lead_id_externo }}",
+            "contato_id_externo": "={{ $json.contato_id_externo }}",
+            "empresa_id_externo": "={{ $json.empresa_id_externo }}",
+            "etapa_id_externo": "={{ $json.etapa_id_externo }}",
+            "funil_id_externo": "={{ $json.funil_id_externo }}",
+            "usuario_responsavel_id_externo": "={{ $json.usuario_responsavel_id_externo }}",
+            "nome": "={{ $json.nome }}",
+            "venda": "={{ $json.valor }}",
+            "utm_source": "={{ $json.utm_source }}",
+            "utm_campaing": "={{ $json.utm_campaign }}",
+            "utm_medium": "={{ $json.utm_medium }}",
+            "utm_content": "={{ $json.utm_content }}",
+            "servicos": "={{ $json.servico }}",
+            "data_contrato": "={{ $json.data_contrato || $json.atualizado_em }}",
+            "criado_em": "={{ $json.criado_em }}",
+            "atualizado_em": "={{ $json.atualizado_em }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "id_externo",
+              "displayName": "id_externo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "contato_id_externo",
+              "displayName": "contato_id_externo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "empresa_id_externo",
+              "displayName": "empresa_id_externo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "etapa_id_externo",
+              "displayName": "etapa_id_externo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "funil_id_externo",
+              "displayName": "funil_id_externo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "usuario_responsavel_id_externo",
+              "displayName": "usuario_responsavel_id_externo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "nome",
+              "displayName": "nome",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "venda",
+              "displayName": "venda",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "utm_source",
+              "displayName": "utm_source",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "utm_campaing",
+              "displayName": "utm_campaing",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "utm_medium",
+              "displayName": "utm_medium",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "utm_content",
+              "displayName": "utm_content",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "servicos",
+              "displayName": "servicos",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "data_contrato",
+              "displayName": "data_contrato",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "criado_em",
+              "displayName": "criado_em",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "atualizado_em",
+              "displayName": "atualizado_em",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        4768,
+        32
+      ],
+      "id": "0a4ebe84-31b2-4a44-b58f-6262f7700529",
+      "name": "salva_contatos_bd1",
+      "credentials": {
+        "postgres": {
+          "id": "75T88sJeS9BfaHBO",
+          "name": "Postgres n8n"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Cria leads",
+        "height": 608,
+        "width": 1152
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        3472,
+        -256
+      ],
+      "typeVersion": 1,
+      "id": "ce238007-a8a2-4bce-a316-21b4c7ed919e",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\n\n/**\n * ============================================================\n * CAMPOS PERSONALIZADOS CADASTRADOS NA KOMMO\n * ============================================================\n *\n * O node \"Merge\" precisa possuir:\n *\n * {\n *   \"lead_fields\": [...]\n * }\n *\n * Cada campo possui:\n *\n * - id\n * - name\n * - code\n * - type\n * - enums\n */\nconst leads_fields = $('Merge').first().json.lead_fields;\n\nif (!Array.isArray(leads_fields)) {\n  throw new Error(\n    'A variável leads_fields não foi encontrada em $(\"Merge\").first().json.lead_fields.'\n  );\n}\n\n/**\n * ============================================================\n * FUNÇÕES UTILITÁRIAS\n * ============================================================\n */\n\nfunction texto(valor) {\n  return String(valor ?? '').trim();\n}\n\nfunction inteiroOuNull(valor) {\n  const numero = Number(valor);\n\n  return Number.isInteger(numero) && numero > 0\n    ? numero\n    : null;\n}\n\nfunction numeroOuZero(valor) {\n  const numero = Number(valor);\n\n  return Number.isFinite(numero)\n    ? numero\n    : 0;\n}\n\nfunction unixParaIso(valor) {\n  const timestamp = Number(valor);\n\n  if (!Number.isFinite(timestamp) || timestamp <= 0) {\n    return null;\n  }\n\n  return new Date(timestamp * 1000).toISOString();\n}\n\n/**\n * Normaliza textos para comparação.\n *\n * Exemplos:\n *\n * \"Serviços\"          -> \"servicos\"\n * \"Data do Contrato\"  -> \"data_do_contrato\"\n * \"UTM_SOURCE\"        -> \"utm_source\"\n */\nfunction normalizarChave(valor) {\n  return String(valor ?? '')\n    .trim()\n    .toLowerCase()\n    .normalize('NFD')\n    .replace(/[\\u0300-\\u036f]/g, '')\n    .replace(/[^a-z0-9]+/g, '_')\n    .replace(/^_+|_+$/g, '');\n}\n\n/**\n * Retorna o primeiro valor do campo personalizado.\n */\nfunction obterPrimeiroValor(campo) {\n  if (\n    !campo ||\n    !Array.isArray(campo.values) ||\n    campo.values.length === 0\n  ) {\n    return null;\n  }\n\n  return campo.values[0]?.value ?? null;\n}\n\n/**\n * Retorna o enum_id do primeiro valor.\n *\n * Utilizado principalmente para campos do tipo select.\n */\nfunction obterPrimeiroEnumId(campo) {\n  if (\n    !campo ||\n    !Array.isArray(campo.values) ||\n    campo.values.length === 0\n  ) {\n    return null;\n  }\n\n  return inteiroOuNull(\n    campo.values[0]?.enum_id\n  );\n}\n\n/**\n * Formata o valor considerando o tipo do campo cadastrado.\n */\nfunction formatarValorPorTipo(valor, tipo) {\n  if (\n    valor === null ||\n    valor === undefined ||\n    valor === ''\n  ) {\n    return null;\n  }\n\n  if (\n    tipo === 'numeric' ||\n    tipo === 'price'\n  ) {\n    const numero = Number(valor);\n\n    return Number.isFinite(numero)\n      ? numero\n      : valor;\n  }\n\n  if (tipo === 'checkbox') {\n    return Boolean(valor);\n  }\n\n  if (\n    tipo === 'date' ||\n    tipo === 'date_time'\n  ) {\n    const numero = Number(valor);\n\n    /**\n     * Caso a API retorne timestamp em segundos.\n     */\n    if (\n      Number.isFinite(numero) &&\n      numero > 0\n    ) {\n      return new Date(\n        numero * 1000\n      ).toISOString();\n    }\n\n    /**\n     * Caso a API retorne string ISO.\n     */\n    const data = new Date(valor);\n\n    return Number.isNaN(data.getTime())\n      ? valor\n      : data.toISOString();\n  }\n\n  return valor;\n}\n\n/**\n * ============================================================\n * ÍNDICES DOS CAMPOS PERSONALIZADOS\n * ============================================================\n *\n * Permitem localizar campos por:\n *\n * - ID;\n * - code;\n * - nome.\n */\n\nconst fieldsPorId = new Map();\nconst fieldsPorCode = new Map();\nconst fieldsPorNome = new Map();\n\nfor (const field of leads_fields) {\n  const id =\n    inteiroOuNull(field.id);\n\n  if (!id) {\n    continue;\n  }\n\n  fieldsPorId.set(\n    id,\n    field\n  );\n\n  const code =\n    normalizarChave(field.code);\n\n  if (code) {\n    fieldsPorCode.set(\n      code,\n      field\n    );\n  }\n\n  const nome =\n    normalizarChave(field.name);\n\n  if (nome) {\n    fieldsPorNome.set(\n      nome,\n      field\n    );\n  }\n}\n\n/**\n * Localiza a definição de um campo pelo code.\n */\nfunction encontrarDefinicaoPorCode(code) {\n  return (\n    fieldsPorCode.get(\n      normalizarChave(code)\n    ) ||\n    null\n  );\n}\n\n/**\n * Localiza a definição de um campo pelo nome.\n */\nfunction encontrarDefinicaoPorNome(nome) {\n  return (\n    fieldsPorNome.get(\n      normalizarChave(nome)\n    ) ||\n    null\n  );\n}\n\n/**\n * Localiza um valor recebido da Kommo por field_id.\n */\nfunction encontrarValorCustomField(\n  customFieldsValues,\n  fieldId\n) {\n  const id =\n    inteiroOuNull(fieldId);\n\n  if (!id) {\n    return null;\n  }\n\n  return (\n    customFieldsValues.find(\n      (campo) =>\n        Number(campo.field_id) === id\n    ) ||\n    null\n  );\n}\n\n/**\n * Busca o valor de um custom field pelo code.\n */\nfunction obterCampoPorCode(\n  customFieldsValues,\n  code\n) {\n  const definicao =\n    encontrarDefinicaoPorCode(code);\n\n  if (!definicao) {\n    return null;\n  }\n\n  return encontrarValorCustomField(\n    customFieldsValues,\n    definicao.id\n  );\n}\n\n/**\n * Busca o valor de um custom field pelo nome.\n *\n * Necessário para campos personalizados manuais,\n * pois eles normalmente não possuem code.\n */\nfunction obterCampoPorNome(\n  customFieldsValues,\n  nome\n) {\n  const definicao =\n    encontrarDefinicaoPorNome(nome);\n\n  if (!definicao) {\n    return null;\n  }\n\n  return encontrarValorCustomField(\n    customFieldsValues,\n    definicao.id\n  );\n}\n\n/**\n * ============================================================\n * CONVERSÃO GENÉRICA DOS CAMPOS PERSONALIZADOS\n * ============================================================\n */\n\n/**\n * Cria um objeto com todos os custom fields indexados\n * por uma chave legível.\n *\n * Exemplos:\n *\n * {\n *   \"utm_source\": {\n *     \"field_id\": 2387742,\n *     \"value\": \"google\"\n *   },\n *   \"servicos\": {\n *     \"field_id\": 2400502,\n *     \"value\": \"Desenvolvimento Web\",\n *     \"enum_id\": 1785946\n *   }\n * }\n */\nfunction criarCustomFieldsNormalizados(\n  customFieldsValues\n) {\n  const resultado = {};\n\n  for (const campoRecebido of customFieldsValues) {\n    const fieldId =\n      inteiroOuNull(\n        campoRecebido.field_id\n      );\n\n    if (!fieldId) {\n      continue;\n    }\n\n    const definicao =\n      fieldsPorId.get(fieldId);\n\n    const chaveBase =\n      normalizarChave(\n        definicao?.code ||\n        definicao?.name ||\n        `field_${fieldId}`\n      );\n\n    /**\n     * Evita sobrescrever campos em caso de colisão de nomes.\n     */\n    const chave =\n      resultado[chaveBase]\n        ? `${chaveBase}_${fieldId}`\n        : chaveBase;\n\n    const primeiroValor =\n      obterPrimeiroValor(\n        campoRecebido\n      );\n\n    resultado[chave] = {\n      field_id:\n        fieldId,\n\n      name:\n        definicao?.name ||\n        null,\n\n      code:\n        definicao?.code ||\n        null,\n\n      type:\n        definicao?.type ||\n        null,\n\n      value:\n        formatarValorPorTipo(\n          primeiroValor,\n          definicao?.type\n        ),\n\n      enum_id:\n        obterPrimeiroEnumId(\n          campoRecebido\n        ),\n\n      values:\n        Array.isArray(\n          campoRecebido.values\n        )\n          ? campoRecebido.values\n          : []\n    };\n  }\n\n  return resultado;\n}\n\n/**\n * Cria um objeto simplificado contendo apenas:\n *\n * chave: valor\n */\nfunction criarCustomFieldsFlat(\n  customFieldsNormalizados\n) {\n  return Object.fromEntries(\n    Object.entries(\n      customFieldsNormalizados\n    ).map(\n      ([chave, campo]) => [\n        chave,\n        campo.value\n      ]\n    )\n  );\n}\n\n/**\n * ============================================================\n * PROCESSAMENTO DOS LEADS\n * ============================================================\n */\n\nreturn items.map(\n  (item, indice) => {\n    const lead =\n      item.json || {};\n\n    const leadId =\n      inteiroOuNull(\n        lead.id\n      );\n\n    if (!leadId) {\n      throw new Error(\n        `Item ${indice + 1}: ID do lead não encontrado.`\n      );\n    }\n\n    const customFieldsValues =\n      Array.isArray(\n        lead.custom_fields_values\n      )\n        ? lead.custom_fields_values\n        : [];\n\n    const contatoPrincipal =\n      Array.isArray(\n        lead?._embedded?.contacts\n      )\n        ? (\n            lead._embedded.contacts.find(\n              (contato) =>\n                contato.is_main === true\n            ) ||\n            lead._embedded.contacts[0] ||\n            null\n          )\n        : null;\n\n    const empresaPrincipal =\n      Array.isArray(\n        lead?._embedded?.companies\n      )\n        ? (\n            lead._embedded.companies[0] ||\n            null\n          )\n        : null;\n\n    /**\n     * --------------------------------------------\n     * Campos nativos de rastreamento\n     * --------------------------------------------\n     *\n     * Localizados dinamicamente pelo code.\n     */\n\n    const campoUtmSource =\n      obterCampoPorCode(\n        customFieldsValues,\n        'UTM_SOURCE'\n      );\n\n    const campoUtmCampaign =\n      obterCampoPorCode(\n        customFieldsValues,\n        'UTM_CAMPAIGN'\n      );\n\n    const campoUtmMedium =\n      obterCampoPorCode(\n        customFieldsValues,\n        'UTM_MEDIUM'\n      );\n\n    const campoUtmContent =\n      obterCampoPorCode(\n        customFieldsValues,\n        'UTM_CONTENT'\n      );\n\n    const campoUtmTerm =\n      obterCampoPorCode(\n        customFieldsValues,\n        'UTM_TERM'\n      );\n\n    const campoUtmReferrer =\n      obterCampoPorCode(\n        customFieldsValues,\n        'UTM_REFERRER'\n      );\n\n    const campoReferrer =\n      obterCampoPorCode(\n        customFieldsValues,\n        'REFERRER'\n      );\n\n    const campoGclientid =\n      obterCampoPorCode(\n        customFieldsValues,\n        'GCLIENTID'\n      );\n\n    const campoGclid =\n      obterCampoPorCode(\n        customFieldsValues,\n        'GCLID'\n      );\n\n    const campoFbclid =\n      obterCampoPorCode(\n        customFieldsValues,\n        'FBCLID'\n      );\n\n    const campoTiktokAdId =\n      obterCampoPorCode(\n        customFieldsValues,\n        'TIKTOK_AD_ID_TD'\n      );\n\n    const campoTiktokAdName =\n      obterCampoPorCode(\n        customFieldsValues,\n        'TIKTOK_AD_NAME_TD'\n      );\n\n    /**\n     * --------------------------------------------\n     * Campos personalizados manuais\n     * --------------------------------------------\n     *\n     * Localizados dinamicamente pelo nome.\n     */\n\n    const campoServicos =\n      obterCampoPorNome(\n        customFieldsValues,\n        'Serviços'\n      );\n\n    const campoDataContrato =\n      obterCampoPorNome(\n        customFieldsValues,\n        'Data do Contrato'\n      );\n\n    const definicaoDataContrato =\n      encontrarDefinicaoPorNome(\n        'Data do Contrato'\n      );\n\n    const customFieldsNormalizados =\n      criarCustomFieldsNormalizados(\n        customFieldsValues\n      );\n\n    /**\n     * --------------------------------------------\n     * Retorno final\n     * --------------------------------------------\n     */\n\n    return {\n      json: {\n        lead_id_externo:\n          leadId,\n\n        request_id:\n          texto(\n            lead.request_id\n          ) || null,\n\n        nome:\n          texto(\n            lead.name\n          ),\n\n        valor:\n          numeroOuZero(\n            lead.price\n          ),\n\n        funil_id_externo:\n          inteiroOuNull(\n            lead.pipeline_id\n          ),\n\n        etapa_id_externo:\n          inteiroOuNull(\n            lead.status_id\n          ),\n\n        usuario_responsavel_id_externo:\n          inteiroOuNull(\n            lead.responsible_user_id\n          ),\n\n        contato_id_externo:\n          contatoPrincipal\n            ? inteiroOuNull(\n                contatoPrincipal.id\n              )\n            : null,\n\n        empresa_id_externo:\n          empresaPrincipal\n            ? inteiroOuNull(\n                empresaPrincipal.id\n              )\n            : null,\n\n        criado_em:\n          unixParaIso(\n            lead.created_at\n          ),\n\n        atualizado_em:\n          unixParaIso(\n            lead.updated_at\n          ),\n\n        url_kommo:\n          texto(\n            lead?._links?.self?.href\n          ) || null,\n\n        /**\n         * ------------------------------------------\n         * Campos personalizados conhecidos\n         * ------------------------------------------\n         */\n\n        utm_source:\n          obterPrimeiroValor(\n            campoUtmSource\n          ),\n\n        utm_campaign:\n          obterPrimeiroValor(\n            campoUtmCampaign\n          ),\n\n        utm_medium:\n          obterPrimeiroValor(\n            campoUtmMedium\n          ),\n\n        utm_content:\n          obterPrimeiroValor(\n            campoUtmContent\n          ),\n\n        utm_term:\n          obterPrimeiroValor(\n            campoUtmTerm\n          ),\n\n        utm_referrer:\n          obterPrimeiroValor(\n            campoUtmReferrer\n          ),\n\n        referrer:\n          obterPrimeiroValor(\n            campoReferrer\n          ),\n\n        gclientid:\n          obterPrimeiroValor(\n            campoGclientid\n          ),\n\n        gclid:\n          obterPrimeiroValor(\n            campoGclid\n          ),\n\n        fbclid:\n          obterPrimeiroValor(\n            campoFbclid\n          ),\n\n        tiktok_ad_id:\n          obterPrimeiroValor(\n            campoTiktokAdId\n          ),\n\n        tiktok_ad_name:\n          obterPrimeiroValor(\n            campoTiktokAdName\n          ),\n\n        servico:\n          obterPrimeiroValor(\n            campoServicos\n          ),\n\n        servico_enum_id:\n          obterPrimeiroEnumId(\n            campoServicos\n          ),\n\n        data_contrato:\n          formatarValorPorTipo(\n            obterPrimeiroValor(\n              campoDataContrato\n            ),\n            definicaoDataContrato?.type\n          ),\n\n        /**\n         * ------------------------------------------\n         * Todos os campos personalizados\n         * ------------------------------------------\n         *\n         * Mantidos para auditoria e futuras análises.\n         */\n\n        custom_fields_values:\n          customFieldsValues,\n\n        custom_fields_normalizados:\n          customFieldsNormalizados,\n\n        custom_fields_flat:\n          criarCustomFieldsFlat(\n            customFieldsNormalizados\n          )\n      }\n    };\n  }\n);"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4464,
+        32
+      ],
+      "id": "7080833d-7ba3-47ed-b196-0ed7a6b05a6f",
+      "name": "Code in JavaScript4"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT\n  empresa_id_externo,\n  COALESCE(SUM(venda), 0) AS total_vendas,\n  MAX(data_contrato) AS data_ultimo_contrato\nFROM analise_dados.leads\nWHERE empresa_id_externo IS NOT NULL\nGROUP BY empresa_id_externo\nORDER BY data_ultimo_contrato DESC NULLS LAST;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        5040,
+        32
+      ],
+      "id": "a2dc366c-ec5d-4ae3-9741-26f821c64fae",
+      "name": "Execute a SQL query",
+      "alwaysOutputData": false,
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "75T88sJeS9BfaHBO",
+          "name": "Postgres n8n"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "schema": {
+          "__rl": true,
+          "value": "analise_dados",
+          "mode": "list",
+          "cachedResultName": "analise_dados"
+        },
+        "table": {
+          "__rl": true,
+          "value": "empresas",
+          "mode": "list",
+          "cachedResultName": "empresas"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "ltv": "={{ $json.total_vendas }}",
+            "id_externo": "={{ $json.empresa_id_externo }}",
+            "data_ultimo_contrato": "={{ $json.data_ultimo_contrato }}"
+          },
+          "matchingColumns": [
+            "id_externo"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "id_externo",
+              "displayName": "id_externo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "nome",
+              "displayName": "nome",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "telefone",
+              "displayName": "telefone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "ltv",
+              "displayName": "ltv",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "data_ultimo_contrato",
+              "displayName": "data_ultimo_contrato",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "criado_em",
+              "displayName": "criado_em",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "atualizado_em",
+              "displayName": "atualizado_em",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        5248,
+        32
+      ],
+      "id": "0231d23b-491b-46ea-bc0d-21e5f45abaaf",
+      "name": "Update rows in a table",
+      "credentials": {
+        "postgres": {
+          "id": "75T88sJeS9BfaHBO",
+          "name": "Postgres n8n"
+        }
+      }
+    }
+  ],
+  "pinData": {
+    "When clicking ‘Execute workflow’": [
+      {
+        "json": {},
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ]
+  },
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "dados_basicos",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "funis",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "etapas",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "usuarios",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Call '01_kommo_credenciais'",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "dados_basicos": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "funis": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "etapas": {
+      "main": [
+        [
+          {
+            "node": "Aggregate1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "usuarios": {
+      "main": [
+        [
+          {
+            "node": "Aggregate2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Aggregate1": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Aggregate2": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 3
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript2": {
+      "main": [
+        [
+          {
+            "node": "Split Out2",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Split Out1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call '01_kommo_credenciais'": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 4
+          },
+          {
+            "node": "lead_fields",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "contato_fields",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "empresa_fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "salva_empresas_bd",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Split Out1": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "Split Out3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out3": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out2": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge2": {
+      "main": [
+        [
+          {
+            "node": "salva_contatos_bd",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "salva_empresas_bd": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "salva_contatos_bd": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "empresa_fields": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "lead_fields": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "contato_fields": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 5
+          }
+        ]
+      ]
+    },
+    "Edit Fields2": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 6
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 7
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        []
+      ]
+    },
+    "Split Out4": {
+      "main": [
+        [
+          {
+            "node": "Merge3",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "HTTP Request2": {
+      "main": [
+        [
+          {
+            "node": "Split Out5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge3": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out5": {
+      "main": [
+        [
+          {
+            "node": "Merge3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript3": {
+      "main": [
+        [
+          {
+            "node": "Split Out4",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "HTTP Request2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript4": {
+      "main": [
+        [
+          {
+            "node": "salva_contatos_bd1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "salva_contatos_bd1": {
+      "main": [
+        [
+          {
+            "node": "Execute a SQL query",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute a SQL query": {
+      "main": [
+        [
+          {
+            "node": "Update rows in a table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "4531564b-eb06-4162-bffa-a01ab222d964",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "8fb7f33e3d6fc86f0ee8d1fa5fcd9b446aecff8feb445d2ad470d015adeac75a"
+  },
+  "id": "vthVFQ9m8WrYZ1AK",
+  "tags": []
+}

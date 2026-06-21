@@ -1,0 +1,63 @@
+{
+  "name": "02_Criar_tabelas",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "c1eb48f7-989a-4077-9421-88002ce76a72",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "-- Schema das entidades usadas para sincronizacao e analise de dados do Kommo CRM.\n-- Este arquivo cria apenas tabelas, indices, triggers e views. Nao insere dados.\n\nBEGIN;\n\nCREATE SCHEMA IF NOT EXISTS analise_dados;\nSET search_path TO analise_dados;\n\nDROP VIEW IF EXISTS analise_dados.vw_leads_com_dados_unificados;\nDROP TABLE IF EXISTS analise_dados.dashboard_html;\nDROP TABLE IF EXISTS analise_dados.insights;\nDROP TABLE IF EXISTS analise_dados.leads;\nDROP TABLE IF EXISTS analise_dados.contatos;\nDROP TABLE IF EXISTS analise_dados.empresas;\nDROP TABLE IF EXISTS analise_dados.etapas;\nDROP TABLE IF EXISTS analise_dados.funis;\nDROP TABLE IF EXISTS analise_dados.usuarios;\nDROP FUNCTION IF EXISTS analise_dados.preencher_timestamps_padrao();\n\nCREATE FUNCTION analise_dados.preencher_timestamps_padrao()\nRETURNS trigger AS $$\nBEGIN\n    IF NEW.criado_em IS NULL THEN\n        NEW.criado_em := now();\n    END IF;\n\n    IF NEW.atualizado_em IS NULL THEN\n        NEW.atualizado_em := now();\n    END IF;\n\n    RETURN NEW;\nEND;\n$$ LANGUAGE plpgsql;\n\nCREATE TABLE analise_dados.usuarios (\n    id bigserial PRIMARY KEY,\n    id_externo text,\n    nome text NOT NULL,\n    papel text NOT NULL CHECK (papel IN ('SDR', 'Closer')),\n    criado_em timestamptz,\n    atualizado_em timestamptz\n);\n\nCREATE TABLE analise_dados.funis (\n    id bigserial PRIMARY KEY,\n    id_externo text,\n    nome text NOT NULL,\n    criado_em timestamptz,\n    atualizado_em timestamptz\n);\n\nCREATE TABLE analise_dados.etapas (\n    id bigserial PRIMARY KEY,\n    id_externo text,\n    funil_id bigint REFERENCES analise_dados.funis(id),\n    funil_id_externo text,\n    nome text NOT NULL,\n    descricao text,\n    ordem integer,\n    criado_em timestamptz,\n    atualizado_em timestamptz\n);\n\nCREATE TABLE analise_dados.empresas (\n    id bigserial PRIMARY KEY,\n    id_externo text,\n    nome text NOT NULL,\n    telefone text,\n    email text,\n    ltv numeric(12,2) DEFAULT 0,\n    data_ultimo_contrato date,\n    criado_em timestamptz,\n    atualizado_em timestamptz\n);\n\nCREATE TABLE analise_dados.contatos (\n    id bigserial PRIMARY KEY,\n    id_externo text,\n    empresa_id bigint REFERENCES analise_dados.empresas(id),\n    empresa_id_externo text,\n    nome text NOT NULL,\n    telefone text,\n    email text,\n    cargo text,\n    criado_em timestamptz,\n    atualizado_em timestamptz\n);\n\nCREATE TABLE analise_dados.leads (\n    id bigserial PRIMARY KEY,\n    id_externo text,\n    contato_id_externo text,\n    empresa_id_externo text,\n    etapa_id_externo text,\n    funil_id_externo text,\n    usuario_responsavel_id_externo text,\n    nome text NOT NULL,\n    venda numeric(12,2),\n    utm_source text,\n    utm_campaing text,\n    utm_medium text,\n    utm_content text,\n    servicos text,\n    data_contrato date,\n    criado_em timestamptz,\n    atualizado_em timestamptz\n);\n\nCREATE TABLE analise_dados.insights (\n    id bigserial PRIMARY KEY,\n    titulo_da_analise text NOT NULL,\n    oque_foi_analisado jsonb NOT NULL DEFAULT '{}'::jsonb,\n    resultado jsonb NOT NULL DEFAULT '{}'::jsonb,\n    recomendado jsonb NOT NULL DEFAULT '{}'::jsonb,\n    criado_em timestamptz,\n    atualizado_em timestamptz\n);\n\nCREATE TABLE analise_dados.dashboard_html (\n    id bigserial PRIMARY KEY,\n    nome text NOT NULL,\n    descricao text,\n    conteudo text NOT NULL\n);\n\nCREATE UNIQUE INDEX ux_usuarios_id_externo_not_null ON analise_dados.usuarios(id_externo) WHERE id_externo IS NOT NULL;\nCREATE UNIQUE INDEX ux_funis_id_externo_not_null ON analise_dados.funis(id_externo) WHERE id_externo IS NOT NULL;\nCREATE INDEX idx_etapas_id_externo ON analise_dados.etapas(id_externo);\nCREATE UNIQUE INDEX ux_empresas_id_externo_not_null ON analise_dados.empresas(id_externo) WHERE id_externo IS NOT NULL;\nCREATE UNIQUE INDEX ux_contatos_id_externo_not_null ON analise_dados.contatos(id_externo) WHERE id_externo IS NOT NULL;\nCREATE UNIQUE INDEX ux_leads_id_externo_not_null ON analise_dados.leads(id_externo) WHERE id_externo IS NOT NULL;\n\nCREATE INDEX idx_etapas_funil_id_externo ON analise_dados.etapas(funil_id_externo);\nCREATE INDEX idx_contatos_empresa_id_externo ON analise_dados.contatos(empresa_id_externo);\nCREATE INDEX idx_leads_contato_id_externo ON analise_dados.leads(contato_id_externo);\nCREATE INDEX idx_leads_empresa_id_externo ON analise_dados.leads(empresa_id_externo);\nCREATE INDEX idx_leads_etapa_id_externo ON analise_dados.leads(etapa_id_externo);\nCREATE INDEX idx_leads_funil_id_externo ON analise_dados.leads(funil_id_externo);\nCREATE INDEX idx_leads_usuario_responsavel_id_externo ON analise_dados.leads(usuario_responsavel_id_externo);\nCREATE INDEX idx_leads_criado_em ON analise_dados.leads(criado_em);\nCREATE INDEX idx_insights_criado_em ON analise_dados.insights(criado_em);\n\nCREATE TRIGGER trg_usuarios_timestamps\nBEFORE INSERT OR UPDATE ON analise_dados.usuarios\nFOR EACH ROW EXECUTE FUNCTION analise_dados.preencher_timestamps_padrao();\n\nCREATE TRIGGER trg_funis_timestamps\nBEFORE INSERT OR UPDATE ON analise_dados.funis\nFOR EACH ROW EXECUTE FUNCTION analise_dados.preencher_timestamps_padrao();\n\nCREATE TRIGGER trg_etapas_timestamps\nBEFORE INSERT OR UPDATE ON analise_dados.etapas\nFOR EACH ROW EXECUTE FUNCTION analise_dados.preencher_timestamps_padrao();\n\nCREATE TRIGGER trg_empresas_timestamps\nBEFORE INSERT OR UPDATE ON analise_dados.empresas\nFOR EACH ROW EXECUTE FUNCTION analise_dados.preencher_timestamps_padrao();\n\nCREATE TRIGGER trg_contatos_timestamps\nBEFORE INSERT OR UPDATE ON analise_dados.contatos\nFOR EACH ROW EXECUTE FUNCTION analise_dados.preencher_timestamps_padrao();\n\nCREATE TRIGGER trg_leads_timestamps\nBEFORE INSERT OR UPDATE ON analise_dados.leads\nFOR EACH ROW EXECUTE FUNCTION analise_dados.preencher_timestamps_padrao();\n\nCREATE TRIGGER trg_insights_timestamps\nBEFORE INSERT OR UPDATE ON analise_dados.insights\nFOR EACH ROW EXECUTE FUNCTION analise_dados.preencher_timestamps_padrao();\n\nCREATE VIEW analise_dados.vw_leads_com_dados_unificados AS\nSELECT\n    l.id,\n    l.id_externo,\n    l.nome,\n    l.venda,\n    l.contato_id_externo,\n    c.nome AS contato_nome,\n    c.telefone AS contato_telefone,\n    c.email AS contato_email,\n    c.cargo AS contato_cargo,\n    l.empresa_id_externo,\n    e.nome AS empresa_nome,\n    e.telefone AS empresa_telefone,\n    e.email AS empresa_email,\n    e.ltv AS empresa_ltv,\n    l.funil_id_externo,\n    f.nome AS funil_nome,\n    l.etapa_id_externo,\n    et.nome AS etapa_nome,\n    et.ordem AS etapa_ordem,\n    l.usuario_responsavel_id_externo,\n    u.nome AS usuario_responsavel_nome,\n    u.papel AS usuario_responsavel_papel,\n    l.utm_source,\n    l.utm_campaing,\n    l.utm_medium,\n    l.utm_content,\n    l.servicos,\n    l.data_contrato,\n    l.criado_em,\n    l.atualizado_em\nFROM analise_dados.leads l\nLEFT JOIN analise_dados.contatos c ON c.id_externo = l.contato_id_externo\nLEFT JOIN analise_dados.empresas e ON e.id_externo = l.empresa_id_externo\nLEFT JOIN analise_dados.funis f ON f.id_externo = l.funil_id_externo\nLEFT JOIN analise_dados.etapas et ON et.id_externo = l.etapa_id_externo\nLEFT JOIN analise_dados.usuarios u ON u.id_externo = l.usuario_responsavel_id_externo;\n\nCOMMIT;\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        208,
+        0
+      ],
+      "id": "36911c7c-755b-48ed-9dd3-617f5a29e14a",
+      "name": "Execute a SQL query",
+      "credentials": {
+        "postgres": {
+          "id": "75T88sJeS9BfaHBO",
+          "name": "Postgres n8n"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Execute a SQL query",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "981b68dc-fe42-4e83-aada-18c29db8cf14",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "8fb7f33e3d6fc86f0ee8d1fa5fcd9b446aecff8feb445d2ad470d015adeac75a"
+  },
+  "id": "a33ByT31mH4lgpiq",
+  "tags": []
+}
