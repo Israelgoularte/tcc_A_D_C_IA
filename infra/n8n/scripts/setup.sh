@@ -189,7 +189,7 @@ ensure_requirements() {
   fi
 
   echo "O setup precisa instalar ou configurar os seguintes requisitos:"
-  printf '- %s\n' "${missing[@]}"
+  printf -- '- %s\n' "${missing[@]}"
   echo
   echo "Serao executadas acoes com sudo usando apt e, se necessario, o repositorio oficial do Docker:"
   echo "- atualizar indice de pacotes"
