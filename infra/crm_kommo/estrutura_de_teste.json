@@ -1,7 +1,7 @@
 ﻿{
   "funis": [
     {
-      "nome": "Funil de Qualificação",
+      "nome": "Qualificação",
       "etapas": [
         {
           "nome": "Novo Lead",
@@ -26,7 +26,7 @@
       ]
     },
     {
-      "nome": "Funil de Vendas",
+      "nome": "Vendas",
       "etapas": [
         {
           "nome": "Novo Lead Qualificado",
@@ -43,6 +43,14 @@
         {
           "nome": "Negociação",
           "descricao": "Clientes potenciais que estão em processo de negociação, discutindo termos e condições da proposta."
+        },
+        {
+          "nome": "Ganho",
+          "descricao": "Leads que se tornaram clientes após aceitar a proposta de venda."
+        },
+        {
+          "nome": "Perdido",
+          "descricao": "Leads que não se tornaram clientes, seja por rejeitar a proposta ou por outros motivos."
         }
       ]
     }

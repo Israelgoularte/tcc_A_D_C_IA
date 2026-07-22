@@ -378,11 +378,13 @@ if confirm "Deseja subir n8n e PostgreSQL agora?" "s"; then
   echo
   import_postgres_credential
   echo
+  bash "${SCRIPT_DIR}/import-workflows.sh"
+  echo
   echo "Instalacao concluida. Acesse: ${N8N_PROTOCOL}://${N8N_DOMAIN}"
 else
   echo "Setup concluido. Para subir depois, execute:"
   echo "${DOCKER_CMD[*]} compose up -d"
-  echo "Depois de subir os containers, cadastre a credencial PostgreSQL no n8n manualmente ou rode o setup novamente."
+  echo "Depois de subir os containers, importe a credencial e os workflows executando o setup novamente."
 fi
 
 echo

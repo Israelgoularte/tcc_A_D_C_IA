@@ -20,7 +20,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const secoes = $input.all()\n  .map((item) => item.json)\n  .filter((item) => item && Object.keys(item).length > 0)\n  .sort((a, b) => Number(a.id) - Number(b.id));\n\nreturn [{\n  json: {\n    sucesso: true,\n    total: secoes.length,\n    secoes\n  }\n}];"
+        "jsCode": "const tiposPermitidos = new Set(['kpi', 'tabela', 'barras']);\n\nconst registros = $input.all()\n  .map((item) => item.json)\n  .filter((item) => item && Object.keys(item).length > 0)\n  // somente seções ativas (registro sem o campo 'ativo' é tratado como ativo)\n  .filter((item) => item.ativo === undefined || item.ativo === null || item.ativo === true)\n  .sort((a, b) => {\n    const oa = Number(a.ordem ?? 0);\n    const ob = Number(b.ordem ?? 0);\n    if (oa !== ob) return oa - ob;\n    return Number(a.id) - Number(b.id);\n  });\n\nconst secoes = [];\nconst erros = [];\n\nfor (const registro of registros) {\n  const id = String(registro.id ?? '').trim();\n  const nome = String(registro.nome ?? '').trim();\n  const descricao = String(registro.descricao ?? '').trim();\n  const ordem = Number(registro.ordem ?? 0);\n  // 'config' (jsonb) chega como objeto; mantém compatibilidade com string e com a coluna legada 'conteudo'.\n  const bruto = registro.config ?? registro.conteudo;\n\n  try {\n    if (!id || !nome) {\n      throw new Error('id e nome sao obrigatorios');\n    }\n\n    if (typeof bruto === 'string' && bruto.trim().startsWith('<')) {\n      throw new Error('config legado em HTML; converta o registro para a especificacao JSON v1');\n    }\n\n    const configuracao = typeof bruto === 'string' ? JSON.parse(bruto) : bruto;\n\n    if (!configuracao || typeof configuracao !== 'object' || Array.isArray(configuracao)) {\n      throw new Error('config deve ser um objeto JSON');\n    }\n\n    const componentesOriginais = configuracao.componentes;\n    if (!Array.isArray(componentesOriginais) || componentesOriginais.length === 0) {\n      throw new Error('componentes deve possuir ao menos um item');\n    }\n\n    const ids = new Set();\n    const componentes = componentesOriginais.map((componente, indice) => {\n      if (!componente || typeof componente !== 'object' || Array.isArray(componente)) {\n        throw new Error(`componente ${indice + 1} invalido`);\n      }\n\n      const componenteId = String(componente.id ?? '').trim();\n      const tipo = String(componente.tipo ?? '').trim().toLowerCase();\n\n      if (!componenteId) throw new Error(`componente ${indice + 1} sem id`);\n      if (ids.has(componenteId)) throw new Error(`id de componente duplicado: ${componenteId}`);\n      if (!tiposPermitidos.has(tipo)) throw new Error(`tipo nao suportado: ${tipo}`);\n      if (!componente.consulta || typeof componente.consulta !== 'object') {\n        throw new Error(`componente ${componenteId} sem consulta valida`);\n      }\n\n      ids.add(componenteId);\n\n      const largura = Math.min(12, Math.max(3, Number(componente.largura) || 6));\n      const normalizado = { ...componente, id: componenteId, tipo, largura };\n\n      if (tipo === 'kpi' && !String(componente.campo_valor ?? '').trim()) {\n        throw new Error(`componente ${componenteId} precisa de campo_valor`);\n      }\n\n      if (tipo === 'tabela' && (!Array.isArray(componente.colunas) || componente.colunas.length === 0)) {\n        throw new Error(`componente ${componenteId} precisa de colunas`);\n      }\n\n      if (tipo === 'barras' && (!componente.campo_categoria || !componente.campo_valor)) {\n        throw new Error(`componente ${componenteId} precisa de campo_categoria e campo_valor`);\n      }\n\n      return normalizado;\n    });\n\n    secoes.push({\n      id,\n      nome,\n      descricao,\n      ordem,\n      versao: Number(configuracao.versao) || 1,\n      componentes\n    });\n  } catch (error) {\n    erros.push({\n      id: id || null,\n      nome: nome || null,\n      erro: error.message\n    });\n  }\n}\n\nreturn [{\n  json: {\n    sucesso: true,\n    versao_contrato: 1,\n    total: secoes.length,\n    secoes,\n    erros,\n    endpoints: {\n      dados: '/webhook/dashboard_dados'\n    }\n  }\n}];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -71,9 +71,9 @@
         },
         "table": {
           "__rl": true,
-          "value": "dashboard_html",
+          "value": "dashboard_secoes",
           "mode": "list",
-          "cachedResultName": "dashboard_html"
+          "cachedResultName": "dashboard_secoes"
         },
         "returnAll": false,
         "options": {
@@ -81,7 +81,9 @@
             "id",
             "nome",
             "descricao",
-            "conteudo"
+            "ordem",
+            "ativo",
+            "config"
           ]
         },
         "limit": 200

@@ -188,6 +188,9 @@ echo "Aplicando atualizacao..."
 wait_for_service "postgres"
 wait_for_service "n8n"
 
+echo "Importando workflows atualizados..."
+bash "${SCRIPT_DIR}/import-workflows.sh"
+
 echo
 "${DOCKER_CMD[@]}" compose ps
 echo

@@ -1,220 +1,177 @@
-# Endpoint de dados para dashboards
+# Dashboard dinâmico
 
-O workflow `API - Dados Dashboard.json` disponibiliza um endpoint HTTP
-somente leitura que reutiliza a sub-workflow `Tool - Consultar CRM`.
+Esta implementação é uma simulação sem autenticação e sem configuração de
+CORS. Os três workflows possuem responsabilidades separadas.
 
-## Configuracao
+## Pagina DashBoard
 
-Este projeto usa um ambiente de simulacao. Os endpoints nao exigem
-autenticacao e nao aplicam configuracao de CORS.
-
-Importe primeiro `Tool - Consultar CRM.json`. Depois importe este workflow,
-abra o node `Consultar CRM` e confirme que a sub-workflow selecionada e
-`Tool - Consultar CRM`.
-
-Ative os dois workflows para habilitar as URLs de producao:
+Endpoint:
 
 ```text
-API - Dados Dashboard
-API - Sections Dash
+GET https://SEU_DOMINIO/webhook/dashboard
+```
 
-POST https://SEU_DOMINIO/webhook/dashboard_dados
+Retorna a página HTML completa. A página:
+
+- consulta a API de seções ao abrir;
+- interpreta o contrato JSON;
+- cria os componentes visuais;
+- consulta a API de dados para cada componente;
+- suporta componentes `kpi`, `tabela` e `barras`.
+
+O HTML fonte está em `dashboard-page.html` e também é mantido em
+`exemplo-dashboard.html`.
+
+## API - Sections Dash
+
+Endpoint:
+
+```text
 POST https://SEU_DOMINIO/webhook/dashboard/sections
 ```
 
-Se apenas `API - Sections Dash` estiver ativo, o shell conseguira listar as
-secoes, mas o JavaScript interno delas falhara ao consultar os indicadores.
-Nesse caso, o n8n retorna que o webhook `POST dashboard_dados` nao esta
-registrado.
+Lê os registros da tabela `analise_dados.dashboard_secoes`. O campo `config`
+(jsonb) contém a especificação JSON da seção. A API considera apenas seções
+com `ativo = true`, ordena por `ordem` (e depois por `id`), valida, normaliza e
+retorna as instruções que a página usará para montar o dashboard.
 
-## Consultar catalogo
-
-```bash
-curl -X POST "https://SEU_DOMINIO/webhook/dashboard_dados" \
-  -H "Content-Type: application/json" \
-  -d '{"operacao":"catalogo"}'
-```
-
-## Listar leads
+Exemplo de valor para `config`:
 
 ```json
 {
-  "operacao": "listar",
-  "entidade": "leads_unificados",
-  "campos": ["nome", "venda", "etapa_nome", "criado_em"],
-  "filtros": [
+  "versao": 1,
+  "componentes": [
     {
-      "campo": "criado_em",
-      "operador": "entre",
-      "valor": ["2026-01-01", "2026-12-31"]
+      "id": "total-leads",
+      "tipo": "kpi",
+      "titulo": "Total de leads",
+      "largura": 3,
+      "campo_valor": "total",
+      "formato": "numero",
+      "consulta": {
+        "operacao": "agregar",
+        "entidade": "leads_unificados",
+        "filtros": [],
+        "metricas": [
+          {
+            "expressao": "count(id)",
+            "alias": "total"
+          }
+        ],
+        "limite": 1
+      }
     }
-  ],
-  "ordenacao": [
-    {
-      "campo": "venda",
-      "direcao": "desc"
-    }
-  ],
-  "limite": 100
+  ]
 }
 ```
 
-## Indicadores agregados
+O arquivo `exemplo_response.json` contém um contrato completo.
+
+Registros cujo `config` esteja em HTML legado são ignorados e retornados em
+`erros`. Eles devem ser convertidos para a especificação JSON.
+
+> Migração: a tabela anterior `dashboard_html` (`conteudo text`) foi
+> substituída por `dashboard_secoes` (`config jsonb`, com `ordem` e `ativo`).
+> Em bases já existentes, aplique
+> `infra/dados_ficticios/migrations/20260621_02_create_dashboard_secoes.sql`.
+
+### Componentes
+
+`kpi`:
+
+- exige `campo_valor`;
+- aceita `formato`: `texto`, `numero`, `moeda`, `percentual` ou `data`.
+
+`tabela`:
+
+- exige `colunas`;
+- cada coluna informa `campo`, `titulo` e `formato`.
+
+`barras`:
+
+- exige `campo_categoria` e `campo_valor`;
+- usa o maior valor retornado como escala.
+
+Todos os componentes exigem:
+
+- `id` único dentro da seção;
+- `tipo`;
+- `titulo`;
+- `consulta`;
+- `largura` entre 3 e 12 colunas.
+
+## API - Dados Dashboard
+
+Endpoint:
+
+```text
+POST https://SEU_DOMINIO/webhook/dashboard_dados
+```
+
+Recebe uma consulta estruturada e executa `Tool - Consultar CRM`.
 
 ```json
 {
-  "operacao": "agregar",
-  "entidade": "leads_unificados",
-  "filtros": [],
-  "agrupar_por": ["servicos", "etapa_nome"],
-  "metricas": [
-    {
-      "expressao": "count(id)",
-      "alias": "quantidade"
-    },
-    {
-      "expressao": "sum(venda)",
-      "alias": "valor"
-    }
-  ],
-  "ordenacao": [
-    {
-      "campo": "valor",
-      "direcao": "desc"
-    }
-  ],
-  "limite": 200
+  "identificador": "leads-por-etapa",
+  "consulta": {
+    "operacao": "agregar",
+    "entidade": "leads_unificados",
+    "filtros": [],
+    "agrupar_por": ["etapa_nome"],
+    "metricas": [
+      {
+        "expressao": "count(id)",
+        "alias": "quantidade"
+      }
+    ],
+    "ordenacao": [
+      {
+        "campo": "quantidade",
+        "direcao": "desc"
+      }
+    ],
+    "limite": 20
+  }
 }
-```
-6e870fd777f8b0ddfe50d9c1f4ae3f71a1936f11063b018081b7a32f39b8400a
-## API de sections
-
-O workflow `API - Sections Dash.json` lista todos os registros da tabela
-`analise_dados.dashboard_html`, ordenados pelo `id`.
-
-```bash
-curl -X POST "https://SEU_DOMINIO/webhook/dashboard/sections" \
-  -H "Content-Type: application/json" \
-  -d '{}'
 ```
 
 Resposta:
 
 ```json
-[
-  {
-    "sucesso": true,
-    "total": 1,
-    "secoes": [
-      {
-        "json": {
-          "id": "1",
-          "nome": "Resumo comercial",
-          "descricao": "Indicadores gerais do CRM",
-          "conteudo": "<section>...</section>"
-        },
-        "pairedItem": {
-          "item": 0
-        }
-      }
-    ]
-  }
-]
-```
-
-O HTML principal normaliza tanto esse formato do n8n quanto o formato direto
-sem os wrappers de `json` e array externo.
-
-## Resposta
-
-```json
 {
   "sucesso": true,
+  "identificador": "leads-por-etapa",
   "contexto": {
-    "operacao": "listar",
+    "operacao": "agregar",
     "entidade": "leads_unificados",
-    "limite": 100,
-    "filtros_aplicados": 1
+    "limite": 20,
+    "filtros_aplicados": 0
   },
-  "total_retornado": 10,
+  "total_retornado": 5,
   "dados": []
 }
 ```
 
-Nao coloque a chave diretamente no JavaScript entregue ao navegador. Em
-producao, prefira chamar este endpoint por um backend ou proxy autenticado.
+Em caso de falha na consulta, a API responde com HTTP 200 e o contrato de erro
+abaixo, garantindo que a página sempre receba JSON válido e exiba a mensagem no
+componente correspondente:
 
-## Dashboard HTML principal
-
-O arquivo `exemplo-dashboard.html` e o shell principal. Ele:
-
-- consulta `API - Sections Dash`
-- cria a navegacao lateral
-- carrega cada registro como uma section
-- executa o CSS e JavaScript armazenados em `conteudo`
-- disponibiliza `window.DashboardAPI` para as sections consultarem dados
-
-Abra o arquivo, informe a URL base do n8n e clique em
-`Carregar dashboard`.
-
-## Formato do campo conteudo
-
-Cada registro deve possuir exatamente uma `<section>` raiz:
-
-```html
-<section id="resumo-comercial" class="resumo-comercial">
-  <style>
-    #resumo-comercial {
-      padding: 24px;
-    }
-
-    #resumo-comercial .valor {
-      font-size: 2rem;
-      font-weight: 700;
-    }
-  </style>
-
-  <div class="valor" data-total-leads>Carregando...</div>
-
-  <script>
-    (async () => {
-      const [resultado] = await DashboardAPI.consultar({
-        operacao: "agregar",
-        entidade: "leads_unificados",
-        metricas: [
-          {
-            expressao: "count(id)",
-            alias: "total"
-          }
-        ],
-        limite: 1
-      });
-
-      document
-        .querySelector("#resumo-comercial [data-total-leads]")
-        .textContent = DashboardAPI.formatarNumero(resultado.total);
-    })().catch((error) => {
-      document
-        .querySelector("#resumo-comercial [data-total-leads]")
-        .textContent = error.message;
-    });
-  </script>
-</section>
+```json
+{
+  "sucesso": false,
+  "identificador": "leads-por-etapa",
+  "erro": "mensagem da falha",
+  "total_retornado": 0,
+  "dados": []
+}
 ```
 
-Funcoes disponiveis:
+## Ordem de importação
 
-- `DashboardAPI.consultar(payload)`
-- `DashboardAPI.formatarMoeda(valor)`
-- `DashboardAPI.formatarNumero(valor)`
-- `DashboardAPI.formatarData(valor)`
-- `DashboardAPI.registrarCleanup(funcao)`
+1. `Tool - Consultar CRM`
+2. `API - Dados Dashboard`
+3. `API - Sections Dash`
+4. `Pagina DashBoard`
 
-Use IDs e classes exclusivos em cada section para evitar conflitos entre o CSS
-e JavaScript dos registros.
-
-Esse exemplo e adequado apenas para simulacao. Antes de usar em producao,
-adicione autenticacao, autorizacao e uma politica de origem adequada.
-
-O conteudo da tabela e executado como codigo no navegador. Somente usuarios
-administrativos confiaveis devem poder inserir ou editar `dashboard_html`.
+O script `scripts/import-workflows.sh` executa essa importação como parte do
+setup e das atualizações.

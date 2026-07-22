@@ -54,7 +54,7 @@ nomes de metricas em ingles, sem remover as validacoes de seguranca.
 - `funis`
 - `etapas`
 - `insights`
-- `dashboard_html`: dashboards salvos como HTML completo; o campo `conteudo`
+- `dashboard_html`: seções salvas como especificações JSON; o campo `conteudo`
   precisa ser solicitado explicitamente.
 
 Use a operacao `catalogo` para obter a lista exata de campos.

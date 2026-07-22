@@ -20,7 +20,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const requisicao = $input.first().json ?? {};\nconst body = requisicao.body ?? requisicao;\n\nconst consulta = body.consulta && typeof body.consulta === 'object'\n  ? body.consulta\n  : body;\n\nconst serializarArray = (valor) => {\n  if (valor === undefined || valor === null || valor === '') return '[]';\n  return typeof valor === 'string' ? valor : JSON.stringify(valor);\n};\n\nreturn [{\n  json: {\n    operacao: String(consulta.operacao || 'listar'),\n    entidade: String(consulta.entidade || ''),\n    campos: serializarArray(consulta.campos),\n    filtros: serializarArray(consulta.filtros),\n    agrupar_por: serializarArray(consulta.agrupar_por),\n    metricas: serializarArray(consulta.metricas),\n    ordenacao: serializarArray(consulta.ordenacao),\n    limite: Number(consulta.limite || 50)\n  }\n}];"
+        "jsCode": "const requisicao = $input.first().json ?? {};\nconst body = requisicao.body ?? requisicao;\n\nconst consulta = body.consulta && typeof body.consulta === 'object'\n  ? body.consulta\n  : body;\n\nconst serializarArray = (valor) => {\n  if (valor === undefined || valor === null || valor === '') return '[]';\n  return typeof valor === 'string' ? valor : JSON.stringify(valor);\n};\n\nreturn [{\n  json: {\n    identificador: String(body.identificador || ''),\n    operacao: String(consulta.operacao || 'listar'),\n    entidade: String(consulta.entidade || ''),\n    campos: serializarArray(consulta.campos),\n    filtros: serializarArray(consulta.filtros),\n    agrupar_por: serializarArray(consulta.agrupar_por),\n    metricas: serializarArray(consulta.metricas),\n    ordenacao: serializarArray(consulta.ordenacao),\n    limite: Number(consulta.limite || 50)\n  }\n}];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -141,7 +141,8 @@
         0
       ],
       "id": "51f3f006-761d-4fb7-95f7-e89bc59f5b59",
-      "name": "Consultar CRM"
+      "name": "Consultar CRM",
+      "onError": "continueErrorOutput"
     },
     {
       "parameters": {
@@ -166,11 +167,66 @@
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.4,
       "position": [
-        240,
+        480,
         0
       ],
       "id": "20f5a04f-0ab1-4fb6-b973-1bb6aef5bb0e",
       "name": "Responder sucesso"
+    },
+    {
+      "parameters": {
+        "jsCode": "const resposta = $input.first().json ?? {};\nconst identificador = $('Normalizar requisicao').first().json.identificador || null;\nconst dados = Array.isArray(resposta.dados) ? resposta.dados : [];\n\nreturn [{\n  json: {\n    ...resposta,\n    sucesso: resposta.sucesso !== false,\n    dados,\n    total_retornado: Number(resposta.total_retornado ?? dados.length),\n    identificador\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        240,
+        0
+      ],
+      "id": "7c74f857-c79f-4d31-82cf-63de76592776",
+      "name": "Identificar resposta"
+    },
+    {
+      "parameters": {
+        "jsCode": "const norm = $('Normalizar requisicao').first().json ?? {};\nconst identificador = norm.identificador || null;\nconst bruto = $input.first().json ?? {};\nconst detalhe = bruto.error ?? bruto;\nconst mensagem = (detalhe && (detalhe.message || detalhe.description))\n  || 'Falha ao consultar os dados do dashboard.';\n\nreturn [{\n  json: {\n    sucesso: false,\n    identificador,\n    erro: String(mensagem),\n    total_retornado: 0,\n    dados: []\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        240,
+        220
+      ],
+      "id": "b1d2c3e4-0001-4a00-9000-000000000001",
+      "name": "Formatar erro"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}",
+        "options": {
+          "responseCode": 200,
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Cache-Control",
+                "value": "no-store"
+              },
+              {
+                "name": "Content-Type",
+                "value": "application/json; charset=utf-8"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        480,
+        220
+      ],
+      "id": "b1d2c3e4-0002-4a00-9000-000000000002",
+      "name": "Responder erro"
     }
   ],
   "pinData": {},
@@ -201,7 +257,36 @@
       "main": [
         [
           {
+            "node": "Identificar resposta",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Formatar erro",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Identificar resposta": {
+      "main": [
+        [
+          {
             "node": "Responder sucesso",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Formatar erro": {
+      "main": [
+        [
+          {
+            "node": "Responder erro",
             "type": "main",
             "index": 0
           }

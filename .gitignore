@@ -1,1 +1,4 @@
 temp/
+infra/n8n/.env
+infra/n8n/scripts/.env
+infra/n8n/backups/

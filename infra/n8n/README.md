@@ -106,6 +106,8 @@ O setup:
 - cria e sobe o Traefik junto com n8n e PostgreSQL
 - pergunta se deve subir os containers
 - importa automaticamente uma credencial PostgreSQL no n8n para os workflows acessarem o banco
+- importa recursivamente todos os workflows validos de `workflows/`
+- publica novamente os workflows cujo JSON possui `"active": true`
 
 ### Como responder as perguntas do setup
 
@@ -185,6 +187,7 @@ Na execucao local, o script pode atualizar o repositorio com `git pull
 - executa `docker compose pull`;
 - recria os containers necessarios;
 - aguarda PostgreSQL e n8n ficarem saudaveis.
+- importa recursivamente todos os workflows atualizados.
 
 No modo SSH, os arquivos locais sao sincronizados primeiro e o `.env` remoto
 e preservado. A atualizacao remota nao executa `git pull`, pois usa exatamente
@@ -196,6 +199,17 @@ Se a importacao da credencial falhar ou se os containers ja estiverem rodando, r
 chmod +x scripts/import-postgres-credential.sh
 bash scripts/import-postgres-credential.sh
 ```
+
+Para importar novamente somente os workflows:
+
+```bash
+bash scripts/import-workflows.sh
+```
+
+O importador percorre todas as subpastas de `workflows/`. Arquivos JSON
+auxiliares que nao possuem `nodes`, `connections` e `id` sao ignorados.
+IDs duplicados interrompem a importacao para impedir que um workflow
+sobrescreva outro silenciosamente.
 
 ### Limpeza para recomecar do zero
 

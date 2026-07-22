@@ -1,12 +1,138 @@
 {
   "sucesso": true,
+  "versao_contrato": 1,
   "total": 1,
   "secoes": [
     {
       "id": "1",
-      "nome": "Leads por Consultor",
-      "descricao": "Relação da quantidade de leads por consultor (leads_unificados). Exibe contagem agregada por usuário responsável.",
-      "conteudo": "<section id=\"leads-por-consultor\">\n  <style>\n    #leads-por-consultor{font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial; color:#222}\n    #leads-por-consultor .card{background:#fff;border:1px solid #e6e6e9;border-radius:8px;padding:16px;box-shadow:0 1px 2px rgba(16,24,40,0.03)}\n    #leads-por-consultor h2{margin:0 0 12px;font-size:16px}\n    #leads-por-consultor .status{font-size:14px;color:#6b7280;margin-bottom:12px}\n    #leads-por-consultor table{width:100%;border-collapse:collapse}\n    #leads-por-consultor th,#leads-por-consultor td{padding:8px 10px;text-align:left;border-bottom:1px solid #f1f1f3}\n    #leads-por-consultor th{font-size:13px;color:#374151;font-weight:600}\n    #leads-por-consultor td{font-size:14px;color:#111827}\n    #leads-por-consultor .no-data{padding:20px;text-align:center;color:#6b7280}\n    #leads-por-consultor .loading{padding:20px;text-align:center}\n    #leads-por-consultor .error{padding:12px;background:#fff1f2;color:#981b1b;border-radius:6px}\n    #leads-por-consultor .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}\n    @media (max-width:600px){#leads-por-consultor th:nth-child(2), #leads-por-consultor td:nth-child(2){text-align:right}}\n    @media (prefers-reduced-motion: reduce){*{transition:none!important}}\n  </style>\n\n  <div class=\"card\" role=\"region\" aria-labelledby=\"lpc-title\">\n    <h2 id=\"lpc-title\">Leads por Consultor</h2>\n    <div id=\"lpc-status\" class=\"status\" aria-live=\"polite\">Carregando dados...</div>\n\n    <div id=\"lpc-content\" aria-busy=\"true\">\n      <div id=\"lpc-loading\" class=\"loading\">A consultar CRM...</div>\n      <div id=\"lpc-empty\" class=\"no-data\" style=\"display:none\">Nenhum lead encontrado para os filtros atuais.</div>\n      <div id=\"lpc-error\" class=\"error\" style=\"display:none\"></div>\n      <div id=\"lpc-table-container\" style=\"display:none;overflow:auto\">\n        <table aria-describedby=\"lpc-desc\">\n          <caption id=\"lpc-desc\" class=\"sr-only\">Tabela com a quantidade de leads por consultor</caption>\n          <thead>\n            <tr>\n              <th scope=\"col\">Consultor</th>\n              <th scope=\"col\">Quantidade de leads</th>\n            </tr>\n          </thead>\n          <tbody id=\"lpc-tbody\"></tbody>\n        </table>\n      </div>\n    </div>\n  </div>\n\n  <script>\n    (async () => {\n      const statusEl = document.getElementById('lpc-status');\n      const loadingEl = document.getElementById('lpc-loading');\n      const emptyEl = document.getElementById('lpc-empty');\n      const errorEl = document.getElementById('lpc-error');\n      const tableContainer = document.getElementById('lpc-table-container');\n      const tbody = document.getElementById('lpc-tbody');\n\n      function showLoading(msg){ statusEl.textContent = msg || 'Carregando dados...'; loadingEl.style.display='block'; emptyEl.style.display='none'; errorEl.style.display='none'; tableContainer.style.display='none'; }\n      function showEmpty(msg){ statusEl.textContent = msg || 'Sem dados'; loadingEl.style.display='none'; emptyEl.style.display='block'; errorEl.style.display='none'; tableContainer.style.display='none'; }\n      function showError(msg){ statusEl.textContent = 'Erro ao carregar'; loadingEl.style.display='none'; emptyEl.style.display='none'; errorEl.style.display='block'; errorEl.textContent = msg; tableContainer.style.display='none'; }\n      function showTable(){ statusEl.textContent = 'Atualizado'; loadingEl.style.display='none'; emptyEl.style.display='none'; errorEl.style.display='none'; tableContainer.style.display='block'; }\n\n      try{\n        showLoading('Carregando quantidade de leads por consultor...');\n\n        const payload = {\n          operacao: 'agregar',\n          entidade: 'leads_unificados',\n          filtros: [],\n          agrupar_por: ['usuario_responsavel_nome'],\n          metricas: [\n            { expressao: 'count(id)', alias: 'quantidade' }\n          ],\n          ordenacao: [{ campo: 'quantidade', direcao: 'desc' }],\n          limite: 200\n        };\n\n        const resp = await DashboardAPI.consultar(payload);\n\n        if(!Array.isArray(resp)){\n          throw new Error('Resposta inesperada da API');\n        }\n\n        if(resp.length === 0){\n          showEmpty('Nenhum lead encontrado para os filtros atuais.');\n          return;\n        }\n\n        // Limpa tbody\n        while(tbody.firstChild) tbody.removeChild(tbody.firstChild);\n\n        resp.forEach(item => {\n          const tr = document.createElement('tr');\n          const tdName = document.createElement('td');\n          const tdCount = document.createElement('td');\n\n          const nome = (item.usuario_responsavel_nome === null || item.usuario_responsavel_nome === undefined || item.usuario_responsavel_nome === '') ? 'Sem responsável' : String(item.usuario_responsavel_nome);\n          tdName.textContent = nome;\n\n          const quantidadeRaw = (item.quantidade !== undefined && item.quantidade !== null) ? item.quantidade : 0;\n          // Usa formatador do DashboardAPI\n          tdCount.textContent = DashboardAPI.formatarNumero(quantidadeRaw);\n          tdCount.setAttribute('aria-label', String(quantidadeRaw));\n\n          tr.appendChild(tdName);\n          tr.appendChild(tdCount);\n          tbody.appendChild(tr);\n        });\n\n        showTable();\n      }catch(err){\n        console.error(err);\n        showError('Não foi possível carregar os dados. ' + (err && err.message ? err.message : ''));\n      }\n    })();\n  </script>\n</section>"
+      "nome": "Visão comercial",
+      "descricao": "Resumo de volume, receita e distribuição dos leads.",
+      "versao": 1,
+      "componentes": [
+        {
+          "id": "total-leads",
+          "tipo": "kpi",
+          "titulo": "Total de leads",
+          "subtitulo": "Quantidade cadastrada no CRM",
+          "largura": 3,
+          "campo_valor": "total",
+          "formato": "numero",
+          "consulta": {
+            "operacao": "agregar",
+            "entidade": "leads_unificados",
+            "filtros": [],
+            "metricas": [
+              {
+                "expressao": "count(id)",
+                "alias": "total"
+              }
+            ],
+            "limite": 1
+          }
+        },
+        {
+          "id": "receita-total",
+          "tipo": "kpi",
+          "titulo": "Valor em oportunidades",
+          "largura": 3,
+          "campo_valor": "valor",
+          "formato": "moeda",
+          "consulta": {
+            "operacao": "agregar",
+            "entidade": "leads_unificados",
+            "filtros": [],
+            "metricas": [
+              {
+                "expressao": "sum(venda)",
+                "alias": "valor"
+              }
+            ],
+            "limite": 1
+          }
+        },
+        {
+          "id": "leads-por-etapa",
+          "tipo": "barras",
+          "titulo": "Leads por etapa",
+          "largura": 6,
+          "campo_categoria": "etapa_nome",
+          "campo_valor": "quantidade",
+          "formato": "numero",
+          "consulta": {
+            "operacao": "agregar",
+            "entidade": "leads_unificados",
+            "filtros": [],
+            "agrupar_por": [
+              "etapa_nome"
+            ],
+            "metricas": [
+              {
+                "expressao": "count(id)",
+                "alias": "quantidade"
+              }
+            ],
+            "ordenacao": [
+              {
+                "campo": "quantidade",
+                "direcao": "desc"
+              }
+            ],
+            "limite": 20
+          }
+        },
+        {
+          "id": "leads-por-consultor",
+          "tipo": "tabela",
+          "titulo": "Leads por consultor",
+          "largura": 12,
+          "colunas": [
+            {
+              "campo": "usuario_responsavel_nome",
+              "titulo": "Consultor",
+              "formato": "texto"
+            },
+            {
+              "campo": "quantidade",
+              "titulo": "Leads",
+              "formato": "numero"
+            },
+            {
+              "campo": "valor",
+              "titulo": "Valor",
+              "formato": "moeda"
+            }
+          ],
+          "consulta": {
+            "operacao": "agregar",
+            "entidade": "leads_unificados",
+            "filtros": [],
+            "agrupar_por": [
+              "usuario_responsavel_nome"
+            ],
+            "metricas": [
+              {
+                "expressao": "count(id)",
+                "alias": "quantidade"
+              },
+              {
+                "expressao": "sum(venda)",
+                "alias": "valor"
+              }
+            ],
+            "ordenacao": [
+              {
+                "campo": "valor",
+                "direcao": "desc"
+              }
+            ],
+            "limite": 50
+          }
+        }
+      ]
     }
-  ]
+  ],
+  "erros": [],
+  "endpoints": {
+    "dados": "/webhook/dashboard_dados"
+  }
 }

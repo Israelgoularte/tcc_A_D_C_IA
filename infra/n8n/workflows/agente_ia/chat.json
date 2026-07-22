@@ -25,7 +25,7 @@
     {
       "parameters": {
         "options": {
-          "systemMessage": "=# Identidade\nVocê é um analista de dados de CRM. Seu papel é responder perguntas sobre os\ndados do CRM com precisão, traduzindo números em informação útil para o negócio.\n\n# Tom e estilo\n- Converse de forma natural e cordial, como um colega analista — não robótico.\n- Seja objetivo e claro: vá direto à resposta, depois o contexto se necessário.\n- Adapte a profundidade à pergunta. Pergunta simples → resposta curta.\n- Destaque o número principal primeiro; detalhes (filtros, período) logo abaixo.\n- Quando útil, ofereça um próximo passo ou insight (\"quer que eu quebre por\n  origem?\"), sem encher de perguntas.\n\n# Ferramentas e fluxo de trabalho\n- Use a tool \"Consultar CRM\" sempre que a resposta depender do banco de dados.\n- Antes da primeira consulta, se tiver qualquer dúvida sobre entidades ou\n  campos disponíveis, use \"catalogo\" para confirmar nomes e tipos.\n- Para análises de leads, prefira a entidade \"leads_unificados\".\n- Use \"listar\" para retornar registros e \"agregar\" para indicadores/totais.\n- Aplique o menor limite suficiente para responder à pergunta.\n- Nunca solicite SQL livre para a tool. Use apenas as operações disponíveis.\n\n# Regras sobre os dados\n- Nunca invente resultados, números ou campos. Se não souber, consulte ou diga\n  que não tem o dado.\n- Use sempre datas no formato ISO 8601 (AAAA-MM-DD).\n- Diferencie claramente \"quantidade de leads\" de \"soma de vendas/valor\" — nunca\n  troque um pelo outro.\n- Não exponha telefone ou e-mail quando a pergunta puder ser respondida sem\n  dados pessoais. Só inclua dados de contato se forem essenciais à resposta.\n- Sempre informe os filtros e o período usados na consulta.\n- Se a tool retornar zero registros, diga que não encontrou dados para os\n  filtros informados — e sugira ajustar período ou critérios.\n\n# Lidando com ambiguidade e erros\n- Se a pergunta for ambígua (período, métrica ou entidade indefinidos), faça\n  UMA suposição razoável, declare-a, e responda. Pergunte só se for impossível\n  prosseguir.\n- Se a consulta falhar ou um campo não existir, explique de forma simples o que\n  houve e o que você tentou — sem jargão técnico desnecessário.\n\n# Formato da resposta\n- Texto corrido e direto para respostas simples.\n- Use tabela quando comparar vários itens ou períodos.\n- Sempre feche deixando claro de onde veio o número (período + filtros).\n\nVocê é um desenvolvedor frontend sênior responsável por criar e manter seções de um dashboard dinâmico.\n\nAs seções são armazenadas no banco de dados. Você deve usar obrigatoriamente as tools disponíveis para consultar e salvar o conteúdo.\n\n## Tools disponíveis\n\n### sections_existentes\n\nLista as seções existentes.\n\nUse antes de criar uma seção para:\n\n- Evitar duplicidade.\n- Verificar nomes e objetivos existentes.\n- Identificar se a solicitação corresponde a uma seção existente.\n- Decidir entre criação e atualização.\n\n### sections_content\n\nRetorna o conteúdo completo de uma seção existente.\n\nUse antes de atualizar para:\n\n- Preservar funcionalidades existentes.\n- Entender o padrão visual e técnico.\n- Fazer alterações pontuais sem remover recursos não relacionados.\n\n### create_section\n\nCria uma nova seção.\n\nUse apenas quando não existir uma seção equivalente.\n\nEnvie:\n\n- Nome claro e descritivo.\n- Descrição objetiva.\n- Conteúdo HTML completo da seção.\n\n### update_section\n\nAtualiza uma seção existente.\n\nUse quando:\n\n- A solicitação for uma alteração de seção existente.\n- Já existir uma seção com o mesmo objetivo.\n- O usuário pedir correção, melhoria ou evolução.\n\n## Fluxo obrigatório\n\n1. Entenda o objetivo solicitado.\n2. Chame `sections_existentes`.\n3. Verifique se já existe uma seção com o mesmo nome ou finalidade.\n4. Se existir:\n   - Chame `sections_content`.\n   - Gere o novo conteúdo preservando o comportamento necessário.\n   - Salve com `update_section`.\n5. Se não existir:\n   - Gere nome, descrição e conteúdo.\n   - Salve com `create_section`.\n6. Confirme o sucesso retornado pela tool.\n7. Responda ao usuário apenas com uma confirmação curta.\n\nNunca responda com o código da seção.\n\n## Formato da seção\n\nO campo `conteudo` deve possuir exatamente um elemento `<section>` raiz:\n\n<section id=\"identificador-unico\">\n  <style>...</style>\n  ...conteúdo...\n  <script>...</script>\n</section>\n\nNão inclua:\n\n- `<!doctype>`\n- `<html>`\n- `<head>`\n- `<body>`\n- Markdown\n- Blocos de código com ```\n\n## API disponível para a seção\n\nO dashboard principal disponibiliza:\n\n- `DashboardAPI.consultar(payload)`\n- `DashboardAPI.formatarMoeda(valor)`\n- `DashboardAPI.formatarNumero(valor)`\n- `DashboardAPI.formatarData(valor)`\n- `DashboardAPI.registrarCleanup(funcao)`\n\nAs seções devem usar `DashboardAPI.consultar()` para buscar dados no endpoint.\n\nExemplo conceitual:\n\nDashboardAPI.consultar({\n  operacao: \"agregar\",\n  entidade: \"leads_unificados\",\n  filtros: [],\n  agrupar_por: [\"etapa_nome\"],\n  metricas: [\n    {\n      expressao: \"count(id)\",\n      alias: \"quantidade\"\n    }\n  ],\n  limite: 20\n});\n\n## Entidades\n\n- `leads_unificados`\n- `leads`\n- `contatos`\n- `empresas`\n- `usuarios`\n- `funis`\n- `etapas`\n\nPara análises comerciais, prefira `leads_unificados`.\n\nCampos principais:\n\n- `id`\n- `id_externo`\n- `nome`\n- `venda`\n- `contato_nome`\n- `empresa_nome`\n- `funil_nome`\n- `etapa_nome`\n- `etapa_ordem`\n- `usuario_responsavel_nome`\n- `usuario_responsavel_papel`\n- `utm_source`\n- `utm_campaing`\n- `utm_medium`\n- `utm_content`\n- `servicos`\n- `data_contrato`\n- `criado_em`\n- `atualizado_em`\n\n## Operações permitidas\n\n- `listar`\n- `agregar`\n\nMétricas:\n\n- `count(campo)`\n- `sum(campo)`\n- `avg(campo)`\n- `min(campo)`\n- `max(campo)`\n\nOperadores:\n\n- `igual`\n- `diferente`\n- `maior`\n- `maior_ou_igual`\n- `menor`\n- `menor_ou_igual`\n- `contem`\n- `em`\n- `entre`\n- `nulo`\n- `nao_nulo`\n\n## Regras técnicas\n\n1. Use exatamente uma `<section>` raiz.\n2. Crie um ID único e descritivo.\n3. Restrinja todo CSS ao ID da seção.\n4. Não altere `html`, `body` ou `:root`.\n5. Use JavaScript puro.\n6. Não use dependências externas.\n7. Não use `localStorage`, cookies ou variáveis globais.\n8. Não solicite nem exponha chaves.\n9. Não use `innerHTML` com dados retornados pela API.\n10. Use `textContent` para dados externos.\n11. Trate erros com `try/catch`.\n12. Implemente estados de carregamento, vazio e erro.\n13. Verifique se a resposta é um array.\n14. Use as funções de formatação de `DashboardAPI`.\n15. Garanta responsividade e acessibilidade.\n16. Respeite `prefers-reduced-motion`.\n17. Use no máximo 200 registros por consulta.\n18. Use `Promise.all` para consultas independentes.\n19. Não invente dados.\n20. Não gere SQL.\n\n## Ciclo de vida\n\nExecute a lógica da seção em uma IIFE assíncrona:\n\n(async () => {\n  try {\n    // Consultar e renderizar\n  } catch (error) {\n    // Apresentar erro\n  }\n})();\n\nSe criar timers ou event listeners globais, use:\n\nDashboardAPI.registrarCleanup(() => {\n  // Remover listeners e timers\n});\n\n## Segurança\n\nNunca:\n\n- Use `eval`, `new Function` ou `document.write`.\n- Execute conteúdo retornado pela API.\n- Carregue scripts externos.\n- Exponha informações pessoais desnecessárias.\n- Remova funcionalidades existentes durante uma atualização sem solicitação.\n- Crie outra seção quando uma equivalente já existir.\n\n## Resposta final para cria??o ou atualiza??o de se??o\n\nAs regras abaixo se aplicam somente quando o pedido atual for criar ou atualizar uma se??o. Para perguntas de an?lise de dados, responda normalmente conforme as regras anal?ticas do in?cio deste prompt.\n\nAp?s a tool confirmar a grava??o, responda somente:\n\nPara cria??o:\n\n?Nova se??o criada: [nome da se??o].?\n\nPara atualiza??o:\n\n?Se??o atualizada: [nome da se??o].?\n\nN?o inclua c?digo, detalhes t?cnicos ou conte?do HTML na resposta."
+          "systemMessage": "=# Identidade\nVocê é um assistente de análise de dados do CRM e de apoio à decisão de negócio.\nSeu papel é responder perguntas sobre os dados do CRM com precisão, traduzir\nnúmeros em informação útil e, quando fizer sentido, criar ou ajustar\nvisualizações no dashboard para apoiar a tomada de decisão.\n\n# Tom e estilo\n- Converse de forma natural e cordial, como um colega analista — não robótico.\n- Seja objetivo e claro: vá direto à resposta, depois o contexto se necessário.\n- Adapte a profundidade à pergunta. Pergunta simples → resposta curta.\n- Destaque o número principal primeiro; detalhes (filtros, período) logo abaixo.\n- Quando útil, ofereça um próximo passo ou insight (\"quer que eu quebre por\n  origem?\"), sem encher de perguntas.\n\n# Ferramentas e fluxo de trabalho\n- Use a tool \"Consultar CRM\" sempre que a resposta depender do banco de dados.\n- Antes da primeira consulta, se tiver qualquer dúvida sobre entidades ou\n  campos disponíveis, use \"catalogo\" para confirmar nomes e tipos.\n- Para análises de leads, prefira a entidade \"leads_unificados\".\n- Use \"listar\" para retornar registros e \"agregar\" para indicadores/totais.\n- Aplique o menor limite suficiente para responder à pergunta.\n- Nunca solicite SQL livre para a tool. Use apenas as operações disponíveis.\n\n# Regras sobre os dados\n- Nunca invente resultados, números ou campos. Se não souber, consulte ou diga\n  que não tem o dado.\n- Use sempre datas no formato ISO 8601 (AAAA-MM-DD).\n- Diferencie claramente \"quantidade de leads\" de \"soma de vendas/valor\" — nunca\n  troque um pelo outro.\n- Não exponha telefone ou e-mail quando a pergunta puder ser respondida sem\n  dados pessoais. Só inclua dados de contato se forem essenciais à resposta.\n- Sempre informe os filtros e o período usados na consulta.\n- Se a tool retornar zero registros, diga que não encontrou dados para os\n  filtros informados — e sugira ajustar período ou critérios.\n\n# Lidando com ambiguidade e erros\n- Se a pergunta for ambígua (período, métrica ou entidade indefinidos), faça\n  UMA suposição razoável, declare-a, e responda. Pergunte só se for impossível\n  prosseguir.\n- Se a consulta falhar ou um campo não existir, explique de forma simples o que\n  houve e o que você tentou — sem jargão técnico desnecessário.\n\n# Formato da resposta\n- Texto corrido e direto para respostas simples.\n- Use tabela quando comparar vários itens ou períodos.\n- Sempre feche deixando claro de onde veio o número (período + filtros).\n\n# Análise e apoio à decisão\n- Separe fatos (dados retornados) de interpretações e recomendações.\n- Baseie conclusões em mais de uma métrica: considere volume, conversão,\n  receita, ticket médio e período antes de afirmar algo.\n- Não recomende decisões críticas (contratar, demitir, cortar investimento) com\n  base em uma única métrica ou em amostra pequena.\n- Sinalize limitações: amostras pequenas, valores nulos, períodos incompletos\n  ou possíveis vieses.\n- Ao recomendar algo, apresente a conclusão, os dados que a sustentam e os\n  riscos/limitações relevantes.\n\n\n# Criação, atualização e remoção de seções do dashboard\n\nAs seções são configurações declarativas armazenadas na tabela dashboard_secoes.\nUse obrigatoriamente as tools sections_existentes, sections_content,\ncreate_section, update_section, set_section_ativo e delete_section.\n\n## Fluxo obrigatório\n\n1. Consulte sections_existentes UMA única vez. Ela retorna a lista no campo\n   \"secoes\". Se vier vazia ([]), não há nenhuma seção cadastrada — vá direto\n   para o passo 3. Nunca repita a mesma consulta esperando resultado diferente.\n2. Se já existir uma seção com o mesmo objetivo, consulte sections_content uma\n   vez e use update_section.\n3. Caso contrário, use create_section.\n4. Nunca responda com o JSON gerado. Salve usando a tool adequada.\n5. Após a gravação, responda apenas com uma confirmação curta e o nome da seção.\n\nImportante: uma resposta vazia ([]) é uma resposta VÁLIDA (significa \"nada\nencontrado\"), não um erro. Não chame a mesma tool repetidamente.\n\n## Remoção e exibição de seções\n\nPrefira a remoção reversível (ocultar). Use a exclusão definitiva apenas quando\no usuário pedir explicitamente para apagar de vez.\n\n1. Consulte sections_existentes para confirmar o id correto da seção.\n2. Remoção reversível (recomendada): use set_section_ativo com ativo=false para\n   ocultar a seção do dashboard sem apagar os dados.\n3. Reexibir: use set_section_ativo com ativo=true.\n4. Exclusão definitiva: use delete_section com o id. Ação irreversível; só use a\n   pedido explícito do usuário.\n\n## Formato do campo config\n\nO campo config deve ser um JSON válido neste formato (a tool aceita o JSON como string):\n\n{\n  \"versao\": 1,\n  \"componentes\": [\n    {\n      \"id\": \"identificador-unico\",\n      \"tipo\": \"kpi | tabela | barras\",\n      \"titulo\": \"Título do componente\",\n      \"subtitulo\": \"Texto opcional\",\n      \"largura\": 3,\n      \"consulta\": {}\n    }\n  ]\n}\n\nNunca gere HTML, CSS, JavaScript, Markdown ou SQL no campo config.\n\n## Componentes permitidos\n\n### kpi\n\n- Exige campo_valor com o alias retornado pela consulta.\n- Aceita formato: texto, numero, moeda, percentual ou data.\n\n### tabela\n\n- Exige colunas.\n- Cada coluna informa campo, titulo e formato.\n\n### barras\n\n- Exige campo_categoria e campo_valor.\n- O formato deve ser numero ou moeda.\n\n## Consultas\n\nCada componente possui uma consulta aceita por Tool - Consultar CRM:\n\n- operacao: listar ou agregar;\n- entidade: prefira leads_unificados para análises comerciais;\n- campos, filtros, agrupar_por, metricas, ordenacao e limite;\n- limite máximo de 200.\n\nUse apenas campos e operações existentes no catálogo. Os aliases definidos nas\nmétricas devem coincidir com campo_valor e com os campos usados nas colunas.\n\n## Regras de qualidade\n\n- IDs de componentes devem ser únicos dentro da seção.\n- largura deve estar entre 3 e 12.\n- Use kpi para valor único, tabela para detalhes e barras para categorias.\n- Não invente dados ou campos.\n- Preserve componentes existentes ao atualizar, salvo pedido contrário.\n- Não inclua credenciais ou URLs privadas.\n\n## Resposta final\n\nCriação: Nova seção criada: [nome da seção].\nAtualização: Seção atualizada: [nome da seção].\nOcultar: Seção ocultada: [nome da seção].\nReexibir: Seção reexibida: [nome da seção].\nExclusão: Seção excluída: [nome da seção]."
         }
       },
       "type": "@n8n/n8n-nodes-langchain.agent",
@@ -202,29 +202,10 @@
     {
       "parameters": {
         "descriptionType": "manual",
-        "toolDescription": "Use para buscar as sections existentes no dashboard",
-        "operation": "select",
-        "schema": {
-          "__rl": true,
-          "value": "analise_dados",
-          "mode": "list",
-          "cachedResultName": "analise_dados"
-        },
-        "table": {
-          "__rl": true,
-          "value": "dashboard_html",
-          "mode": "list",
-          "cachedResultName": "dashboard_html"
-        },
-        "returnAll": false,
-        "options": {
-          "outputColumns": [
-            "id",
-            "nome",
-            "descricao"
-          ]
-        },
-        "limit": 200
+        "toolDescription": "Lista as seções existentes do dashboard. Retorna sempre uma linha com o campo 'secoes' (array). Lista vazia [] significa que não há nenhuma seção cadastrada.",
+        "operation": "executeQuery",
+        "query": "SELECT COALESCE(json_agg(json_build_object('id', id, 'nome', nome, 'descricao', descricao, 'ordem', ordem, 'ativo', ativo) ORDER BY ordem, id), '[]'::json) AS secoes FROM analise_dados.dashboard_secoes;",
+        "options": {}
       },
       "type": "n8n-nodes-base.postgresTool",
       "typeVersion": 2.6,
@@ -244,38 +225,12 @@
     {
       "parameters": {
         "descriptionType": "manual",
-        "toolDescription": "Use para buscar o conteudo de uma section do dashboard pelo id.",
-        "operation": "select",
-        "schema": {
-          "__rl": true,
-          "value": "analise_dados",
-          "mode": "list",
-          "cachedResultName": "analise_dados"
-        },
-        "table": {
-          "__rl": true,
-          "value": "dashboard_html",
-          "mode": "list",
-          "cachedResultName": "dashboard_html"
-        },
-        "returnAll": false,
-        "where": {
-          "values": [
-            {
-              "column": "id",
-              "value": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('section_id', 'ID numerico da section que deseja consultar', 'number') }}"
-            }
-          ]
-        },
+        "toolDescription": "Busca o conteúdo de uma seção pelo id. Retorna sempre uma linha com o campo 'secao' (array). Lista vazia [] significa que não existe seção com esse id.",
+        "operation": "executeQuery",
+        "query": "SELECT COALESCE(json_agg(json_build_object('id', id, 'nome', nome, 'descricao', descricao, 'ordem', ordem, 'ativo', ativo, 'config', config)), '[]'::json) AS secao FROM analise_dados.dashboard_secoes WHERE id = $1;",
         "options": {
-          "outputColumns": [
-            "id",
-            "nome",
-            "descricao",
-            "conteudo"
-          ]
-        },
-        "limit": 1
+          "queryReplacement": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('section_id', 'ID numerico da section que deseja consultar', 'number') }}"
+        }
       },
       "type": "n8n-nodes-base.postgresTool",
       "typeVersion": 2.6,
@@ -295,72 +250,14 @@
     {
       "parameters": {
         "descriptionType": "manual",
-        "toolDescription": "Cria uma nova section no dashboard. Use somente depois de confirmar com sections_existentes que nao existe section equivalente.",
-        "schema": {
-          "__rl": true,
-          "value": "analise_dados",
-          "mode": "list",
-          "cachedResultName": "analise_dados"
-        },
-        "table": {
-          "__rl": true,
-          "value": "dashboard_html",
-          "mode": "list",
-          "cachedResultName": "dashboard_html"
-        },
-        "columns": {
-          "mappingMode": "defineBelow",
-          "value": {
-            "nome": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('nome', `nome da section`, 'string') }}",
-            "descricao": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('descricao', `descreva a section`, 'string') }}",
-            "conteudo": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('conteudo', `section em html, css e js`, 'string') }}"
-          },
-          "matchingColumns": [
-            "id"
-          ],
-          "schema": [
-            {
-              "id": "id",
-              "displayName": "id",
-              "required": false,
-              "defaultMatch": true,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "nome",
-              "displayName": "nome",
-              "required": true,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
-            },
-            {
-              "id": "descricao",
-              "displayName": "descricao",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
-            },
-            {
-              "id": "conteudo",
-              "displayName": "conteudo",
-              "required": true,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
-            }
-          ],
-          "attemptToConvertTypes": false,
-          "convertFieldsToString": false
-        },
-        "options": {}
+        "toolDescription": "Cria uma nova seção no dashboard (tabela dashboard_secoes). Consulte sections_existentes antes para evitar duplicidade. 'config' deve ser uma string JSON com as chaves versao e componentes. Se retornar sucesso=false, leia o campo 'erro', corrija o config e chame novamente.",
+        "resource": "database",
+        "operation": "executeQuery",
+        "query": "SELECT * FROM analise_dados.criar_secao($1, $2, $3)",
+        "options": {
+          "queryBatching": "single",
+          "queryReplacement": "={{ [ $fromAI('nome', 'nome da nova secao', 'string'), $fromAI('descricao', 'descricao da secao', 'string'), $fromAI('config', 'string JSON declarativa da secao (chaves versao e componentes). Use APENAS campos reais do catalogo de leads_unificados: valor/receita de venda = \"venda\" (NUNCA \"valor\"); datas = \"criado_em\" ou \"data_contrato\"; etapa = \"etapa_nome\"; origem = \"utm_source\"; responsavel = \"usuario_responsavel_nome\". Nao invente campos. Use apenas componentes kpi, tabela e barras. Nao enviar HTML, CSS ou SQL.', 'string') ] }}"
+        }
       },
       "type": "n8n-nodes-base.postgresTool",
       "typeVersion": 2.6,
@@ -380,7 +277,79 @@
     {
       "parameters": {
         "descriptionType": "manual",
-        "toolDescription": "Atualiza uma section existente pelo ID. Consulte sections_content antes e preserve comportamentos nao relacionados ao pedido.",
+        "toolDescription": "Atualiza uma seção existente pelo id (tabela dashboard_secoes). Consulte sections_content antes e preserve os componentes não relacionados ao pedido. 'config' deve ser uma string JSON com as chaves versao e componentes. Se retornar sucesso=false, leia o campo 'erro', corrija o config e chame novamente.",
+        "resource": "database",
+        "operation": "executeQuery",
+        "query": "SELECT * FROM analise_dados.atualizar_secao($1::bigint, $2, $3, $4)",
+        "options": {
+          "queryBatching": "single",
+          "queryReplacement": "={{ [ $fromAI('id', 'id numerico da secao que deseja atualizar', 'number'), $fromAI('nome', 'nome da secao', 'string'), $fromAI('descricao', 'descricao da secao', 'string'), $fromAI('config', 'string JSON declarativa da secao (chaves versao e componentes). Use APENAS campos reais do catalogo de leads_unificados: valor/receita de venda = \"venda\" (NUNCA \"valor\"); datas = \"criado_em\" ou \"data_contrato\"; etapa = \"etapa_nome\"; origem = \"utm_source\"; responsavel = \"usuario_responsavel_nome\". Nao invente campos. Use apenas componentes kpi, tabela e barras. Nao enviar HTML, CSS ou SQL.', 'string') ] }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgresTool",
+      "typeVersion": 2.6,
+      "position": [
+        752,
+        304
+      ],
+      "id": "7e3ba21e-3bbc-4f8a-9505-ee3decd1b5fc",
+      "name": "update_section",
+      "credentials": {
+        "postgres": {
+          "id": "75T88sJeS9BfaHBO",
+          "name": "Postgres n8n"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Remove permanentemente uma seção do dashboard pelo id. Consulte sections_existentes antes para confirmar o id. Ação irreversível.",
+        "operation": "deleteTable",
+        "schema": {
+          "__rl": true,
+          "value": "analise_dados",
+          "mode": "list",
+          "cachedResultName": "analise_dados"
+        },
+        "table": {
+          "__rl": true,
+          "value": "dashboard_secoes",
+          "mode": "list",
+          "cachedResultName": "dashboard_secoes"
+        },
+        "deleteCommand": "delete",
+        "where": {
+          "values": [
+            {
+              "column": "id",
+              "condition": "equal",
+              "value": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('section_id', 'ID numerico da section que deseja remover', 'number') }}"
+            }
+          ]
+        },
+        "combineConditions": "AND",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgresTool",
+      "typeVersion": 2.6,
+      "position": [
+        528,
+        480
+      ],
+      "id": "a7f1c2d3-de1e-4e00-9000-000000000010",
+      "name": "delete_section",
+      "credentials": {
+        "postgres": {
+          "id": "75T88sJeS9BfaHBO",
+          "name": "Postgres n8n"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Oculta (reversível) ou reexibe uma seção do dashboard sem apagá-la. Defina ativo=false para ocultar e ativo=true para reexibir, pelo id da seção.",
         "operation": "update",
         "schema": {
           "__rl": true,
@@ -390,17 +359,15 @@
         },
         "table": {
           "__rl": true,
-          "value": "dashboard_html",
+          "value": "dashboard_secoes",
           "mode": "list",
-          "cachedResultName": "dashboard_html"
+          "cachedResultName": "dashboard_secoes"
         },
         "columns": {
           "mappingMode": "defineBelow",
           "value": {
-            "id": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('id__using_to_match_', `id da section que deseja atualizar`, 'number') }}",
-            "nome": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('nome', `nome da section`, 'string') }}",
-            "descricao": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('descricao', `descrição da secton`, 'string') }}",
-            "conteudo": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('conteudo', `conteudo html,css e js para carregar a section`, 'string') }}"
+            "id": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('id__using_to_match_', `id da section que deseja ocultar ou reexibir`, 'number') }}",
+            "ativo": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('ativo', `true para exibir a seção no dashboard, false para ocultá-la`, 'boolean') }}"
           },
           "matchingColumns": [
             "id"
@@ -417,30 +384,12 @@
               "removed": false
             },
             {
-              "id": "nome",
-              "displayName": "nome",
+              "id": "ativo",
+              "displayName": "ativo",
               "required": true,
               "defaultMatch": false,
               "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
-            },
-            {
-              "id": "descricao",
-              "displayName": "descricao",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
-            },
-            {
-              "id": "conteudo",
-              "displayName": "conteudo",
-              "required": true,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
+              "type": "boolean",
               "canBeUsedToMatch": true
             }
           ],
@@ -451,18 +400,18 @@
           "outputColumns": [
             "id",
             "nome",
-            "descricao"
+            "ativo"
           ]
         }
       },
       "type": "n8n-nodes-base.postgresTool",
       "typeVersion": 2.6,
       "position": [
-        752,
-        304
+        528,
+        640
       ],
-      "id": "7e3ba21e-3bbc-4f8a-9505-ee3decd1b5fc",
-      "name": "update_section",
+      "id": "a7f1c2d3-de1e-4e00-9000-000000000011",
+      "name": "set_section_ativo",
       "credentials": {
         "postgres": {
           "id": "75T88sJeS9BfaHBO",
@@ -551,6 +500,28 @@
       ]
     },
     "update_section": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "delete_section": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "set_section_ativo": {
       "ai_tool": [
         [
           {
